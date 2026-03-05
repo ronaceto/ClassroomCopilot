@@ -1,6 +1,24 @@
 import { useState, useCallback } from 'react';
 import { ChatMessage, ChatResponse, ClassroomConfig, Mode, ArtifactType } from '../types';
 
+
+const parseApiError = async (response: Response): Promise<string> => {
+  const payload = await response.json().catch(() => ({}));
+
+  const message =
+    payload?.message ||
+    payload?.details?.error?.message ||
+    payload?.error ||
+    `HTTP ${response.status}`;
+
+  if (response.status === 429) {
+    const retryHint = payload?.retryAfter ? ` Retry after ${payload.retryAfter} seconds.` : '';
+    return `OpenAI rate limit/quota issue (429): ${message}.${retryHint} Check OpenAI billing and usage limits.`;
+  }
+
+  return message;
+};
+
 export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,8 +78,8 @@ export const useChat = () => {
         });
         
         if (!netlifyResponse.ok) {
-          const errorData = await netlifyResponse.json();
-          throw new Error(errorData.error || `HTTP ${netlifyResponse.status}`);
+          const errorMessage = await parseApiError(netlifyResponse);
+          throw new Error(errorMessage);
         }
         
         const data: ChatResponse = await netlifyResponse.json();
@@ -88,8 +106,8 @@ export const useChat = () => {
       }
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP ${response.status}`);
+        const errorMessage = await parseApiError(response);
+        throw new Error(errorMessage);
       }
 
       const data: ChatResponse = await response.json();
