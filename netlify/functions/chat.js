@@ -145,7 +145,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         model: OPENAI_MODEL,
         messages: openaiMessages,
-        max_tokens: 4000,
+        max_tokens: Number.isFinite(OPENAI_MAX_TOKENS) ? OPENAI_MAX_TOKENS : 1500,
         temperature: 0.7
       })
     });
