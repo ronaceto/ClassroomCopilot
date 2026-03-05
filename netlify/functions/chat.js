@@ -188,7 +188,8 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         assistantMessages: [assistantMessage],
-        artifacts
+        artifacts,
+        meta: { functionVersion: FUNCTION_VERSION }
       })
     };
 
