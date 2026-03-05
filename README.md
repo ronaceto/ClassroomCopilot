@@ -73,22 +73,15 @@ If the app UI loads but requests fail when sending messages, validate the server
 2. **Verify Netlify environment variables**
    - Required: `OPENAI_API_KEY`
    - Optional: `OPENAI_MODEL` (defaults to `gpt-4o-mini`)
-   - Optional: `OPENAI_MAX_TOKENS` (defaults to `1500`)
    - After editing environment variables in Netlify, trigger a new deploy (functions do not always pick up changes until redeploy).
 
 3. **Model access issues**
    - If your API key does not have access to a configured model, OpenAI returns a 4xx error.
    - Set `OPENAI_MODEL` to a model your account can access (for example `gpt-4o-mini`).
 
-4. **If you see HTTP 429 from `/api/chat`**
-   - 429 usually means **OpenAI rate limit** or **insufficient quota/billing** for your API project.
-   - Verify billing is active and check usage/rate limits in your OpenAI dashboard for the same project as the key.
-   - If needed, lower `OPENAI_MAX_TOKENS` and retry after a short cooldown.
-
-5. **Inspect function logs**
+4. **Inspect function logs**
    - In Netlify: Site → Functions → `chat` → logs.
    - The function now returns troubleshooting details in error responses to simplify diagnosis.
-   - If an old error persists after code changes, force a fresh deploy and clear Netlify build cache to avoid stale function bundles.
 
 ## Local Development
 

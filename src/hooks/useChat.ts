@@ -1,28 +1,8 @@
 import { useState, useCallback } from 'react';
 import { ChatMessage, ChatResponse, ClassroomConfig, Mode, ArtifactType } from '../types';
 
-interface ParsedApiError {
-  message: string;
-  status: number;
-  code?: string | null;
-  type?: string | null;
-  retryAfter?: string | null;
-  functionVersion?: string | null;
-}
 
-export interface ChatDebugInfo {
-  endpoint: '/api/chat' | '/.netlify/functions/chat';
-  timestamp: number;
-  status: number;
-  ok: boolean;
-  message: string;
-  code?: string | null;
-  type?: string | null;
-  retryAfter?: string | null;
-  functionVersion?: string | null;
-}
-
-const parseApiError = async (response: Response): Promise<ParsedApiError> => {
+const parseApiError = async (response: Response): Promise<string> => {
   const payload = await response.json().catch(() => ({}));
 
   const message =
@@ -31,21 +11,12 @@ const parseApiError = async (response: Response): Promise<ParsedApiError> => {
     payload?.error ||
     `HTTP ${response.status}`;
 
-  const parsed: ParsedApiError = {
-    message,
-    status: response.status,
-    code: payload?.code || payload?.details?.error?.code || null,
-    type: payload?.type || payload?.details?.error?.type || null,
-    retryAfter: payload?.retryAfter || null,
-    functionVersion: payload?.troubleshooting?.functionVersion || payload?.meta?.functionVersion || null
-  };
-
   if (response.status === 429) {
-    const retryHint = parsed.retryAfter ? ` Retry after ${parsed.retryAfter} seconds.` : '';
-    parsed.message = `OpenAI rate limit/quota issue (429): ${message}.${retryHint} Check OpenAI billing and usage limits.`;
+    const retryHint = payload?.retryAfter ? ` Retry after ${payload.retryAfter} seconds.` : '';
+    return `OpenAI rate limit/quota issue (429): ${message}.${retryHint} Check OpenAI billing and usage limits.`;
   }
 
-  return parsed;
+  return message;
 };
 
 export const useChat = () => {
@@ -106,19 +77,8 @@ export const useChat = () => {
         });
 
         if (!netlifyResponse.ok) {
-          const parsedError = await parseApiError(netlifyResponse);
-          setDebugInfo({
-            endpoint: '/.netlify/functions/chat',
-            timestamp: Date.now(),
-            status: parsedError.status,
-            ok: false,
-            message: parsedError.message,
-            code: parsedError.code,
-            type: parsedError.type,
-            retryAfter: parsedError.retryAfter,
-            functionVersion: parsedError.functionVersion
-          });
-          throw new Error(parsedError.message);
+          const errorMessage = await parseApiError(netlifyResponse);
+          throw new Error(errorMessage);
         }
 
         const data: ChatResponse = await netlifyResponse.json();
@@ -153,19 +113,8 @@ export const useChat = () => {
       }
 
       if (!response.ok) {
-        const parsedError = await parseApiError(response);
-        setDebugInfo({
-          endpoint: '/api/chat',
-          timestamp: Date.now(),
-          status: parsedError.status,
-          ok: false,
-          message: parsedError.message,
-          code: parsedError.code,
-          type: parsedError.type,
-          retryAfter: parsedError.retryAfter,
-          functionVersion: parsedError.functionVersion
-        });
-        throw new Error(parsedError.message);
+        const errorMessage = await parseApiError(response);
+        throw new Error(errorMessage);
       }
 
       const data: ChatResponse = await response.json();
