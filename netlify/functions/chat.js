@@ -1,12 +1,5 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-const FUNCTION_VERSION = '2026-03-05.1';
-const DEFAULT_MAX_TOKENS = 1500;
-
-const getMaxTokens = () => {
-  const parsed = Number(process.env.OPENAI_MAX_TOKENS);
-  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : DEFAULT_MAX_TOKENS;
-};
 
 // System prompts
 const TEACHER_SYSTEM_PROMPT = `You are "Classroom Copilot — Teacher Mode," a friendly, seasoned instructional designer. Produce ready-to-use classroom materials that are accurate, age-appropriate, and aligned with the configuration provided. Use clear sections and checklists. Prefer concrete examples over abstractions. If a standard set is selected, list exact codes when supplied; if inferring, state "inferred" and be conservative. Include differentiation as toggled (ELL, IEP/504, extension). Never fabricate citations or sources. Keep tone conversational and practical for a busy teacher. When asked for assessments, generate varied item types and include answer keys. If the user shares proprietary content, keep it in-session only.`;
@@ -152,55 +145,30 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         model: OPENAI_MODEL,
         messages: openaiMessages,
-        max_tokens: getMaxTokens(),
+        max_tokens: Number.isFinite(OPENAI_MAX_TOKENS) ? OPENAI_MAX_TOKENS : 1500,
         temperature: 0.7
       })
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const openaiError = errorData?.error || {};
-      const retryAfter = response.headers.get('retry-after');
-      const message = openaiError.message || errorData?.message || `OpenAI request failed with status ${response.status}.`;
-
-      console.error('OpenAI API Error:', {
-        status: response.status,
-        model: OPENAI_MODEL,
-        type: openaiError.type,
-        code: openaiError.code,
-        retryAfter,
-        message
-      });
-
-      const suggestions = [
-        'Confirm OPENAI_API_KEY is configured in Netlify site environment variables and redeploy after changes.',
-        `Check whether your key has access to model "${OPENAI_MODEL}".`,
-        'Try setting OPENAI_MODEL to a model your account can access (for example gpt-4o-mini).'
-      ];
-
-      if (response.status === 429) {
-        suggestions.unshift('429 from OpenAI usually means rate-limit or insufficient quota. Verify billing/usage limits in your OpenAI account.');
-      }
-
+      console.error('OpenAI API Error:', errorData);
       return {
         statusCode: response.status,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          error: 'OpenAI API Error',
-          message,
-          status: response.status,
-          type: openaiError.type || null,
-          code: openaiError.code || null,
-          retryAfter,
+        body: JSON.stringify({ 
+          error: 'OpenAI API Error', 
           details: errorData,
           troubleshooting: {
-            functionVersion: FUNCTION_VERSION,
             model: OPENAI_MODEL,
-            maxTokens: getMaxTokens(),
-            suggestions
+            suggestions: [
+              'Confirm OPENAI_API_KEY is configured in Netlify site environment variables and redeploy after changes.',
+              `Check whether your key has access to model "${OPENAI_MODEL}".`,
+              'Try setting OPENAI_MODEL to a model your account can access (for example gpt-4o-mini).'
+            ]
           }
         })
       };
