@@ -23,6 +23,7 @@ export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<ChatDebugInfo | null>(null);
   const [artifacts, setArtifacts] = useState<Record<ArtifactType, string>>({
     lessonPlan: '',
     quiz: '',
@@ -51,16 +52,18 @@ export const useChat = () => {
     setError(null);
 
     try {
+      const requestBody = JSON.stringify({
+        mode,
+        messages: [...messages, userMessage],
+        config
+      });
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          mode,
-          messages: [...messages, userMessage],
-          config
-        }),
+        body: requestBody,
       });
 
       // Fallback to Netlify function if /api/chat fails
@@ -70,26 +73,30 @@ export const useChat = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            mode,
-            messages: [...messages, userMessage],
-            config
-          }),
+          body: requestBody,
         });
-        
+
         if (!netlifyResponse.ok) {
           const errorMessage = await parseApiError(netlifyResponse);
           throw new Error(errorMessage);
         }
-        
+
         const data: ChatResponse = await netlifyResponse.json();
-        
+        setDebugInfo({
+          endpoint: '/.netlify/functions/chat',
+          timestamp: Date.now(),
+          status: netlifyResponse.status,
+          ok: true,
+          message: 'Request successful.',
+          functionVersion: data?.meta?.functionVersion || null
+        });
+
         if (data.assistantMessages && data.assistantMessages.length > 0) {
           const assistantMessage = {
             ...data.assistantMessages[0],
             timestamp: Date.now()
           };
-          
+
           setMessages(prev => [...prev, assistantMessage]);
         }
 
@@ -101,7 +108,7 @@ export const useChat = () => {
             )
           }));
         }
-        
+
         return;
       }
 
@@ -111,13 +118,21 @@ export const useChat = () => {
       }
 
       const data: ChatResponse = await response.json();
+      setDebugInfo({
+        endpoint: '/api/chat',
+        timestamp: Date.now(),
+        status: response.status,
+        ok: true,
+        message: 'Request successful.',
+        functionVersion: data?.meta?.functionVersion || null
+      });
 
       if (data.assistantMessages && data.assistantMessages.length > 0) {
         const assistantMessage = {
           ...data.assistantMessages[0],
           timestamp: Date.now()
         };
-        
+
         setMessages(prev => [...prev, assistantMessage]);
       }
 
@@ -159,6 +174,7 @@ export const useChat = () => {
       parentNote: ''
     });
     setError(null);
+    setDebugInfo(null);
   }, []);
 
   const clearAllArtifacts = useCallback(() => {
@@ -179,13 +195,14 @@ export const useChat = () => {
       [type]: ''
     }));
   }, []);
+
   const runDemo = useCallback(async (mode: Mode, config: ClassroomConfig) => {
     clearChat();
-    
-    const demoPrompt = mode === 'teacher' 
-      ? "Create a 55-minute lesson for Grade 10 Economics on Supply & Demand. Include objectives with Bloom verbs, 3 activities (Do Now, Mini-Lesson, Practice), materials, checks for understanding, and an exit ticket. Align to TN and CCSS where applicable."
-      : "Walk me through how to analyze a supply and demand graph step by step. Ask me 2 quick checks as we go.";
-    
+
+    const demoPrompt = mode === 'teacher'
+      ? 'Create a 55-minute lesson for Grade 10 Economics on Supply & Demand. Include objectives with Bloom verbs, 3 activities (Do Now, Mini-Lesson, Practice), materials, checks for understanding, and an exit ticket. Align to TN and CCSS where applicable.'
+      : 'Walk me through how to analyze a supply and demand graph step by step. Ask me 2 quick checks as we go.';
+
     await sendMessage(demoPrompt, mode, config);
   }, [sendMessage, clearChat]);
 
@@ -193,6 +210,7 @@ export const useChat = () => {
     messages,
     isLoading,
     error,
+    debugInfo,
     artifacts,
     sendMessage,
     clearChat,
