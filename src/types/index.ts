@@ -42,6 +42,9 @@ export interface ChatResponse {
     rubric?: string;
     parentNote?: string;
   };
+  meta?: {
+    functionVersion?: string;
+  };
 }
 
 export interface ArtifactHistory {
