@@ -1,6 +1,6 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-const FUNCTION_VERSION = '2026-03-05.1';
+const FUNCTION_VERSION = '2026-03-05.2';
 const DEFAULT_MAX_TOKENS = 1500;
 
 const getMaxTokens = () => {
@@ -196,6 +196,7 @@ exports.handler = async (event, context) => {
           code: openaiError.code || null,
           retryAfter,
           details: errorData,
+          functionVersion: FUNCTION_VERSION,
           troubleshooting: {
             functionVersion: FUNCTION_VERSION,
             model: OPENAI_MODEL,
@@ -235,7 +236,8 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({ 
         error: 'Internal server error', 
-        message: error.message 
+        message: error.message,
+        functionVersion: FUNCTION_VERSION
       })
     };
   }

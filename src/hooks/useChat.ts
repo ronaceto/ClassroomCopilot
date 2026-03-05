@@ -37,7 +37,7 @@ const parseApiError = async (response: Response): Promise<ParsedApiError> => {
     code: payload?.code || payload?.details?.error?.code || null,
     type: payload?.type || payload?.details?.error?.type || null,
     retryAfter: payload?.retryAfter || null,
-    functionVersion: payload?.troubleshooting?.functionVersion || payload?.meta?.functionVersion || null
+    functionVersion: payload?.functionVersion || payload?.troubleshooting?.functionVersion || payload?.meta?.functionVersion || null
   };
 
   if (response.status === 429) {

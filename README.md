@@ -90,6 +90,10 @@ If the app UI loads but requests fail when sending messages, validate the server
    - The function now returns troubleshooting details in error responses to simplify diagnosis.
    - If an old error persists after code changes, force a fresh deploy and clear Netlify build cache to avoid stale function bundles.
 
+6. **If branch/PR shows merge conflicts**
+   - Resolve conflicts in `README.md`, `netlify/functions/chat.js`, `src/App.tsx`, and `src/hooks/useChat.ts` by keeping the latest `FUNCTION_VERSION`, `getMaxTokens()` helper, and always-visible API Debug panel.
+   - Rebuild locally (`npm run build`) before pushing conflict resolution commits.
+
 ## Local Development
 
 ```bash
