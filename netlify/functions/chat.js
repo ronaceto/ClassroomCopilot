@@ -1,5 +1,5 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-//const OPENAI_API_KEY = "";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
 // System prompts
 const TEACHER_SYSTEM_PROMPT = `You are "Classroom Copilot — Teacher Mode," a friendly, seasoned instructional designer. Produce ready-to-use classroom materials that are accurate, age-appropriate, and aligned with the configuration provided. Use clear sections and checklists. Prefer concrete examples over abstractions. If a standard set is selected, list exact codes when supplied; if inferring, state "inferred" and be conservative. Include differentiation as toggled (ELL, IEP/504, extension). Never fabricate citations or sources. Keep tone conversational and practical for a busy teacher. When asked for assessments, generate varied item types and include answer keys. If the user shares proprietary content, keep it in-session only.`;
@@ -98,6 +98,20 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    if (!OPENAI_API_KEY) {
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          error: 'Server configuration error',
+          message: 'Missing OPENAI_API_KEY environment variable on the Netlify function.'
+        })
+      };
+    }
+
     const { mode, messages, config } = JSON.parse(event.body);
 
     if (!mode || !messages || !config) {
@@ -129,7 +143,7 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: OPENAI_MODEL,
         messages: openaiMessages,
         max_tokens: 4000,
         temperature: 0.7
@@ -137,7 +151,7 @@ exports.handler = async (event, context) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       console.error('OpenAI API Error:', errorData);
       return {
         statusCode: response.status,
@@ -147,7 +161,15 @@ exports.handler = async (event, context) => {
         },
         body: JSON.stringify({ 
           error: 'OpenAI API Error', 
-          details: errorData 
+          details: errorData,
+          troubleshooting: {
+            model: OPENAI_MODEL,
+            suggestions: [
+              'Confirm OPENAI_API_KEY is configured in Netlify site environment variables and redeploy after changes.',
+              `Check whether your key has access to model "${OPENAI_MODEL}".`,
+              'Try setting OPENAI_MODEL to a model your account can access (for example gpt-4o-mini).'
+            ]
+          }
         })
       };
     }
