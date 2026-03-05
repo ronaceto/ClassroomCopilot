@@ -16,8 +16,9 @@ Before opening/updating a PR, run the following steps to reduce conflict churn:
 1. Fetch latest changes.
 2. Rebase (or merge) your branch on top of the current base branch.
 3. Resolve conflicts locally.
-4. Build locally.
-5. Push the updated branch.
+4. Run conflict-marker check.
+5. Build locally.
+6. Push the updated branch.
 
 ### Recommended commands
 
@@ -25,6 +26,7 @@ Before opening/updating a PR, run the following steps to reduce conflict churn:
 git fetch origin
 git rebase origin/<base-branch>
 # resolve conflicts if prompted
+npm run check:conflicts
 npm run build
 git add README.md netlify/functions/chat.js src/App.tsx src/hooks/useChat.ts
 git rebase --continue
@@ -37,6 +39,7 @@ If your team uses merge commits instead of rebase:
 git fetch origin
 git merge origin/<base-branch>
 # resolve conflicts if prompted
+npm run check:conflicts
 npm run build
 git add README.md netlify/functions/chat.js src/App.tsx src/hooks/useChat.ts
 git commit
