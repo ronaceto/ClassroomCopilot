@@ -115,6 +115,10 @@ The app includes a comprehensive configuration system allowing teachers to custo
 - Reading levels and differentiation options
 - Output depth and included features
 
+## Contributing
+
+See `CONTRIBUTING.md` for branch sync and merge-conflict prevention workflow.
+
 ## Support
 
 For issues or questions, please check the repository issues or create a new one.
