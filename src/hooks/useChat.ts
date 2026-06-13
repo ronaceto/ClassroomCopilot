@@ -104,7 +104,7 @@ export const useChat = () => {
           setArtifacts(prev => ({
             ...prev,
             ...Object.fromEntries(
-              Object.entries(data.artifacts).filter(([_, value]) => value && value.trim())
+              Object.entries(data.artifacts).filter(([, value]) => value && value.trim())
             )
           }));
         }
@@ -140,7 +140,7 @@ export const useChat = () => {
         setArtifacts(prev => ({
           ...prev,
           ...Object.fromEntries(
-            Object.entries(data.artifacts).filter(([_, value]) => value && value.trim())
+            Object.entries(data.artifacts).filter(([, value]) => value && value.trim())
           )
         }));
       }

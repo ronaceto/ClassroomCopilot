@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Download, Copy, FileText, Trash2, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { Download, Copy, FileText, Trash2 } from 'lucide-react';
 import { ArtifactType } from '../types';
-import { exportToDocx, exportToPdf, copyToClipboard } from '../utils/documentExport';
+import { copyToClipboard, exportToMarkdown, printFormattedDocument } from '../utils/documentExport';
 
 interface OutputSectionProps {
   artifacts: Record<ArtifactType, string>;
@@ -28,7 +28,7 @@ export const OutputSection: React.FC<OutputSectionProps> = ({
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
-  const availableArtifacts = Object.entries(artifacts).filter(([_, content]) => content.trim());
+  const availableArtifacts = Object.entries(artifacts).filter(([, content]) => content.trim());
   const currentContent = artifacts[activeTab];
 
   const handleCopy = async () => {
@@ -41,13 +41,13 @@ export const OutputSection: React.FC<OutputSectionProps> = ({
 
   const handleExportDocx = () => {
     if (currentContent) {
-      exportToDocx(currentContent, `${ARTIFACT_LABELS[activeTab]}-${Date.now()}`);
+      exportToMarkdown(currentContent, `${ARTIFACT_LABELS[activeTab]}-${Date.now()}`);
     }
   };
 
   const handleExportPdf = () => {
     if (currentContent) {
-      exportToPdf(currentContent, `${ARTIFACT_LABELS[activeTab]}-${Date.now()}`);
+      printFormattedDocument(currentContent, `${ARTIFACT_LABELS[activeTab]}-${Date.now()}`);
     }
   };
 
@@ -145,14 +145,14 @@ export const OutputSection: React.FC<OutputSectionProps> = ({
                   className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md transition-colors"
                 >
                   <Download className="h-3 w-3" />
-                  .docx
+                  Markdown
                 </button>
                 <button
                   onClick={handleExportPdf}
                   className="flex items-center gap-1 px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors"
                 >
                   <Download className="h-3 w-3" />
-                  .pdf
+                  Print / PDF
                 </button>
               </div>
 
