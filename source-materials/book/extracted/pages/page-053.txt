@@ -1,0 +1,15 @@
+Why This Chapter Matters 
+Problem solving is one of the clearest places where AI can either support learning or 
+weaken it. 
+If students use AI only for final answers, they may become more dependent and less 
+confident over time. But if they use AI to understand processes, compare examples, and 
+practice independently, they can become much stronger problem solvers. 
+That is why this chapter matters. It teaches students how to keep control of the learning 
+process while still benefiting from AI’s speed and flexibility. 
+Chapter Summary 
+In this chapter, you learned how AI can support problem solving by explaining steps, 
+highlighting patterns, and generating practice opportunities. You also explored why 
+strong prompts improve problem-solving support and why copying answers weakens 
+learning. 
+In the next chapter, we will look at how AI can help students with one of the most 
+practical and fast-growing areas of learning today: coding and computer programming.

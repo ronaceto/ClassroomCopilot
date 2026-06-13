@@ -1,0 +1,31 @@
+AI Is Not a Search Engine 
+Many students compare AI tools to search engines, but the two are not the same.  A 
+search engine usually finds existing information and links you to sources. An AI tool 
+generates a brand-new response based on patterns in data. That makes AI feel more 
+conversational, but it also means you must be more careful.  When you use a search 
+engine, you can inspect the websites it found. When you use AI, you are often receiving 
+a polished answer without immediately seeing where the information came from. 
+AI is often best used for: 
+ explanations 
+ summaries 
+ brainstorming 
+ practice questions 
+ idea generation 
+Search engines and reliable sources are still essential for checking facts, verifying claims, 
+and doing formal research. 
+A Student Example 
+A student named Jordan asks AI to explain the main causes of World War I. The 
+response sounds clear and organized, but instead of trusting it immediately, Jordan 
+checks it against class notes and a textbook. The explanation is mostly correct, but one 
+part oversimplifies the role of alliances and leaves out an important detail discussed in 
+class. By checking the response, Jordan gets the benefit of a quick explanation while still 
+relying on trusted sources for accuracy. This is exactly how students should think about 
+AI: it can be a useful starting point, but it is not the final authority. 
+Classroom Idea 
+Teachers can help students understand how AI works by comparing AI-generated 
+responses to textbook explanations. 
+For example, students could ask AI to explain a topic such as photosynthesis, the Civil 
+War, or linear equations. Then they could compare that explanation with what appears 
+in their class materials. 
+This activity helps students see that AI can be useful, but it also helps them practice 
+identifying missing details, oversimplifications, and possible inaccuracies.

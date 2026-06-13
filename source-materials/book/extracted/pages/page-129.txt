@@ -1,0 +1,23 @@
+20. Improve transitions 
+Suggest better transitions between these ideas so the writing flows more smoothly. 
+Why it works: 
+This is especially useful for students who struggle with structure and paragraph flow. 
+Prompts for Problem Solving and Coding 
+These prompts are especially useful in math, science, and computer science. 
+21. Explain the process 
+Show me how to solve this problem step by step and explain why each step works. 
+Why it works: 
+This keeps the focus on reasoning rather than final answers. 
+22. Give a similar problem 
+Give me a similar problem so I can try it on my own. 
+Why it works: 
+Practice is one of the best ways to turn explanation into real learning. 
+23. Explain code clearly 
+Explain what this code does line by line like I am a beginner programmer. 
+Why it works: 
+This helps students understand logic instead of copying code without learning it. 
+24. Help debug without rewriting everything 
+Point out one possible problem in this code and explain what I should check next. 
+Why it works: 
+This keeps students actively involved in debugging rather than depending on AI to fix 
+everything for them.

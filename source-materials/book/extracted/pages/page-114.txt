@@ -1,0 +1,21 @@
+Classroom Idea 
+Teachers can show students a mix of media examples such as a real news image, an AI-
+generated image, a misleading caption, and a short summary of a current event. Students 
+can work in groups to decide what questions they would ask before trusting or sharing 
+each one. 
+The class can discuss: 
+ What evidence is visible and what evidence is missing? 
+ Which item is easiest to trust too quickly? 
+ What verification step would help most here? 
+ Why do some posts spread faster than careful fact-checks? 
+This helps students see that media literacy is not about memorizing one trick. It is about 
+building a repeatable way of thinking. 
+Try This 
+Prompt Example 
+I saw an online claim, image, or short video that seems believable but might be 
+misleading. Give me five questions I should ask before trusting or sharing it, and 
+suggest two ways I could verify it. 
+After reading the response, ask yourself: 
+ What evidence would actually help confirm this claim? 
+ Am I trusting this because it is popular, emotional, or visually convincing? 
+ What source or verification step would help me decide more carefully?

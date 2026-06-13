@@ -1,0 +1,26 @@
+Plagiarism 
+Presenting someone else’s words, ideas, or work as your own without proper credit. AI 
+use can create plagiarism risks if students submit work they did not truly create or 
+understand. 
+Prediction 
+The process by which an AI system estimates what word, idea, or result is most likely to 
+come next based on learned patterns. 
+Productivity 
+The ability to complete tasks effectively and efficiently. AI can support productivity by 
+helping students plan, organize, and manage work. 
+Programming 
+Writing instructions that tell a computer what to do. Programming is often done using 
+coding languages such as Python or JavaScript. 
+Prompt 
+The question, instruction, or request given to an AI system. The quality of the prompt 
+often affects the quality of the response. 
+Prompt Engineering 
+The skill of writing and improving prompts so that AI tools produce clearer, more 
+accurate, or more useful results. 
+Research 
+The process of gathering, organizing, and evaluating information in order to answer a 
+question or better understand a topic. 
+Responsible AI Use 
+Using AI in ways that are honest, thoughtful, and supportive of real learning. 
+Responsible use includes verifying information, protecting privacy, and maintaining 
+academic integrity.

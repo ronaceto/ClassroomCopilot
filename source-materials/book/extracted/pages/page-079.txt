@@ -1,0 +1,26 @@
+ copying AI interpretations without understanding or agreeing with them 
+ submitting revised text that no longer sounds like the student’s own writing 
+The question is not simply whether AI was used. The question is whether the student 
+still did the reading, thinking, and writing that the assignment was meant to develop. 
+Student Example 
+A student named Ava is writing a literary analysis paragraph about symbolism in The 
+Great Gatsby. She has an idea about what the green light represents, but she is struggling 
+to organize the paragraph clearly. 
+First, she asks AI: 
+Help me brainstorm two possible interpretations of the green light in The Great 
+Gatsby. 
+After reviewing the ideas and comparing them with her notes, she writes her own 
+paragraph. Then she asks: 
+Suggest one way I can make this paragraph clearer without changing my 
+interpretation. 
+In this example, Ava still develops the claim and writes the analysis herself. AI helps her 
+brainstorm and revise, but it does not replace her reading or thinking. 
+Classroom Idea 
+Teachers can help students use AI responsibly in ELA by having them compare three 
+kinds of support: 
+ a weak prompt that asks AI to do the writing 
+ a stronger prompt that asks for brainstorming help 
+ a revision prompt that keeps the student’s draft at the center 
+Students can discuss which prompt supports learning most clearly and why. This helps 
+them see that the quality and purpose of the prompt matter just as much as the tool 
+itself.

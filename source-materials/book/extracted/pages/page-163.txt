@@ -1,0 +1,7 @@
+Verification 
+The act of checking information to confirm that it is accurate and trustworthy. 
+Workflow 
+A sequence of steps used to complete a task. AI can help students understand or 
+improve workflows in studying, writing, coding, and projects. 
+Writing Prompt 
+A question, instruction, or starting idea designed to help a person begin writing.

@@ -1,0 +1,30 @@
+In this example, AI helps Leila get organized, but she still decides how to use the plan 
+and how much work to complete each day. The AI supports her productivity without 
+replacing her responsibility. 
+Classroom Idea 
+Teachers can use AI productively by having students compare an AI-generated work 
+plan with one they create themselves. 
+For example, students might be given a sample project and asked to create their own 
+step-by-step schedule first. Then they ask AI to generate a second version. The class can 
+compare: 
+ Which plan is more realistic? 
+ Which plan is more detailed? 
+ What did the AI do well? 
+ What would a student still need to adjust? 
+This helps students see AI as a planning tool while still practicing project management 
+skills of their own. 
+Try This 
+Prompt Example 
+Help me break a large school assignment into smaller steps I can complete over one 
+week. 
+ 
+Then ask: 
+Prompt Example 
+Now turn those steps into a simple schedule I could follow. 
+ 
+As you review the response, ask yourself: 
+ Does this plan feel realistic? 
+ Which steps would I change? 
+ What would make this plan more useful for me personally? 
+This helps you use AI not just to make a plan, but to think critically about what a 
+good plan looks like.

@@ -1,0 +1,28 @@
+might ask the tool to turn notes into a study guide with key terms and definitions, then 
+use that guide as the basis for practice questions or self-testing. 
+For example, students can ask AI to: 
+ summarize a chapter 
+ turn notes into flashcards 
+ create a short review sheet 
+ list the most important terms to remember 
+ explain the difference between similar concepts 
+A student preparing for a science test might ask: 
+Turn these notes into a study guide with key terms and definitions. 
+That response can then be used as a review sheet, a self-test, or the basis for 
+practice questions. 
+The important thing is that the student is still responsible for checking the 
+information and understanding the material. AI can help organize learning, but it 
+should not replace the work of learning. 
+Student Example 
+A student has a quiz tomorrow on the causes of the French Revolution. They feel 
+overwhelmed by the amount of information in their notes. 
+They ask AI: 
+Summarize the three main causes of the French Revolution in simple terms for a 
+high school student. 
+Then they ask: 
+Create five quiz questions based on that summary. 
+After answering the questions, they follow up with: 
+Explain the answers I missed. 
+In less than fifteen minutes, the student has reviewed key ideas, tested their 
+understanding, and learned from mistakes. That is much stronger studying than simply 
+rereading the chapter.

@@ -1,0 +1,4 @@
+Part I — Understanding AI 
+This part introduces the foundation students need before using AI more actively: what 
+artificial intelligence is, how it works at a basic level, and why understanding it matters 
+for learning, school, and everyday life.

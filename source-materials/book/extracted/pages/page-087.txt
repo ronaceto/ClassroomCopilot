@@ -1,0 +1,32 @@
+Using AI to Build Background Knowledge 
+One of the best uses of AI in history is at the beginning of a topic. Students often need 
+a quick overview before they are ready to study details more closely. 
+For example, a student beginning a unit on the Industrial Revolution might ask: 
+Give me an overview of the Industrial Revolution and explain why it changed 
+society. 
+That kind of prompt can help the student understand the big picture before reading 
+more specific material. AI can also help define key terms, explain why events matter, or 
+summarize how one era connects to another. 
+Used this way, AI can reduce confusion and help students enter the content more 
+confidently. 
+Exploring Cause and Effect 
+History is full of chains of cause and effect. Students often need help seeing how 
+political, economic, social, and cultural factors connect. 
+AI can help students organize these relationships by explaining them in clear, structured 
+ways. A student might ask: 
+Explain three major causes of the Great Depression and how they were 
+connected. 
+Or: 
+What were the short-term and long-term effects of the Civil Rights Movement? 
+These prompts can help students organize thinking, especially before writing or 
+discussion. But students still need to verify key details with class materials and sources. 
+Historical understanding depends on evidence, not just on a fluent explanation. 
+Comparing Perspectives 
+One of the most valuable ways to use AI in social studies is to compare perspectives. 
+Historical events and civic issues are rarely experienced the same way by everyone 
+involved. AI can help students explore how different groups may have understood the 
+same moment differently. 
+For example, a student might ask: 
+Explain the American Revolution from both the colonial and British 
+perspectives. 
+Or:

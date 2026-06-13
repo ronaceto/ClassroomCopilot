@@ -1,0 +1,21 @@
+Chapter 6 — AI for Studying Smarter 
+ 
+Key Question 
+How can AI help students study more effectively and remember what they learn? 
+Learning Objectives 
+ Understand how AI can support active studying 
+ Learn how to use AI for quizzes, review, and feedback 
+ Use AI to strengthen understanding instead of memorizing blindly 
+ Practice turning AI into a study coach 
+Introduction 
+Many students think studying means reading the same notes again and again until the 
+information finally sticks. Sometimes that works, but often it leads to frustration. A 
+student can spend an hour rereading a chapter and still feel unprepared when the test 
+begins. 
+The problem is not always effort. Sometimes the problem is the method. 
+Strong studying is active, not passive. Students learn more effectively when they test 
+themselves, explain ideas in their own words, work through mistakes, and revisit 
+concepts in different ways. Artificial intelligence can help with all of these tasks. 
+When used correctly, AI can act like a study coach. It can create practice questions, 
+explain difficult concepts, simulate quizzes, summarize notes, and help students identify 
+weak spots before a test. The key is using AI to strengthen learning—not to replace it.

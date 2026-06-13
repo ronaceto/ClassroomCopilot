@@ -1,0 +1,30 @@
+Student Example 
+A student named Elena is reviewing cellular respiration for a biology test. Her notes feel 
+complicated, and she keeps mixing up the role of mitochondria and glucose. 
+She asks AI: 
+Explain cellular respiration in simple terms for a high school biology student and 
+compare it to how a car uses fuel. 
+Then she asks: 
+Now give me five review questions on cellular respiration and explain any I miss. 
+AI helped Elena understand the concept and practice it, but she still used her textbook 
+and class notes to confirm the details before the test. 
+Classroom Idea 
+Teachers can ask students to compare an AI explanation of a science concept with the 
+explanation in a textbook or class notes. Students can identify: 
+ what the AI explained clearly 
+ what the AI left out 
+ whether the analogy helped or oversimplified the idea 
+ what still needs verification 
+This helps students learn that scientific explanation must be accurate as well as 
+understandable. 
+Try This 
+Use the prompt below to see whether a second explanation helps the concept click 
+more clearly. Then compare the response to your class notes or textbook so the 
+easier explanation still stays tied to accurate science. 
+Prompt Example 
+Explain this science concept in simple terms, compare it to something from everyday 
+life, and then ask me three review questions to check my understanding. 
+After using the prompt, ask yourself: 
+ Did the explanation match what my teacher or textbook says? 
+ What part still feels uncertain? 
+ What evidence or class material would help confirm it?

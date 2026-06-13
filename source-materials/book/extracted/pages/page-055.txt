@@ -1,0 +1,27 @@
+Why Coding Feels Different From Other Subjects 
+Coding is different from many other school tasks because students are not just learning 
+facts. They are learning a system. 
+To write code successfully, students need to understand: 
+ how instructions are structured 
+ how a program flows step by step 
+ how variables, loops, and functions behave 
+ how to test and revise a solution when something goes wrong 
+This makes coding highly practical. Students often learn best by trying, failing, adjusting, 
+and trying again. 
+That process can be very productive, but it can also be discouraging when students do 
+not understand why something failed. AI can help by making those moments of 
+confusion easier to work through. 
+Using AI to Understand Code 
+One of the most helpful uses of AI in coding is asking it to explain code clearly. 
+A student might paste in a short program and ask: 
+Explain what this code does step by step. 
+That kind of prompt is valuable because it turns code into something more 
+understandable. Instead of staring at syntax that feels confusing, the student receives a 
+guided explanation of what each part is doing and how the whole program works. 
+Students can also ask more specific questions such as: 
+ What does this variable do? 
+ Why is this loop important? 
+ What happens if I change this line? 
+ Can you explain this like I’m a beginner? 
+These questions help students move from copying code to understanding code. 
+That shift is one of the most important goals in computer science education.

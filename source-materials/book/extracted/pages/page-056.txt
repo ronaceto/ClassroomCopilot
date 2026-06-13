@@ -1,0 +1,30 @@
+Using AI to Debug Errors 
+Another major use of AI in coding is debugging. 
+Debugging means identifying and fixing problems in code. This is a normal part of 
+programming. In fact, learning to debug is one of the most important programming 
+skills students can develop. 
+AI can help students debug by explaining: 
+ what an error message means 
+ which line may be causing the problem 
+ why the logic is not working 
+ what kinds of fixes to try next 
+For example, a student might ask: 
+I’m getting an error in this Python code. Explain what the error means and what I 
+should check. 
+This kind of prompt is much stronger than asking for a finished answer. It keeps the 
+student involved in the debugging process and encourages them to understand the cause 
+of the problem. 
+Students can also ask: 
+ Why does this code not work as expected? 
+ What is one possible bug in this function? 
+ Can you point me to the part I should recheck without rewriting everything? 
+These are the kinds of questions that build real coding skill. 
+AI as a Coding Coach 
+The strongest way to use AI in programming is to treat it as a coach. 
+A coach does not play the game for you. A coach helps you improve your skills, spot 
+mistakes, and understand what to do next. AI can play that role well in coding because 
+programming often requires immediate feedback and repeated practice. 
+For example, a student building a simple calculator app might ask: 
+Help me build a simple calculator in Python and explain each step as we go. 
+Then, after trying a section alone, the student could ask: 
+Check this function and tell me whether the logic makes sense.

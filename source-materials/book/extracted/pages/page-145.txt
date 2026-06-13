@@ -1,0 +1,29 @@
+Common Mistakes to Avoid 
+ Trying to build something too large before the simple version works 
+ Accepting AI output without checking whether it matches the goal 
+ Letting AI make all the design decisions without student judgment 
+ Using code or project content that the student does not understand 
+ Skipping testing and assuming the first version is good enough 
+Reflection Questions 
+After using AI to build or improve a project, students should pause and ask: 
+ Did AI help me think more clearly, or did I let it do too much of the 
+thinking? 
+ Which stage of the workflow helped most? 
+ What part of the final result still reflects my own judgment and choices? 
+ What would I improve if I built the project again? 
+ What did I learn about planning, testing, or revising through this process? 
+Why This Appendix Matters 
+This appendix matters because it helps students move beyond asking AI for information 
+and into using AI as part of a creative and structured process. That shift is important. It 
+teaches students how to define problems, organize a workflow, test ideas, revise 
+intelligently, and stay responsible for the final outcome. 
+In other words, this appendix is not only about building one sample project. It is about 
+learning how to think like a builder. That habit can support future work in school, 
+technology, design, entrepreneurship, and many other fields where planning and 
+iteration matter. 
+Appendix Summary 
+In this appendix, you learned how AI can help students build projects by supporting 
+different stages of the workflow: defining the goal, planning the structure, creating a first 
+version, testing what works, and revising the result. You also learned that the strongest 
+use of AI in building is not asking for one perfect answer. It is guiding a process 
+thoughtfully and staying responsible for the final product.

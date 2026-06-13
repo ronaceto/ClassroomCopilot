@@ -1,0 +1,33 @@
+language, while another student preparing for discussion might ask for major themes to 
+watch for while reading. 
+Students often encounter difficult texts in ELA, especially when reading older literature, 
+unfamiliar vocabulary, or complex nonfiction. AI can be useful in these situations when 
+students need help understanding the language or structure of a text. 
+For example, a student reading Shakespeare might ask AI to paraphrase a difficult 
+passage in modern language. A student reading a challenging article might ask for a short 
+summary of the central claim. A student preparing for a discussion might ask for a list of 
+major themes to watch for while reading. 
+These are strong uses of AI because they support comprehension. The student is still 
+doing the reading and thinking, but the tool helps remove some of the confusion that 
+might block understanding. 
+Students should be careful, however, not to let summaries replace reading. Reading a 
+summary of a chapter is not the same as reading the chapter itself. AI can help students 
+enter the text more confidently, but it should not become a substitute for engaging with 
+the actual words on the page. 
+AI for Brainstorming and Prewriting 
+Many students struggle most at the beginning of a writing task. They may understand 
+the assignment but feel stuck when trying to generate a thesis, narrow a topic, or decide 
+what to say first. AI can be very helpful during this early stage. 
+Help me brainstorm three possible themes in this novel that I could write about. 
+A student preparing an argument essay, for example, might ask: 
+Give me two possible positions on this issue and a counterargument for each 
+one. 
+These prompts do not ask AI to write the essay. They help the student generate 
+possibilities. That difference is important. Strong prewriting support can help students 
+get unstuck without taking ownership away from them. 
+AI as a Writing Coach 
+One of the most valuable uses of AI in ELA is as a writing coach. 
+Students often have ideas, but their drafts may need help with clarity, structure, 
+transitions, or development. AI can support revision by giving suggestions that the 
+student then evaluates and chooses whether to use. 
+For example, a student might ask:

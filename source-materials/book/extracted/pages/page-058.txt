@@ -1,0 +1,18 @@
+ explaining which part to build first 
+ helping fix errors along the way 
+A student might ask: 
+Help me build a simple number guessing game in Python, one step at a time. 
+That is a strong prompt because it asks for guided development rather than a finished 
+product all at once. 
+This approach allows students to stay involved in the process and build confidence as 
+they go. 
+Student Example 
+A student named Noah is learning Python and trying to write a program that prints the 
+numbers 1 through 10. 
+His code keeps giving an error. Instead of asking AI to rewrite the whole thing, he asks: 
+Explain what this code is doing and tell me why it might not be working. 
+The AI points out that his loop syntax is incorrect and explains how the range() function 
+works. Noah fixes that issue, runs the code again, and gets a new result. Then he asks: 
+Give me a similar loop example so I can practice on my own. 
+In this example, Noah uses AI to understand the problem, fix the logic, and get more 
+practice. That is exactly how AI should be used in coding.

@@ -1,0 +1,27 @@
+AI Research Tools 
+Research tools are different from chat assistants because they are more focused on 
+helping users locate, organize, and verify information. 
+These tools can be especially useful when students are: 
+ starting a research paper 
+ exploring a historical topic 
+ gathering source-based information 
+ comparing multiple sources 
+ checking claims or facts 
+Examples include: 
+ Perplexity 
+ Elicit 
+ NotebookLM 
+These tools are often more useful when students need information connected to sources 
+rather than a simple conversational explanation. 
+Perplexity 
+Perplexity is especially helpful for research because it often combines AI-generated 
+responses with source links. This makes it easier for students to move from an 
+explanation to actual supporting material. 
+Students can use Perplexity to: 
+ research current or historical topics 
+ gather source-based overviews 
+ identify useful articles or references 
+ compare different explanations 
+ verify claims more easily 
+This makes it a particularly strong tool for projects, essays, and presentations where 
+source awareness matters.

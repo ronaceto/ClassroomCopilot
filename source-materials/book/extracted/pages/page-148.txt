@@ -1,0 +1,34 @@
+At the same time, students should remember that ChatGPT can make mistakes. 
+Important information should still be checked against class materials, teacher guidance, 
+or trusted sources. 
+Claude 
+Claude is another AI chat assistant that many students find useful for explanation, 
+writing support, and thoughtful analysis. It often performs well when students want a 
+clear, calm explanation of a complex topic or need help revising writing in a more 
+natural tone. 
+Students may use Claude to: 
+ understand complex ideas in simpler language 
+ revise paragraphs for clarity 
+ compare ideas or perspectives 
+ summarize long passages 
+ brainstorm stronger arguments in writing 
+Claude can be especially useful when students want responses that feel reflective and 
+well organized. 
+Gemini 
+Gemini is an AI tool from Google that may be especially useful for students who already 
+work heavily within Google tools and workflows. It can support writing, brainstorming, 
+summarizing, and general question answering. 
+Students may find Gemini helpful for: 
+ reviewing topics 
+ organizing ideas 
+ exploring broad questions 
+ generating quick summaries 
+ preparing first drafts or outlines 
+Because it connects conceptually to Google’s broader ecosystem, some students may 
+encounter it through school or personal accounts more naturally than other tools. 
+Microsoft Copilot 
+Microsoft Copilot is especially relevant for students who work in Word, PowerPoint, 
+Excel, or other Microsoft tools. It can help with drafting, organizing content, 
+summarizing information, and supporting productivity. 
+Students can use Microsoft Copilot to: 
+ help organize documents

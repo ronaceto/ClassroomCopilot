@@ -1,0 +1,19 @@
+Try This 
+Prompt Example 
+Explain how earthquakes happen in simple terms for a high school student. 
+Prompt Example 
+Explain earthquakes again, but use a real-world analogy. 
+ Which version was easier to understand? 
+ Did the analogy make the concept clearer? 
+ What would you still want to verify with a textbook or teacher? 
+ 
+Figure 2.1 — How AI Generates Responses 
+This diagram shows the process from student prompt to AI pattern recognition to 
+predicted response. AI is generating language based on learned patterns rather than true 
+human understanding. 
+Why This Matters for Students 
+Students do not need to become AI engineers to use AI effectively. But they do need a 
+basic understanding of how these systems work so they can ask better questions, use AI 
+as a learning tool, verify important information, recognize when a response may be 
+flawed, and avoid overtrusting the technology. That is one of the central goals of this 
+book.

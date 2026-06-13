@@ -1,0 +1,27 @@
+Recommended Resources and Sources 
+The following sources informed the research-backed guidance in this curriculum edition. 
+Tool features and access policies change over time; teachers and families should check 
+current official documentation before implementation. 
+U.S. Department of Education. Artificial Intelligence and the Future of Teaching and 
+Learning: Insights and Recommendations. 
+https://www.ed.gov/sites/ed/files/documents/ai-report/ai-report.pdf 
+U.S. Department of Education. Guidance on Artificial Intelligence Use in Schools. 
+https://www.ed.gov/about/news/press-release/us-department-of-education-issues-
+guidance-artificial-intelligence-use-schools-proposes-additional-supplemental-priority 
+UNESCO. Guidance for Generative AI in Education and Research. 
+https://www.unesco.org/en/articles/guidance-generative-ai-education-and-research 
+NIST. AI Risk Management Framework. https://www.nist.gov/itl/ai-risk-
+management-framework 
+NIST. Generative AI Profile for the AI Risk Management Framework. 
+https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-
+generative-artificial-intelligence 
+TeachAI. AI Literacy. https://www.teachai.org/ailiteracy 
+AI4K12. Five Big Ideas in AI and Grade Band Progressions. 
+https://ai4k12.org/gradeband-progression-charts/ 
+CAST. UDL Guidelines 3.0. https://udlguidelines.cast.org/ 
+Microsoft. Copilot in Education. https://www.microsoft.com/en-
+us/education/products/copilot-in-education 
+OpenAI. Is ChatGPT safe for all ages?. https://help.openai.com/en/articles/8313401-
+is-chatgpt-safe-for-all-ages 
+Tennessee Department of Education. Academic Standards. 
+https://www.tn.gov/education/districts/academic-standards.html

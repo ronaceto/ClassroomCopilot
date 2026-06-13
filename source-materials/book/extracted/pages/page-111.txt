@@ -1,0 +1,29 @@
+What AI-Generated Misinformation Looks Like 
+Misinformation is false or misleading information that spreads as if it were true. 
+Sometimes it is shared by people who do not realize it is wrong. Other times it is created 
+or reshaped on purpose to influence, confuse, embarrass, or manipulate others. 
+AI makes misinformation easier to produce because it can generate believable content 
+quickly and at scale. That may include: 
+ articles or posts that sound factual but contain false claims 
+ images that look like real photographs but were generated or altered 
+ audio clips that imitate a person’s voice 
+ videos that make it appear someone said or did something that never 
+happened 
+ false summaries that leave out key context or distort meaning 
+This matters because students are often surrounded by fast-moving media, and many 
+people judge trustworthiness by how polished something looks. AI challenges that habit. 
+In an AI-rich world, realism is no longer enough. 
+Deepfakes and Synthetic Media 
+One of the clearest examples of AI-powered misinformation is the deepfake. 
+A deepfake is manipulated or synthetic media—usually video, image, or audio—that 
+uses AI to imitate a real person’s appearance or voice. Some deepfakes are made for 
+entertainment or parody, but others are designed to deceive. They may try to damage a 
+reputation, create confusion, influence public opinion, or spread false narratives online. 
+Because they can be highly convincing, widely shareable, and easier to produce than 
+older forms of digital editing, deepfakes challenge one of the oldest habits of media 
+trust: the assumption that seeing is believing. 
+Students do not need to become forensic analysts to respond wisely. But they do need 
+to understand an important idea: if seeing is no longer always believing, then trust must 
+come from verification, not instinct. UNESCO argues that in a world shaped by 
+synthetic media, education must help students rebuild how they establish truth rather 
+than rely only on surface realism.

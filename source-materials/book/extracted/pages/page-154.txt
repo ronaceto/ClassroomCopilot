@@ -1,0 +1,33 @@
+Canva AI 
+Canva is especially useful because it combines design tools with AI-assisted features. 
+Students can use it to create polished presentations, posters, reports, or infographics. 
+This makes Canva especially practical for school because it supports both creativity and 
+communication. 
+Students can use Canva to: 
+ build class presentations 
+ design project visuals 
+ organize information visually 
+ create polished posters or handouts 
+AI Coding Tools 
+Some AI tools are specifically useful for programming and coding support. 
+These tools are best when students need help with: 
+ explaining code 
+ debugging 
+ exploring programming ideas 
+ learning syntax 
+ testing logic 
+Examples include: 
+ GitHub Copilot 
+ Codeium 
+ general AI chat tools used carefully for code explanation 
+These tools can be valuable, but students should use them to learn rather than simply 
+copy solutions. 
+GitHub Copilot 
+GitHub Copilot is designed to assist with coding by suggesting code and helping 
+programmers work more efficiently. For students, it can be useful as a support tool 
+when learning programming concepts or building small projects. 
+Used responsibly, Copilot can help students: 
+ understand common coding patterns 
+ get suggestions while coding 
+ debug small issues 
+ move through repetitive parts of programming more efficiently

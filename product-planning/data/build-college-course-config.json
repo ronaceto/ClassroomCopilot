@@ -1,0 +1,238 @@
+{
+  "workflowId": "build-college-course",
+  "title": "Build an AI Technology College Course",
+  "subtitle": "Generate syllabus-ready course materials, weekly modules, applied labs, assessments, and responsible AI policies for community-college learners.",
+  "primaryAction": "Build Course",
+  "mode": "college-course-builder",
+  "sections": [
+    {
+      "id": "course-basics",
+      "title": "Course Basics",
+      "fields": [
+        {
+          "id": "courseTitle",
+          "label": "Course Title",
+          "control": "text",
+          "default": "Introduction to Artificial Intelligence Technology",
+          "required": true
+        },
+        {
+          "id": "courseLevel",
+          "label": "Course Level",
+          "control": "select",
+          "options": ["Introductory", "Intermediate", "Advanced", "Bridge / noncredit", "Workforce certificate"],
+          "default": "Introductory",
+          "required": true
+        },
+        {
+          "id": "creditHours",
+          "label": "Credit Hours",
+          "control": "select",
+          "options": ["1", "2", "3", "4", "Custom"],
+          "default": "3",
+          "required": true
+        },
+        {
+          "id": "termLength",
+          "label": "Term Length",
+          "control": "select",
+          "options": ["7 weeks", "10 weeks", "15 weeks", "Custom"],
+          "default": "15 weeks",
+          "required": true
+        },
+        {
+          "id": "deliveryFormat",
+          "label": "Delivery Format",
+          "control": "select",
+          "options": ["Face-to-face", "Online", "Hybrid", "HyFlex"],
+          "default": "Hybrid",
+          "required": true
+        },
+        {
+          "id": "targetLearnerProfile",
+          "label": "Target Learner Profile",
+          "control": "select",
+          "options": ["No coding background", "Beginner Python", "Intermediate programming", "Mixed background", "Working adult learners", "Dual enrollment / early college"],
+          "default": "Mixed background",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "competency-focus",
+      "title": "Competency Focus",
+      "fields": [
+        {
+          "id": "competencyAreas",
+          "label": "Competency Areas",
+          "control": "checkboxes",
+          "required": true,
+          "default": ["AI literacy and foundations", "Python fundamentals for AI", "Data literacy and analysis", "Machine learning concepts", "Generative AI tools and prompting", "Responsible, ethical, and legal AI use", "Applied AI project design", "Career readiness and portfolio development"],
+          "options": ["AI literacy and foundations", "Python fundamentals for AI", "Data literacy and analysis", "Data cleaning and visualization", "Machine learning concepts", "Supervised and unsupervised learning", "Model evaluation", "Neural network foundations", "Generative AI tools and prompting", "AI APIs and frameworks", "Responsible, ethical, and legal AI use", "Privacy, data governance, and FERPA-aware handling", "Applied AI project design", "Communication of technical findings", "Career readiness and portfolio development"]
+        },
+        {
+          "id": "toolPlatforms",
+          "label": "Tools / Platforms",
+          "control": "checkboxes",
+          "default": ["Python", "Jupyter Notebook", "Google Colab", "pandas", "scikit-learn", "Generative AI tools", "GitHub"],
+          "options": ["Python", "Jupyter Notebook", "Google Colab", "pandas", "scikit-learn", "OpenAI / generative AI APIs", "Hugging Face", "GitHub", "LMS-friendly / no local install", "Custom"]
+        },
+        {
+          "id": "mathIntensity",
+          "label": "Math Intensity",
+          "control": "segmented",
+          "options": ["Minimal math", "Conceptual math", "Applied formulas", "Moderate quantitative work"],
+          "default": "Conceptual math"
+        },
+        {
+          "id": "codingIntensity",
+          "label": "Coding Intensity",
+          "control": "segmented",
+          "options": ["Low-code", "Beginner Python", "Python every week", "Project-heavy programming"],
+          "default": "Beginner Python"
+        },
+        {
+          "id": "dataRequirement",
+          "label": "Data Requirement",
+          "control": "select",
+          "options": ["No external datasets", "Small provided datasets", "Public datasets", "Student-collected data", "Employer/community datasets"],
+          "default": "Small provided datasets"
+        }
+      ]
+    },
+    {
+      "id": "applied-learning",
+      "title": "Applied Learning Design",
+      "fields": [
+        {
+          "id": "labCadence",
+          "label": "Lab Cadence",
+          "control": "select",
+          "options": ["Weekly lab", "Every other week", "Module-based labs", "Final project only"],
+          "default": "Weekly lab"
+        },
+        {
+          "id": "assignmentTypes",
+          "label": "Assignment Types",
+          "control": "checkboxes",
+          "default": ["Coding labs", "Data analysis notebooks", "AI ethics case studies", "Quizzes", "Portfolio artifacts", "Capstone project"],
+          "options": ["Coding labs", "Data analysis notebooks", "Reflection posts", "AI ethics case studies", "Tool comparison activities", "Quizzes", "Practical exams", "Portfolio artifacts", "Capstone project"]
+        },
+        {
+          "id": "finalProjectType",
+          "label": "Final Project",
+          "control": "select",
+          "options": ["AI portfolio", "Applied data project", "ML model evaluation project", "Generative AI tool prototype", "Responsible AI case study", "Employer/community scenario"],
+          "default": "AI portfolio"
+        },
+        {
+          "id": "collaborationModel",
+          "label": "Collaboration Model",
+          "control": "select",
+          "options": ["Individual", "Pairs", "Small teams", "Mixed individual and team work"],
+          "default": "Mixed individual and team work"
+        },
+        {
+          "id": "portfolioRequirement",
+          "label": "Portfolio Requirement",
+          "control": "select",
+          "options": ["None", "Optional", "Required final portfolio", "Portfolio checkpoints throughout term"],
+          "default": "Portfolio checkpoints throughout term"
+        }
+      ]
+    },
+    {
+      "id": "assessment-cqi",
+      "title": "Assessment and CQI",
+      "fields": [
+        {
+          "id": "assessmentModel",
+          "label": "Assessment Model",
+          "control": "select",
+          "options": ["Labs plus quizzes", "Labs plus portfolio", "Projects plus reflection", "Practical exams plus capstone", "Balanced model"],
+          "default": "Balanced model"
+        },
+        {
+          "id": "outcomeEvidence",
+          "label": "Outcome Evidence",
+          "control": "checkboxes",
+          "default": ["Lab submissions", "Final project", "Portfolio", "Reflection", "Practical demonstration"],
+          "options": ["Lab submissions", "Quizzes/tests", "Final project", "Portfolio", "Presentation", "Reflection", "Practical demonstration"]
+        },
+        {
+          "id": "rubricStyle",
+          "label": "Rubric Style",
+          "control": "select",
+          "options": ["Basic checklist", "Four-level rubric", "Competency-based rubric", "Workforce skill rubric"],
+          "default": "Competency-based rubric"
+        },
+        {
+          "id": "cqiDocumentation",
+          "label": "CQI Documentation",
+          "control": "select",
+          "options": ["None", "Course-level assessment notes", "Program-level outcome evidence", "Improvement action plan", "Advisory-board feedback note"],
+          "default": "Course-level assessment notes"
+        }
+      ]
+    },
+    {
+      "id": "course-package-outputs",
+      "title": "Course Package Outputs",
+      "fields": [
+        {
+          "id": "outputPreset",
+          "label": "Output Package",
+          "control": "cards",
+          "default": "full_course_package",
+          "required": true,
+          "options": [
+            {
+              "value": "syllabus_draft",
+              "label": "Syllabus Draft",
+              "includedOutputs": ["course_description", "course_outcomes", "weekly_schedule", "assessment_weights", "course_policies"]
+            },
+            {
+              "value": "full_course_package",
+              "label": "Full Course Package",
+              "includedOutputs": ["course_description", "course_outcomes", "weekly_schedule", "module_descriptions", "lab_sequence", "assignment_sequence", "assessment_plan", "rubric", "final_project", "responsible_ai_policy", "student_support_notes"]
+            },
+            {
+              "value": "lab_ready_course",
+              "label": "Lab-Ready Course",
+              "includedOutputs": ["weekly_lab_plan", "lab_objectives", "setup_notes", "lab_checkpoints", "lab_rubrics", "troubleshooting_notes"]
+            },
+            {
+              "value": "online_hyflex_course",
+              "label": "Online / HyFlex Course Package",
+              "includedOutputs": ["weekly_schedule", "asynchronous_activities", "synchronous_session_plan", "discussion_prompts", "online_assessment_notes", "accessibility_notes"]
+            },
+            {
+              "value": "program_coordinator_packet",
+              "label": "Program Coordinator Packet",
+              "includedOutputs": ["course_outcomes", "course_to_program_alignment", "assessment_evidence_plan", "cqi_notes", "advisory_board_questions", "workforce_skill_narrative"]
+            }
+          ]
+        },
+        {
+          "id": "includedOutputs",
+          "label": "Included Outputs",
+          "control": "checkboxes",
+          "defaultFrom": "outputPreset.includedOutputs",
+          "options": ["course_description", "course_outcomes", "weekly_schedule", "module_descriptions", "lab_sequence", "assignment_sequence", "assessment_plan", "rubric", "final_project", "responsible_ai_policy", "student_support_notes", "syllabus_draft", "course_to_program_alignment", "cqi_notes", "workforce_skill_narrative"]
+        },
+        {
+          "id": "outputDepth",
+          "label": "Output Depth",
+          "control": "segmented",
+          "options": ["Quick", "Standard", "Detailed"],
+          "default": "Detailed"
+        }
+      ]
+    }
+  ],
+  "reviewSummary": ["courseTitle", "courseLevel", "creditHours", "termLength", "deliveryFormat", "targetLearnerProfile", "competencyAreas", "toolPlatforms", "mathIntensity", "codingIntensity", "dataRequirement", "labCadence", "assignmentTypes", "finalProjectType", "assessmentModel", "outputPreset", "includedOutputs"],
+  "generatedCourseTabs": ["Overview", "Outcomes", "Weekly Modules", "Labs", "Assignments", "Assessments", "Syllabus", "CQI / Program Notes"],
+  "refinementActions": ["Make more hands-on", "Reduce coding load", "Increase Python practice", "Add HyFlex notes", "Add workforce alignment", "Add ethics case studies", "Add beginner support", "Add advanced extension", "Convert to 7-week course", "Export"],
+  "mobileSteps": ["Basics", "Competencies", "Applied Learning", "Assessment", "Outputs", "Review"],
+  "requiredOutputSections": ["Course title", "Draft catalog description", "Course level, credits, term length, and delivery format", "Target learner assumptions", "Course learning outcomes", "Competency map", "Weekly module schedule", "Weekly topics and objectives", "Weekly lab or applied activity", "Assignment sequence", "Assessment plan and weights", "Final project/capstone", "Responsible and ethical AI policy", "Tools/platforms", "Accessibility and student support notes", "FERPA/privacy/data-use cautions", "Instructor preparation notes", "CQI/assessment evidence notes", "Draft syllabus language"]
+}

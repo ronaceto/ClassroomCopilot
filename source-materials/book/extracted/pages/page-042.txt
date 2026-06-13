@@ -1,0 +1,29 @@
+The response may provide a basic structure: 
+ introduction 
+ main claim 
+ supporting points 
+ counterargument 
+ conclusion 
+That kind of outline can be helpful because it gives students a framework to build on. 
+But the student still needs to evaluate and adapt it. The outline should be a guide, not a 
+script. 
+Strong writing still depends on student judgment. Students must decide which ideas 
+matter most, which examples fit best, and how they want to present their own thinking. 
+Strengthening Writing Without Replacing It 
+AI can also support revision. 
+This may be one of its most useful roles in writing. Students often have a draft, but they 
+are not sure how to make it stronger. They may know the writing feels weak in some 
+way, but they cannot yet identify whether the problem is clarity, organization, repetition, 
+or weak evidence. 
+In those situations, AI can act like a feedback partner. 
+For example, a student might ask: 
+Review this paragraph and suggest ways to improve clarity. 
+Or: 
+Tell me how I can make this argument stronger without changing my main idea. 
+These are strong uses of AI because they keep the student’s writing at the center. The 
+AI is not replacing the writer. It is helping the writer revise more effectively. 
+This approach is very different from asking: 
+Write my essay about renewable energy. 
+The second prompt turns AI into a substitute. The first prompts turn AI into a tool for 
+improvement. 
+That difference matters.

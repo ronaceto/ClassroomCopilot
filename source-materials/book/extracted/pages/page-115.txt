@@ -1,0 +1,20 @@
+Figure 18.1 — Verifying AI-Generated Media 
+This figure illustrates a verification path that begins with a suspicious post, image, or clip 
+and moves through a pause, source check, reverse-image search or cross-check, evidence 
+review, and a final decision about whether the content deserves trust. 
+Students do not just need to learn how to use AI. They also need to learn how to live in 
+a world where AI changes what information looks like. That means media literacy is no 
+longer optional. It is part of responsible digital citizenship, academic judgment, and 
+everyday life. 
+The students who navigate this world best will not be the ones who trust everything or 
+reject everything. They will be the ones who know how to pause, verify, and decide what 
+is worth believing. 
+Chapter Summary 
+In this chapter, you learned that AI can be used to generate misinformation, 
+manipulated media, false summaries, and believable content that does not deserve trust. 
+You also learned that strong media literacy depends on verification, healthy skepticism, 
+and evidence-based judgment. In an AI-rich world, students need more than fast 
+reactions. They need strong habits for deciding what is real before they trust or share it. 
+In the next chapter, we will look at how AI is changing careers, industries, and the future 
+of work—and why students who understand AI literacy will be better prepared for what 
+comes next.

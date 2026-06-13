@@ -1,0 +1,73 @@
+{
+  "mode": "college-course-builder",
+  "courseTitle": "Introduction to Artificial Intelligence Technology",
+  "courseLevel": "Introductory",
+  "creditHours": "3",
+  "termLength": "15 weeks",
+  "deliveryFormat": "Hybrid",
+  "targetLearnerProfile": "Mixed background",
+  "competencyAreas": [
+    "AI literacy and foundations",
+    "Python fundamentals for AI",
+    "Data literacy and analysis",
+    "Data cleaning and visualization",
+    "Machine learning concepts",
+    "Model evaluation",
+    "Generative AI tools and prompting",
+    "Responsible, ethical, and legal AI use",
+    "Applied AI project design",
+    "Communication of technical findings",
+    "Career readiness and portfolio development"
+  ],
+  "toolPlatforms": [
+    "Python",
+    "Jupyter Notebook",
+    "Google Colab",
+    "pandas",
+    "scikit-learn",
+    "Generative AI tools",
+    "GitHub"
+  ],
+  "mathIntensity": "Conceptual math",
+  "codingIntensity": "Beginner Python",
+  "dataRequirement": "Small provided datasets",
+  "labCadence": "Weekly lab",
+  "assignmentTypes": [
+    "Coding labs",
+    "Data analysis notebooks",
+    "AI ethics case studies",
+    "Quizzes",
+    "Portfolio artifacts",
+    "Capstone project"
+  ],
+  "finalProjectType": "AI portfolio",
+  "collaborationModel": "Mixed individual and team work",
+  "portfolioRequirement": "Portfolio checkpoints throughout term",
+  "assessmentModel": "Balanced model",
+  "outcomeEvidence": [
+    "Lab submissions",
+    "Quizzes/tests",
+    "Final project",
+    "Portfolio",
+    "Reflection",
+    "Practical demonstration"
+  ],
+  "rubricStyle": "Competency-based rubric",
+  "cqiDocumentation": "Course-level assessment notes",
+  "outputPreset": "full_course_package",
+  "includedOutputs": [
+    "course_description",
+    "course_outcomes",
+    "weekly_schedule",
+    "module_descriptions",
+    "lab_sequence",
+    "assignment_sequence",
+    "assessment_plan",
+    "rubric",
+    "final_project",
+    "responsible_ai_policy",
+    "student_support_notes",
+    "syllabus_draft"
+  ],
+  "outputDepth": "Detailed"
+}

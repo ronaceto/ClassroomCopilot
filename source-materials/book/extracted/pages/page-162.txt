@@ -1,0 +1,27 @@
+Robotics 
+A field of technology focused on machines that can perform physical tasks, often with 
+some level of automation or AI support. 
+Simulation 
+A representation of a real-world process or scenario. AI can be used in simulations for 
+training, learning, and experimentation. 
+Source 
+The place where information comes from, such as a book, website, teacher handout, 
+article, or research database. 
+Study Guide 
+A structured review document that highlights the most important concepts, vocabulary, 
+and ideas students should remember. 
+Summarization 
+The process of shortening information while keeping the main points. AI tools are often 
+used to summarize notes, readings, or complex topics. 
+Technology Literacy 
+The ability to understand and use technology effectively. This includes not just operating 
+tools, but knowing how and when to use them wisely. 
+Training 
+The process of teaching an AI model using large amounts of data so it can recognize 
+patterns and perform useful tasks. 
+Training Data 
+The information used during the training of an AI system. The quality and variety of 
+training data can affect how the system performs. 
+Tutor 
+A person—or in some cases, a tool—that helps guide learning, explain ideas, and 
+support skill development. AI can act like a tutor when used well.

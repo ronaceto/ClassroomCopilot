@@ -1,0 +1,34 @@
+False Summaries and Confident Errors 
+Not all AI misinformation looks dramatic. Some of it looks ordinary and helpful. 
+A student might read an AI-generated summary of an article, video, or event and assume 
+it captures the truth. But summaries can be misleading when they leave out context, 
+flatten disagreement, exaggerate one point, or quietly include incorrect details. This is 
+especially risky when students are already busy and tempted to trust the quick version. 
+For example, an AI summary of a current event might sound clear and balanced while 
+leaving out who created the original claim, whether reliable reporting confirmed it, or 
+whether important evidence is still uncertain. This is why a summary should be treated 
+as a starting point, not a final authority. 
+Manipulation on Social Platforms 
+Social platforms reward content that grabs attention quickly. That means posts that are 
+emotional, shocking, or visually dramatic often spread faster than careful explanations. 
+AI can intensify this problem by making it easier to generate attention-grabbing visuals, 
+fake quotes, misleading captions, and viral-looking media. 
+Students should be especially careful when a post seems designed to make them react 
+before they think. A useful habit is to ask: 
+ Who created this? 
+ What do they want me to believe or do? 
+ What evidence supports the claim? 
+ Has a trusted source confirmed it? 
+ Why might this be spreading right now? 
+These questions do not make students cynical. They make students careful. 
+How to Verify What Is Real 
+The strongest response to AI misinformation is not guessing. It is verification. That 
+means slowing down long enough to compare claims, check sources, and ask what 
+evidence actually supports what is being shown or said. 
+Media literacy experts increasingly recommend a few practical habits. Students can 
+compare a claim across multiple reliable sources, use reverse-image search to see where a 
+picture has appeared before, and check whether reputable reporting has confirmed the 
+same story. Educational guidance on AI media literacy emphasizes that systematic 
+verification works better than trusting intuition alone. SchoolAI recommends teaching 
+students to slow down, observe details, and use practical verification tools rather than 
+relying on instinct, while MIT frames media literacy as the set of skills students need to

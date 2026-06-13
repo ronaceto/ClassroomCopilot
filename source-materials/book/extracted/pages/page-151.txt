@@ -1,0 +1,23 @@
+Elicit 
+Elicit is more research-oriented and may be especially useful for students or advanced 
+learners who want help finding academic-style information or summarizing research 
+sources. It is less of a general chat assistant and more of a research helper. 
+Students may use Elicit to: 
+ explore research questions 
+ summarize article findings 
+ compare sources 
+ identify themes in research material 
+It may be more advanced than what some high school students need every day, but it is 
+worth knowing because it introduces a more research-centered kind of AI tool. 
+NotebookLM 
+NotebookLM is especially useful because it allows students to work with their own 
+materials. Instead of only asking general questions, students can upload notes, readings, 
+or documents and then ask questions based on those materials. 
+That makes it particularly useful for: 
+ studying class notes 
+ reviewing readings 
+ preparing for tests 
+ organizing project materials 
+ generating summaries from specific content 
+A student who wants to study from class materials rather than from the broader internet 
+may find NotebookLM especially helpful.

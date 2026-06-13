@@ -1,0 +1,6 @@
+Chapter Summary 
+In this chapter, you learned that AI can support science by clarifying concepts, 
+comparing vocabulary, generating questions, and helping students review more actively. 
+You also learned that science depends on evidence, accuracy, and safe procedures, so AI 
+should support scientific learning rather than replace observation, data, or teacher 
+guidance.

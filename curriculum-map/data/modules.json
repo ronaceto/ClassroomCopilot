@@ -1,0 +1,299 @@
+{
+  "source": {
+    "title": "AI for Students: A Practical Guide for School, Learning, and Life",
+    "author": "Ron Aceto",
+    "pdf": "source-materials/book/AI_For_Students.pdf",
+    "sha256": "09D3EE6C585A9BAF8D2580CAD37DF25CA0DA29616DD37909889074DA23CB6397",
+    "pageCount": 165
+  },
+  "defaultAudience": "Grades 8-12",
+  "units": [
+    {
+      "id": "unit-1",
+      "title": "Understanding AI",
+      "goal": "Students understand what AI is, how it works at a basic level, why it can be useful, and why it must be used with judgment.",
+      "modules": [
+        {
+          "id": "module-01",
+          "chapter": 1,
+          "title": "Understanding Artificial Intelligence",
+          "startPage": 7,
+          "essentialQuestion": "What is artificial intelligence, and why does it matter for students today?",
+          "objectives": ["Define artificial intelligence in student-friendly language.", "Identify common examples of AI in everyday life.", "Explain how AI can support learning when used thoughtfully.", "Distinguish learning support from thinking replacement."],
+          "vocabulary": ["artificial intelligence", "AI literacy", "tool", "recommendation system", "voice assistant", "learning support"],
+          "activity": "Students create an AI in my day map, then classify examples as convenience, recommendation, communication, or learning support.",
+          "assessment": "Exit ticket asking students to define AI and name one responsible learning use.",
+          "guardrails": ["Do not treat AI as a final authority.", "Do not enter private personal information.", "Use AI examples to deepen understanding, not to skip class discussion."]
+        },
+        {
+          "id": "module-02",
+          "chapter": 2,
+          "title": "How AI Actually Works",
+          "startPage": 12,
+          "essentialQuestion": "How do AI systems generate responses, and why do they sometimes make mistakes?",
+          "objectives": ["Describe AI training, pattern recognition, and prediction in simple terms.", "Explain why AI can sound confident while being wrong.", "Practice verifying AI explanations with trusted sources.", "Compare literal explanations and analogy-based explanations."],
+          "vocabulary": ["training data", "pattern recognition", "prediction", "hallucination", "verification", "analogy"],
+          "activity": "Students compare two AI explanations of the same concept and mark what is clear, unclear, and needs checking.",
+          "assessment": "Short response explaining why confidence is not the same as accuracy.",
+          "guardrails": ["Verify factual claims with a teacher, textbook, or approved source.", "Treat analogies as learning aids, not scientific proof.", "Flag uncertain claims instead of copying them."]
+        },
+        {
+          "id": "module-03",
+          "chapter": 3,
+          "title": "AI as a Learning Partner",
+          "startPage": 18,
+          "essentialQuestion": "How can students use AI to support learning instead of simply getting answers?",
+          "objectives": ["Distinguish answer-seeking prompts from learning-focused prompts.", "Use follow-up questions to deepen understanding.", "Turn an explanation into practice, reflection, or self-checking.", "Explain why AI works best as a learning partner."],
+          "vocabulary": ["learning partner", "answer machine", "follow-up question", "practice loop", "self-check"],
+          "activity": "Students rewrite an answer-only prompt into a learning-focused prompt and compare the responses.",
+          "assessment": "Students label prompts as shortcut, support, or strong learning prompt and justify their choices.",
+          "guardrails": ["Do not ask AI to finish the thinking for you.", "Use follow-ups to practice, question, and reflect.", "Keep teacher expectations visible before using AI."]
+        }
+      ]
+    },
+    {
+      "id": "unit-2",
+      "title": "Learning to Prompt and Think with AI",
+      "goal": "Students learn prompting as a thinking skill and use AI to strengthen research, inquiry, and critical thinking.",
+      "modules": [
+        {
+          "id": "module-04",
+          "chapter": 4,
+          "title": "The Power of Good Prompts",
+          "startPage": 24,
+          "essentialQuestion": "How does the way you ask a question affect the quality of an AI response?",
+          "objectives": ["Define prompt and explain why prompt quality matters.", "Use context, task, audience, and format to improve prompts.", "Revise weak prompts into stronger prompts.", "Compare how prompt changes affect AI output."],
+          "vocabulary": ["prompt", "context", "task", "audience", "format", "prompt pyramid"],
+          "activity": "Prompt workshop where pairs upgrade weak prompts and explain their design choices.",
+          "assessment": "Students submit a weak prompt, revised prompt, and reflection on why the revised version is stronger.",
+          "guardrails": ["A stronger prompt should clarify learning, not hide cheating.", "Avoid prompts that ask AI to complete graded work.", "Include format and audience to make responses easier to evaluate."]
+        },
+        {
+          "id": "module-05",
+          "chapter": 5,
+          "title": "AI for Research and Critical Thinking",
+          "startPage": 27,
+          "essentialQuestion": "How can students use AI to support research while still thinking critically and verifying information?",
+          "objectives": ["Use AI to generate research questions and organize early thinking.", "Separate background exploration from verified evidence.", "Identify claims that need source support.", "Evaluate multiple perspectives and missing information."],
+          "vocabulary": ["research question", "source", "evidence", "perspective", "claim", "verification"],
+          "activity": "Students move from broad topic to focused research question and create a verification plan.",
+          "assessment": "Annotated research starter with AI-generated ideas, student-selected question, and source-check plan.",
+          "guardrails": ["AI can begin research but cannot be the only source.", "Do not cite AI as evidence unless teacher explicitly allows it.", "Verify dates, claims, quotations, and statistics."]
+        }
+      ]
+    },
+    {
+      "id": "unit-3",
+      "title": "AI for School Success",
+      "goal": "Students apply AI responsibly to studying, writing, problem solving, coding, creativity, and organization.",
+      "modules": [
+        {
+          "id": "module-06",
+          "chapter": 6,
+          "title": "AI for Studying Smarter",
+          "startPage": 34,
+          "essentialQuestion": "How can AI help students study more effectively and remember what they learn?",
+          "objectives": ["Use AI to support active recall and practice.", "Generate practice quizzes and feedback loops.", "Explain difficult concepts in multiple ways.", "Build a study routine that strengthens independence."],
+          "vocabulary": ["active recall", "feedback loop", "practice quiz", "review", "misconception"],
+          "activity": "Students transform passive review notes into an active study session.",
+          "assessment": "Study plan plus reflection on how AI helped reveal what the student did or did not understand.",
+          "guardrails": ["Answer practice questions before asking for explanations.", "Use feedback to improve, not inflate confidence.", "Avoid entering class login details, grades, or private information."]
+        },
+        {
+          "id": "module-07",
+          "chapter": 7,
+          "title": "AI for Writing, Revision, and Communication",
+          "startPage": 40,
+          "essentialQuestion": "How can students use AI to support writing without losing their own voice and ideas?",
+          "objectives": ["Use AI for brainstorming, outlining, clarity, and revision.", "Preserve student voice and ownership.", "Distinguish writing coaching from ghostwriting.", "Apply revision suggestions selectively."],
+          "vocabulary": ["brainstorm", "outline", "revision", "voice", "audience", "clarity", "academic integrity"],
+          "activity": "Students bring a paragraph or idea and request revision feedback without asking AI to rewrite it.",
+          "assessment": "Before-and-after revision note explaining which suggestions were accepted and why.",
+          "guardrails": ["Do not ask AI to write the final essay or paragraph.", "Keep student draft and decision-making at the center.", "Disclose AI use when teacher policy requires it."]
+        },
+        {
+          "id": "module-08",
+          "chapter": 8,
+          "title": "AI for Problem Solving",
+          "startPage": 47,
+          "essentialQuestion": "How can students use AI to solve problems more effectively without depending on it for every answer?",
+          "objectives": ["Ask for step-by-step explanations that teach reasoning.", "Generate similar practice problems.", "Identify errors and misconceptions.", "Maintain ownership of the problem-solving process."],
+          "vocabulary": ["reasoning", "process", "similar problem", "error analysis", "independence"],
+          "activity": "Problem-solving cycle: explain, try a similar problem, check, revise.",
+          "assessment": "Worked example plus student reflection on what changed in their reasoning.",
+          "guardrails": ["Do not submit AI-generated solutions as your own work.", "Ask AI to explain why steps work, not just what answer is correct.", "Practice a similar problem independently before moving on."]
+        },
+        {
+          "id": "module-09",
+          "chapter": 9,
+          "title": "AI for Coding Help",
+          "startPage": 54,
+          "essentialQuestion": "How can students use AI to learn coding without becoming dependent on it?",
+          "objectives": ["Ask AI to explain code line by line.", "Use AI to debug while preserving student effort.", "Request small practice examples.", "Distinguish learning from copying code."],
+          "vocabulary": ["code explanation", "debugging", "syntax error", "practice example", "dependency"],
+          "activity": "Students annotate code with AI-supported explanations and then fix one bug themselves.",
+          "assessment": "Debugging log showing original error, AI explanation, student fix, and what the student learned.",
+          "guardrails": ["Do not paste full assignment solutions unless teacher allows it.", "Ask for hints and explanations before asking for replacement code.", "Test and understand any code before using it."]
+        },
+        {
+          "id": "module-10",
+          "chapter": 10,
+          "title": "AI for Creativity and Brainstorming",
+          "startPage": 62,
+          "essentialQuestion": "How can students use AI to generate ideas without letting the tool take over the creative process?",
+          "objectives": ["Use AI to explore multiple creative directions.", "Separate inspiration from imitation.", "Refine project ideas using student judgment.", "Add original choices and constraints to creative work."],
+          "vocabulary": ["brainstorming", "inspiration", "originality", "constraint", "creative direction", "project plan"],
+          "activity": "Idea expansion ladder: generate options, choose one, add a personal twist, and explain originality.",
+          "assessment": "Creative proposal with student-selected direction and explanation of personal contribution.",
+          "guardrails": ["Use AI for possibilities, not final creative identity.", "Avoid copying AI-generated creative work without transformation.", "Credit or disclose AI support when required."]
+        },
+        {
+          "id": "module-11",
+          "chapter": 11,
+          "title": "AI for Productivity and Organization",
+          "startPage": 69,
+          "essentialQuestion": "How can students use AI to stay organized, manage time, and complete schoolwork more effectively?",
+          "objectives": ["Break large assignments into smaller steps.", "Build realistic schedules and checklists.", "Evaluate whether an AI-generated plan fits real constraints.", "Use planning support to build independence."],
+          "vocabulary": ["productivity", "task breakdown", "schedule", "milestone", "realistic plan", "habit"],
+          "activity": "Students convert a large assignment into milestones and a one-week work plan.",
+          "assessment": "Revised work plan with student edits and reflection on what was realistic or unrealistic.",
+          "guardrails": ["Do not share private schedule details unnecessarily.", "Treat AI plans as drafts that need human adjustment.", "Use organization support to act, not procrastinate with planning."]
+        }
+      ]
+    },
+    {
+      "id": "unit-4",
+      "title": "AI Across the Subjects",
+      "goal": "Students apply responsible AI habits inside subject-specific learning while respecting evidence, interpretation, process, and teacher expectations.",
+      "modules": [
+        {
+          "id": "module-12",
+          "chapter": 12,
+          "title": "AI in English Language Arts",
+          "startPage": 76,
+          "essentialQuestion": "How can students use AI to become stronger readers, writers, speakers, and thinkers without losing their own voice?",
+          "objectives": ["Use AI to support reading, vocabulary, writing, and discussion preparation.", "Preserve student interpretation and voice.", "Compare AI ideas to the text itself.", "Use AI as a reading and writing coach."],
+          "vocabulary": ["interpretation", "literary analysis", "symbol", "discussion", "voice", "textual evidence"],
+          "activity": "Students brainstorm interpretations of a symbol, then verify each interpretation against textual evidence.",
+          "assessment": "Paragraph planning sheet with evidence, student interpretation, and AI idea evaluation.",
+          "guardrails": ["Read the text yourself before asking AI about it.", "Do not let AI invent evidence or quotations.", "Keep student interpretation and textual evidence central."]
+        },
+        {
+          "id": "module-13",
+          "chapter": 13,
+          "title": "AI in Math",
+          "startPage": 81,
+          "essentialQuestion": "How can students use AI to understand mathematical reasoning and learn from mistakes without depending on final answers?",
+          "objectives": ["Use AI for explanation, practice, and error analysis.", "Ask better mathematical follow-up questions.", "Apply reasoning to a similar problem independently.", "Explain the difference between steps and understanding."],
+          "vocabulary": ["step-by-step reasoning", "error analysis", "similar problem", "mathematical process", "independence"],
+          "activity": "Compare answer-only, step-by-step, and practice-feedback prompts.",
+          "assessment": "Math reflection on whether the student understands the reasoning well enough to solve a new problem.",
+          "guardrails": ["Do not use AI to bypass showing work.", "Ask for feedback after attempting the problem.", "Check AI math responses for errors."]
+        },
+        {
+          "id": "module-14",
+          "chapter": 14,
+          "title": "AI in History and Social Studies",
+          "startPage": 86,
+          "essentialQuestion": "How can students use AI to explore history while still thinking critically, checking sources, and understanding multiple perspectives?",
+          "objectives": ["Use AI to explore context, chronology, cause and effect, and perspective.", "Identify missing viewpoints and needed evidence.", "Build timelines or background knowledge responsibly.", "Verify historical claims with reliable sources."],
+          "vocabulary": ["context", "chronology", "cause and effect", "perspective", "primary source", "secondary source", "evidence"],
+          "activity": "Students compare an AI overview with a class source and identify gaps or missing perspectives.",
+          "assessment": "Source-check chart with claim, evidence needed, and perspective missing.",
+          "guardrails": ["Do not trust historical claims without evidence.", "Ask whose perspective is missing.", "Verify dates, names, causes, and quotations."]
+        },
+        {
+          "id": "module-15",
+          "chapter": 15,
+          "title": "AI in Science",
+          "startPage": 91,
+          "essentialQuestion": "How can students use AI to understand science while still relying on evidence and scientific reasoning?",
+          "objectives": ["Use AI to clarify concepts, vocabulary, and review questions.", "Compare simplified explanations to textbook or class notes.", "Respect observation, data, and teacher-approved procedures.", "Identify what still needs evidence."],
+          "vocabulary": ["evidence", "observation", "hypothesis", "data", "procedure", "analogy", "scientific reasoning"],
+          "activity": "Students compare an AI analogy to textbook language and identify where the analogy helps or breaks down.",
+          "assessment": "Concept check with verified definition, analogy critique, and three review answers.",
+          "guardrails": ["AI does not replace lab safety or teacher procedures.", "Verify simplified explanations against accurate science.", "Do not use AI to fabricate observations or data."]
+        },
+        {
+          "id": "module-16",
+          "chapter": 16,
+          "title": "AI in PE, Health, and Personal Wellness",
+          "startPage": 96,
+          "essentialQuestion": "How can students use AI to support fitness, health learning, goal setting, and wellness safely?",
+          "objectives": ["Use AI for wellness reflection, planning, and concept review.", "Recognize topics that require trusted adults or professionals.", "Protect privacy when discussing health or wellness.", "Build realistic routines and reflection questions."],
+          "vocabulary": ["wellness", "routine", "goal setting", "reflection", "privacy", "trusted adult", "professional guidance"],
+          "activity": "Students create a general wellness routine and mark which parts require adult support or personal privacy.",
+          "assessment": "Wellness plan critique focused on realism, privacy, and support needs.",
+          "guardrails": ["Do not share sensitive health details with AI.", "AI does not replace doctors, counselors, coaches, teachers, or parents.", "Treat wellness suggestions as general education, not personal medical advice."]
+        }
+      ]
+    },
+    {
+      "id": "unit-5",
+      "title": "Responsible and Future-Ready AI Use",
+      "goal": "Students build the judgment, ethics, media literacy, career awareness, prompt fluency, and independent learning habits needed for future-ready AI use.",
+      "modules": [
+        {
+          "id": "module-17",
+          "chapter": 17,
+          "title": "Using AI Responsibly",
+          "startPage": 102,
+          "essentialQuestion": "What does it mean to use AI responsibly, ethically, and honestly in school?",
+          "objectives": ["Explain why responsible AI use matters in education.", "Apply academic integrity expectations to AI use.", "Verify and evaluate AI output.", "Recognize privacy, fairness, and purpose as responsible-use concerns."],
+          "vocabulary": ["responsible use", "academic integrity", "purpose", "honesty", "fairness", "privacy", "disclosure"],
+          "activity": "Prompt purpose sort: students compare prompts that support learning with prompts that avoid learning.",
+          "assessment": "Responsible-use scenario response explaining what is allowed, what is risky, and what the student should do.",
+          "guardrails": ["Follow teacher and district rules first.", "Disclose AI use when required.", "Use AI for learning support, not misrepresentation."]
+        },
+        {
+          "id": "module-18",
+          "chapter": 18,
+          "title": "AI, Media Literacy, and What to Trust",
+          "startPage": 110,
+          "essentialQuestion": "How can students tell what to trust when AI can generate realistic text, images, audio, and video?",
+          "objectives": ["Explain how AI can create misinformation and manipulated media.", "Ask verification questions before trusting or sharing content.", "Distinguish popularity, emotion, and visual polish from evidence.", "Build habits for checking claims."],
+          "vocabulary": ["media literacy", "misinformation", "manipulated media", "evidence", "source", "claim", "verification"],
+          "activity": "Students evaluate a questionable claim or media example using a verification checklist.",
+          "assessment": "Trust checklist applied to a sample post, claim, image, or short video.",
+          "guardrails": ["Do not share unverified claims.", "Watch for emotional manipulation and visual believability.", "Use multiple credible sources before deciding what to trust."]
+        },
+        {
+          "id": "module-19",
+          "chapter": 19,
+          "title": "AI and the Future of Work",
+          "startPage": 116,
+          "essentialQuestion": "How is AI changing jobs, careers, and the skills students will need in the future?",
+          "objectives": ["Describe ways AI is changing work.", "Identify why AI literacy is a future-ready skill.", "Connect human skills to future careers.", "Reflect on personal skill-building next steps."],
+          "vocabulary": ["AI literacy", "career readiness", "adaptability", "critical thinking", "creativity", "communication", "ethics"],
+          "activity": "Career skill map connecting a chosen career to AI-related and human skills.",
+          "assessment": "Career reflection with one future skill and three actions a student can take this year.",
+          "guardrails": ["Treat career suggestions as exploration, not certainty.", "Verify career information with reliable guidance resources.", "Focus on skill-building rather than fear or hype."]
+        },
+        {
+          "id": "module-20",
+          "chapter": 20,
+          "title": "The 25 Powerful Prompts Every Student Should Know",
+          "startPage": 124,
+          "essentialQuestion": "What kinds of prompts help students get useful, responsible, and educational results from AI?",
+          "objectives": ["Recognize prompt patterns for learning, studying, writing, research, creativity, and problem solving.", "Adapt reusable prompts to specific academic needs.", "Evaluate whether a prompt supports learning.", "Build a personal prompt toolkit."],
+          "vocabulary": ["prompt pattern", "prompt toolkit", "adaptation", "category", "learning purpose"],
+          "activity": "Students choose prompts from three categories, test or simulate them, and revise one to fit a current class.",
+          "assessment": "Personal prompt toolkit with categories, intended use, and guardrail notes.",
+          "guardrails": ["Customize prompts for learning purpose and teacher expectations.", "Avoid turning prompt templates into answer-copying shortcuts.", "Pair powerful prompts with verification and reflection."]
+        },
+        {
+          "id": "module-21",
+          "chapter": 21,
+          "title": "Becoming an AI-Empowered Learner",
+          "startPage": 134,
+          "essentialQuestion": "How can students use AI in ways that strengthen learning, curiosity, and future readiness?",
+          "objectives": ["Reflect on AI as a tool for growth rather than dependence.", "Identify habits of an AI-empowered learner.", "Connect curiosity, judgment, responsibility, and independence.", "Create a personal AI learning plan."],
+          "vocabulary": ["AI-empowered learner", "curiosity", "judgment", "responsibility", "independence", "future readiness"],
+          "activity": "Students build an AI learner profile that names strengths, risks, habits, and one next step.",
+          "assessment": "Final reflection or portfolio entry explaining how the student will use AI wisely going forward.",
+          "guardrails": ["Use AI to strengthen capability, not dependence.", "Keep human judgment and values in control.", "Revisit responsible-use habits as tools evolve."]
+        }
+      ]
+    }
+  ]
+}

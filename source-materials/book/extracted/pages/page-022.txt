@@ -1,0 +1,15 @@
+Why This Chapter Matters 
+Students do not need AI to become better at finishing tasks quickly. In many cases, they 
+can already find information online or copy answers from somewhere else. 
+What makes AI different is that it can support a more interactive kind of learning. 
+When students use AI well, they are not just getting information. They are engaging in a 
+conversation that can clarify confusion, generate practice, and support reflection. This is 
+why AI should be treated as a learning partner rather than an answer machine. 
+Chapter Summary 
+In this chapter, you learned that AI is most useful when it helps students build 
+understanding rather than simply collect answers. You explored how follow-up 
+questions deepen learning, how AI can support different learning styles, and why 
+explanation plus practice is more powerful than explanation alone. 
+In the next chapter, we will return to one of the most important practical skills in the 
+book: writing stronger prompts so students can get better, more useful responses from 
+AI tools.

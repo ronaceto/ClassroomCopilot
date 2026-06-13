@@ -1,0 +1,27 @@
+Innovation 
+The process of creating or improving ideas, systems, or tools in ways that add value or 
+solve problems. 
+Iteration 
+The process of improving something through repeated attempts. In AI use, students 
+often improve results by refining prompts over time. 
+Large Language Model (LLM) 
+A type of AI trained on large amounts of text so it can recognize patterns in language 
+and generate human-like responses. Many AI chat assistants are powered by large 
+language models. 
+Machine Learning 
+A field of AI in which computers learn patterns from data rather than being explicitly 
+programmed for every single task. 
+Model 
+A trained AI system that has learned patterns from data and can use those patterns to 
+generate outputs such as predictions, text, or classifications. 
+Natural Language Processing (NLP) 
+A field of AI focused on helping computers understand, interpret, and generate human 
+language. 
+Neural Network 
+A computing system inspired loosely by the structure of the human brain. Neural 
+networks help AI systems detect patterns and make predictions. 
+Output 
+The response or result produced by a system after it processes input. 
+Pattern Recognition 
+The ability to identify repeated relationships or structures within data. This is a core part 
+of how many AI systems work.

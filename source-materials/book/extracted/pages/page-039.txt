@@ -1,0 +1,29 @@
+Classroom Idea 
+Teachers can use AI as a study support tool by asking students to compare study 
+methods. 
+For example, one group could review a topic by rereading notes, while another group 
+uses AI to generate questions and explain mistakes. Students can then reflect on which 
+approach helped them remember more and why. 
+Try This 
+Prompt Example 
+Create a 5-question practice quiz about photosynthesis for a high school biology 
+student. 
+Then ask AI to explain the answers and why each one is correct. Notice how this 
+method forces you to think, remember, and correct mistakes. That is what strong 
+studying looks like. 
+Many students spend a lot of time studying without always using the most effective 
+methods. AI can help change that by making studying more active, flexible, and 
+responsive. 
+When students use AI to quiz themselves, explain difficult concepts, and learn from 
+mistakes, they become more engaged in the learning process. Instead of studying 
+passively, they begin practicing in ways that build stronger memory and deeper 
+understanding. 
+That is why AI works best as a study coach, not a shortcut. 
+Chapter Summary 
+In this chapter, you learned how AI can help students study more effectively by 
+supporting active recall, clarifying difficult concepts, generating practice questions, and 
+creating useful feedback loops. 
+The goal is not to let AI study for you. The goal is to use AI to make your studying 
+more active, focused, and effective. 
+In the next chapter, we will look at how AI can support students when solving complex 
+problems in subjects like math and science.

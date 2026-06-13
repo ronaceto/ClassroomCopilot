@@ -1,0 +1,28 @@
+Chapter 13 — AI in Math 
+ 
+Key Question 
+How can students use AI to understand mathematical reasoning, practice more 
+effectively, and learn from mistakes without depending on AI for final answers? 
+Learning Objectives 
+ Understand how AI can support explanation, practice, and error analysis in math. 
+ Use AI to learn processes step by step instead of collecting answers. 
+ Recognize common mistakes and ask better mathematical follow-up questions. 
+ Distinguish between responsible support and shortcut learning in math class. 
+ Develop stronger habits of checking work, explaining reasoning, and practicing 
+independently. 
+Introduction 
+Math is not just about getting correct answers. It is about noticing patterns, 
+understanding relationships, choosing strategies, and explaining why a solution works. 
+Those habits make students stronger mathematicians over time. 
+AI can help students in math, but it can also be misused very easily. A student can paste 
+in a problem and get a finished answer in seconds. That may feel useful in the moment, 
+but if the student has not understood the process, very little learning has taken place. 
+The best use of AI in math is not answer-getting. It is reasoning support. AI can 
+explain a process, break a problem into steps, identify common mistakes, generate 
+similar practice problems, and help students reflect on why an approach works. When 
+used that way, AI becomes a math coach rather than a shortcut. 
+For example, a student may understand the basic idea of slope but freeze when a word 
+problem asks them to apply it in a new way. Another student may know how to solve 
+one type of equation but become confused when the numbers are arranged differently. 
+AI can be especially helpful in those moments because it can slow the process down and 
+make the underlying structure easier to see.

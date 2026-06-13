@@ -1,0 +1,32 @@
+The Builder 
+This role helps generate the first workable version of the project. Depending on the 
+task, that might mean writing code, drafting text, creating a checklist, building slides, or 
+producing a rough prototype. 
+The Tester and Reviewer 
+This role checks whether the project actually works, whether the instructions are clear, 
+whether anything is missing, and what should be improved next. Testing is one of the 
+most important stages because it turns a rough draft into something more usable and 
+thoughtful. 
+A Step-by-Step AI Build Workflow 
+Students can use the following sequence when trying to build a small project with AI 
+support. This process works for digital products, presentations, websites, prototypes, or 
+other structured creations. 
+Step 1 — Define the Goal Clearly 
+Start by naming the problem you want to solve or the thing you want to create. The 
+clearer the goal, the more useful the AI support will be. 
+Prompt example: I want to build a simple study tool that helps students review a topic 
+using a short quiz. Help me define the goal clearly and identify the most important 
+feature. 
+Step 2 — Decide What the Simplest Useful Version Looks 
+Like 
+Before trying to build everything, decide what the smallest version of the project should 
+do. This is often called an MVP, or minimum viable product. In student-friendly terms, 
+it means: What is the simplest version that still proves the idea works? 
+Prompt example: Act like a planner. What is the simplest useful version of a study quiz 
+generator for students, and what should it do first? 
+Step 3 — Outline the Project Structure 
+Next, ask AI to help map out the major parts. For a website, that may include an input 
+area, a button, and a place to show results. For another kind of project, it may mean an 
+introduction, process, output, and reflection section. 
+Prompt example: Act like a designer. Outline the main parts of this project and explain 
+how they should work together in a simple way.

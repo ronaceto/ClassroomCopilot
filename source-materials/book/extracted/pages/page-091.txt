@@ -1,0 +1,33 @@
+Chapter 15 — AI in Science 
+ 
+Key Question 
+How can students use AI to understand scientific ideas, ask better questions, and 
+strengthen lab and class learning while still relying on evidence and scientific reasoning? 
+Learning Objectives 
+ Understand how AI can support explanation, vocabulary, questioning, and review in 
+science. 
+ Use AI to clarify difficult concepts and compare scientific explanations. 
+ Recognize why observation, evidence, and teacher-approved lab procedures still 
+matter. 
+ Identify responsible uses of AI in scientific learning and unsafe or misleading uses 
+to avoid. 
+ Practice using AI as a science study tool rather than as a replacement for 
+experiments or evidence. 
+Introduction 
+Science asks students to understand how the natural world works through observation, 
+evidence, explanation, and testing. Students are expected to learn concepts, use scientific 
+vocabulary, interpret data, and connect ideas across biology, chemistry, physics, Earth 
+science, and environmental science. 
+AI can help students learn science by explaining difficult concepts in simpler language, 
+comparing related ideas, generating review questions, and helping students prepare for 
+labs or assessments. But science also requires caution. AI can oversimplify, leave out 
+important conditions, or give explanations that sound scientific without actually being 
+precise. 
+That means students should use AI to support understanding, not to replace the 
+scientific process. Good science learning still depends on evidence, class materials, 
+teacher guidance, and accurate observation. 
+Science can feel especially rewarding when a student moves from memorizing a term to 
+actually understanding a process. A concept like photosynthesis, chemical equilibrium, 
+or energy transfer often becomes clearer only after students hear it explained more than 
+one way. AI can help provide those alternate explanations quickly, which makes it easier 
+for students to keep building understanding instead of staying stuck.

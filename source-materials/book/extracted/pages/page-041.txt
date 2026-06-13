@@ -1,0 +1,29 @@
+AI as a Brainstorming Partner 
+One of the hardest parts of writing is simply getting started. 
+Students may know the general topic of an assignment but still feel uncertain about what 
+angle to take, what claim to make, or what ideas are worth developing. In those 
+moments, AI can act like a brainstorming partner. 
+For example, a student writing about the impact of social media might ask: 
+Help me brainstorm three possible arguments about how social media affects teenagers. 
+That kind of prompt does not ask AI to write the essay. It asks AI to generate starting 
+points. 
+This is an important distinction. 
+Used well, AI can help students: 
+ generate possible essay angles 
+ identify pros and cons of an issue 
+ suggest examples that support a topic 
+ turn a broad idea into a narrower focus 
+ overcome the fear of a blank page 
+The goal of brainstorming is not to let AI decide what the student thinks. It is to 
+generate possibilities so the student can choose, shape, and develop ideas more 
+confidently. In that sense, AI works best as a starting-point generator rather than as a 
+substitute for real writing decisions. 
+Turning Ideas Into Outlines 
+Once students have a direction, the next challenge is organization. 
+A good piece of writing needs structure. It should have a clear beginning, logical 
+development, and a strong ending. Many students understand their topic but struggle 
+with how to arrange their ideas into a coherent outline. 
+AI can help with this stage too. 
+A student might ask: 
+Create an outline for a persuasive essay about renewable energy for a high school 
+student.

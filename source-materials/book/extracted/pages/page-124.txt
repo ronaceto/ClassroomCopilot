@@ -1,0 +1,33 @@
+Chapter 20 — The 25 Powerful Prompts Every 
+Student Should Know 
+ 
+Key Question 
+What kinds of prompts help students get the most useful, responsible, and 
+educational results from AI? 
+Learning Objectives 
+ Recognize what makes a prompt useful for students 
+ Learn prompt patterns that support studying, writing, research, and creativity 
+ Use prompts to deepen learning rather than avoid it 
+ Build a practical toolkit of questions that can be reused across subjects 
+Introduction 
+The quality of AI responses depends heavily on the quality of the prompts 
+students use. A vague prompt often produces a vague answer, while a thoughtful 
+prompt can lead to a clearer explanation, better examples, stronger feedback, and more 
+useful support. This matters because AI is not just a tool for getting information. It is a 
+tool for asking better questions. 
+Students who learn how to write strong prompts gain a real advantage. They can study 
+more effectively, organize ideas more clearly, explore topics more deeply, and use AI in 
+ways that support learning rather than replace it. This chapter gathers some of the most 
+useful prompts in the entire book and organizes them into practical categories, not as 
+rigid scripts to memorize, but as a toolkit students can adapt to many situations. 
+The best way to use this chapter is not to memorize every prompt exactly. Instead, pay 
+attention to the structure of the prompts and the kinds of support they create. Over 
+time, students should learn to shape these prompts to fit their own classes, projects, and 
+learning goals, just as they would adapt any other academic strategy. 
+What Makes a Prompt Powerful? 
+A powerful prompt usually does at least one of the following: 
+ gives the AI a clear task 
+ explains the intended audience or level 
+ asks for a useful format 
+ encourages explanation instead of just answers 
+ creates opportunities for practice or feedback

@@ -1,0 +1,35 @@
+AI Chat Assistants 
+AI chat assistants are the tools most students will recognize first. 
+These systems allow students to ask questions in conversational language and receive 
+responses that feel more like dialogue than a search engine result. They are often useful 
+for explanation, brainstorming, summarizing, studying, and practicing follow-up 
+questioning. 
+ ChatGPT 
+ Claude 
+ Gemini 
+ Microsoft Copilot 
+ Grok 
+These tools are often strongest when students need help with things like: 
+ understanding a concept 
+ simplifying an explanation 
+ generating quiz questions 
+ brainstorming ideas 
+ organizing a topic into smaller parts 
+A student who is confused about the causes of World War I or the difference between 
+mitosis and meiosis might begin with an AI chat assistant because it offers fast 
+explanation and allows follow-up questions. 
+These tools are especially useful when students want learning support that feels 
+interactive. 
+ChatGPT 
+ChatGPT is one of the most widely used AI tools in education and everyday life. It is 
+especially useful for explaining ideas, brainstorming, organizing information, and 
+supporting study habits. 
+Students can use ChatGPT to: 
+ ask for simple explanations of difficult topics 
+ generate practice questions before a test 
+ create outlines for essays or presentations 
+ brainstorm ideas for projects 
+ break large assignments into smaller steps 
+One of ChatGPT’s biggest strengths is flexibility. A student can ask one question, then 
+keep going with follow-up questions until the explanation feels clear. That 
+conversational style makes it especially useful as a learning partner.

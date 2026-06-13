@@ -1,0 +1,25 @@
+AI for Explaining Difficult Concepts 
+One of the best uses of AI in science is asking it to explain ideas more clearly. A student 
+who does not fully understand osmosis, Newton’s laws, chemical bonding, or the rock 
+cycle may benefit from a simpler explanation or an analogy. A biology student, for 
+example, might ask for photosynthesis to be explained in simple terms with an everyday 
+comparison, while another student might ask for the difference between two related 
+concepts to be broken down in a more memorable way. 
+Explain photosynthesis in simple terms for a high school biology student and 
+include an everyday analogy. 
+That kind of prompt can make the concept easier to understand without lowering the 
+level of thinking. Students can also ask for step-by-step explanations or for the 
+difference between two related concepts. 
+These uses are especially helpful in science because many topics build on earlier 
+understanding. If one idea is unclear, later ideas often become harder too. 
+Using AI for Scientific Vocabulary and Comparison 
+Science includes a large amount of specialized vocabulary. Students may know the 
+general idea of a lesson but still get stuck on terms such as velocity, equilibrium, 
+ecosystem, or catalyst. 
+AI can help students define terms, compare related ideas, and explain how concepts 
+connect. A student might ask: 
+What is the difference between speed and velocity? 
+Or: 
+Compare mitosis and meiosis in a way that is easy to remember. 
+These prompts are useful because science often depends on distinguishing ideas that 
+sound similar but are not the same.

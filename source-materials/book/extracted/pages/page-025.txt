@@ -1,0 +1,17 @@
+The Prompt Pyramid 
+A helpful way to think about prompting is to imagine a pyramid. At the bottom are very 
+simple prompts. As you move upward, prompts become more powerful because they 
+include more structure and more useful detail. 
+Basic prompt: “Explain the water cycle.” Better prompt: “Explain the water cycle step 
+by step.” Strong prompt: “Explain the water cycle step by step for a middle school 
+student and include a simple real-world example.” 
+ 
+Figure 4.1 — The Prompt Pyramid 
+This diagram shows how prompts become stronger as students add context, task details, 
+audience, and formatting instructions. 
+ 
+The Four Parts of a Strong Prompt 
+Strong prompts often include four parts: context, task, audience, and format. Context 
+tells the AI what situation matters. The task explains what you want it to do. The 
+audience tells the AI who the explanation is for. The format tells the AI how to organize 
+the answer.

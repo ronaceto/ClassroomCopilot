@@ -1,0 +1,28 @@
+Prediction, Not Understanding 
+AI generates responses by prediction, not by understanding. 
+When you type a prompt into an AI system, it does not pause and think like a person 
+would. It does not reflect on its own experiences or reason through the meaning in the 
+same way a human mind does. Instead, it predicts what words are most likely to come 
+next based on the patterns it has learned. 
+By predicting one word at a time, and then the next, and then the next, AI can build 
+long responses that sound fluent and useful. This process happens very quickly, which is 
+why AI tools can respond in seconds. 
+A good way to think about it is this: AI is extremely good at generating language that 
+sounds right, but that is different from actually knowing whether the content is true.  
+That difference matters. 
+Why AI Sometimes Makes Mistakes 
+Because AI works by prediction, it can sometimes produce responses that sound correct 
+but are actually wrong. 
+An AI hallucination happens when the system generates false, inaccurate, or invented 
+information in a confident tone. For example, an AI tool might: 
+ give an incorrect date for a historical event 
+ invent a quotation that never existed 
+ describe a scientific process inaccurately 
+ create a fake source or reference 
+This can be dangerous if students assume the response must be correct simply because it 
+sounds polished. 
+The problem is not that AI is useless. The problem is that AI is not designed to care 
+about truth in the way humans do. Its goal is to generate a response that fits the 
+language patterns of the prompt. Sometimes that response is excellent. Sometimes it is 
+flawed. 
+That is why students must always bring their own judgment to the process.

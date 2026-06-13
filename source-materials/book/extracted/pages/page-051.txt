@@ -1,0 +1,24 @@
+Student Example 
+A student named Marcus is working on a quadratic equation in algebra. He remembers 
+seeing similar problems in class, but he is not sure how to begin. 
+He asks AI: 
+Show me how to solve this quadratic equation step by step and explain why each step 
+works. 
+The explanation helps him understand the order of operations, but he still feels 
+uncertain. So he follows up: 
+Give me a similar problem and let me try it before showing me the answer. 
+After solving the second problem, he asks: 
+Check my work and explain where I made a mistake. 
+In this example, Marcus does not just receive one solution. He receives explanation, 
+practice, and feedback. That is a much stronger use of AI than simply copying the first 
+result. 
+Classroom Idea 
+Teachers can use AI to help students compare solution methods. 
+For example, students might solve the same problem in class, then ask AI to explain a 
+second method. The class can discuss questions such as: 
+ Which method is easier to understand? 
+ Which method is more efficient? 
+ What mistakes are students most likely to make with each approach? 
+ How do both methods lead to the same answer? 
+This kind of activity helps students see that problem solving is not just about finding 
+one correct number. It is about understanding reasoning and comparing strategies.

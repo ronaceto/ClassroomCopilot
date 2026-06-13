@@ -1,0 +1,20 @@
+A student might begin by asking for a short explanation of mitosis. Then they might ask 
+for five quiz questions. After missing two of them, they could ask for a simpler 
+explanation of those specific ideas. Finally, they could request a second quiz to see 
+whether they improved. 
+That process is much stronger than reading the same notes over and over. 
+ 
+ 
+Figure 6.1 — The Learning Feedback Loop 
+This diagram shows how students can study more effectively by moving through a cycle 
+of review, questioning, feedback, reflection, and improvement. 
+Classroom Idea 
+Teachers can use this chapter to help students see how AI becomes most useful when it 
+supports practice rather than just explanation. For example, after asking for a simple 
+explanation of the water cycle, students could ask AI to create five quiz questions and 
+then explain any missed answers. That turns AI from an answer source into a learning 
+system built around explanation, practice, feedback, and improvement. 
+Another effective use of AI is asking it to organize information into study-friendly 
+forms. For example, students can ask AI to summarize a chapter, turn notes into 
+flashcards, create a short review sheet, list the most important terms to remember, or 
+explain the difference between similar concepts. A student preparing for a science test

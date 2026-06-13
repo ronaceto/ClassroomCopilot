@@ -1,0 +1,27 @@
+Chatbot 
+A computer program designed to simulate conversation with a user through text or 
+voice. Many modern AI chatbots are powered by large language models. 
+Collaboration 
+Working together to complete a task or solve a problem. In the context of this book, 
+students can think of AI as a collaborative tool, but not a replacement for human effort 
+or teamwork. 
+Concept Map 
+A visual diagram that shows how ideas connect to one another. Concept maps help 
+students organize information and see relationships between topics. 
+Context 
+The background information included in a prompt or task that helps AI produce a more 
+useful response. Context makes prompts clearer and more specific. 
+Critical Evaluation 
+The process of carefully examining information before accepting it as accurate or useful. 
+This is especially important when using AI-generated content. 
+Critical Thinking 
+The habit of analyzing ideas carefully, asking good questions, checking evidence, and 
+making thoughtful judgments instead of accepting information too quickly. 
+Data 
+Information used by computers to process tasks, recognize patterns, and make 
+predictions. AI systems rely on large amounts of data during training and use. 
+Data Set 
+A collection of related data used for training, testing, or analyzing an AI system. 
+Debugging 
+The process of finding and fixing errors in computer code. AI can help students debug 
+code, but students still need to understand the logic behind the fix.

@@ -1,0 +1,35 @@
+Verifying AI-Generated Information 
+Responsibility also includes checking whether AI responses are accurate. 
+As you learned earlier in the book, AI systems can generate incorrect information that 
+sounds polished and believable. This can include false facts, made-up details, inaccurate 
+summaries, and invented sources. 
+That is why students should never assume that an AI response is correct simply because 
+it sounds confident. 
+Responsible use means verifying important information through: 
+ textbooks 
+ teacher materials 
+ class notes 
+ trusted educational sites 
+ library or research sources 
+This is especially important for: 
+ research projects 
+ historical information 
+ scientific explanations 
+ citations and references 
+ statistics and factual claims 
+A useful habit is to treat AI as a starting point for understanding, not the final word. 
+Bias, Fairness, and Perspective 
+Another important part of responsible AI use is recognizing that AI systems are not 
+neutral in every situation. 
+Because they are trained on human-created data, AI systems can sometimes reflect bias, 
+incomplete perspectives, or oversimplified views of people and events. This does not 
+always happen in obvious ways. Sometimes the issue is not that the AI gives a 
+completely wrong answer, but that it leaves out important context or presents one 
+perspective more strongly than another. 
+Students should be especially thoughtful when using AI for topics involving: 
+ history 
+ politics 
+ culture 
+ identity 
+ ethics 
+ current events

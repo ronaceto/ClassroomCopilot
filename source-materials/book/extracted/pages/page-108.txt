@@ -1,0 +1,28 @@
+Classroom Idea 
+Teachers can use this chapter to lead a discussion about what responsible AI use looks 
+like in real classroom situations. 
+For example, students can be given sample scenarios and asked to decide whether each 
+one reflects responsible or irresponsible use. 
+Examples might include: 
+ using AI to generate quiz questions before a test 
+ asking AI to write a final essay draft 
+ using AI to explain a difficult equation 
+ copying AI-generated code without understanding it 
+ using AI to organize notes into a study guide 
+This kind of discussion helps students move beyond vague ideas about “good” or “bad” 
+use and instead think more clearly about purpose, honesty, and learning. 
+Try This 
+Open an AI tool and ask: 
+Prompt Example 
+Explain the causes of the American Revolution in simple terms for a high school 
+student. 
+ 
+ Would using this explanation help me learn? 
+ What parts should I verify with other sources? 
+ How would I use this responsibly for a class assignment? 
+ Now compare that with this prompt: 
+Prompt Example 
+Write my history paragraph for me about the American Revolution. 
+ 
+What is the difference in purpose between the two prompts? Which one supports 
+learning, and which one avoids it?

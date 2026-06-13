@@ -1,0 +1,30 @@
+Used this way, AI supports revision and communication. It does not replace the writer’s 
+judgment. 
+Writing Across School Subjects 
+One useful thing about AI-supported writing is that it can help students communicate 
+clearly in many different classes. 
+In English, students may use it for essay development or revising analysis. 
+In history, they may use it to organize arguments or sharpen explanations of evidence. 
+In science, they may use it to clarify lab report language or explain findings more clearly. 
+In computer science, they may use it to describe technical ideas in writing that others 
+can understand. 
+In presentations across subjects, they may use it to turn notes into clearer speaking 
+points. 
+This is why AI belongs in a student guide like this one. It can support writing, 
+communication, and the clear presentation of ideas across school subjects. 
+Student Example 
+A student named Ava is writing a persuasive essay on whether schools should limit 
+student phone use during class. 
+She already has a general opinion, but she is not sure how to structure her argument. She 
+asks AI: 
+Help me brainstorm three possible arguments for limiting student phone use during 
+class. 
+The AI gives her several possibilities. She chooses the ones that make the most sense to 
+her and then asks: 
+Create a simple essay outline based on these ideas. 
+After writing her first draft, she asks: 
+Review this introduction and suggest how I can make it clearer and more engaging. 
+In this example, Ava is still doing the thinking. She is choosing the position, writing the 
+draft, and deciding what revisions to make. AI is helping her organize and improve her 
+work, but it is not replacing her voice. 
+That is the right balance.

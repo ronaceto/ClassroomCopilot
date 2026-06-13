@@ -1,0 +1,34 @@
+Appendix A — Using AI to Build With AI 
+Purpose of This Appendix 
+This appendix shows students how to use AI for a different kind of work: not just 
+answering questions, but helping plan, design, build, test, and improve a project. The 
+goal is to introduce a practical workflow for using AI across multiple stages of creation 
+while keeping the student in charge of the thinking, decisions, and final choices. 
+In the chapters of this book, you explored how AI can support studying, research, 
+writing, problem solving, coding, and organization. This appendix builds on those ideas 
+by showing how AI can also support project development. That means using AI to 
+help move from a rough idea to a simple finished product through a structured sequence 
+of steps. 
+The focus here is not on building a complex commercial product. The focus is on 
+learning a repeatable process students can use when they want to create something 
+simple, improve an idea, or explore how builders and developers think. Even if a student 
+never becomes a programmer, this appendix teaches useful habits of planning, iteration, 
+and critical evaluation. 
+The Big Idea: AI as a Project Team 
+One of the most powerful ways to use AI is to stop thinking of it as a single all-purpose 
+answer machine. Instead, it can be more useful to think of AI as a project team that 
+helps with different kinds of work at different times. 
+For example, when building even a simple project, you may need help with: 
+ defining the goal clearly 
+ deciding what features matter most 
+ planning the structure of the solution 
+ writing or organizing the first draft of the work 
+ testing what works and what does not 
+ revising the project based on feedback 
+When students use AI well, they can prompt the tool to help with each of these roles 
+one at a time. This approach is sometimes called AI orchestration because the student 
+is directing the workflow, deciding what happens next, and using AI support in a 
+deliberate sequence rather than in one giant request. 
+A useful principle to remember is this: 
+Advanced AI use is not about getting one perfect response. It is about guiding a 
+process, evaluating each stage, and improving the result step by step.

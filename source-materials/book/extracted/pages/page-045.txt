@@ -1,0 +1,29 @@
+Classroom Idea 
+Teachers can use AI in writing instruction by asking students to compare human writing 
+choices with AI-generated suggestions. 
+For example, students might write a short paragraph and then ask AI for three revision 
+suggestions. The class can then discuss: 
+ Which suggestions are helpful? 
+ Which ones make the writing stronger? 
+ Which suggestions change the meaning too much? 
+ Which version sounds more like the student? 
+This kind of activity helps students see AI as an editing tool rather than as an answer 
+machine. It also reinforces the idea that good writing still depends on human judgment. 
+Try This 
+Open an AI tool and try this prompt: 
+Prompt Example 
+Help me brainstorm three possible essay ideas about the effects of social media on 
+teenagers. 
+ 
+Then choose one of the ideas and ask: 
+Prompt Example 
+Create a simple outline for this essay suitable for a high school student. 
+ 
+Finally, if you already have a paragraph written, ask: 
+Prompt Example 
+Suggest two ways I could improve the clarity of this paragraph without changing my 
+voice. 
+ 
+As you work through these steps, notice how AI can support writing without taking 
+control of it. The most useful help usually comes when the tool clarifies structure or 
+wording while the student still makes the key choices.
