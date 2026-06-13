@@ -1,0 +1,2463 @@
+{
+  "source_pdf": "C:\\Dev\\classroom-copilot\\source-materials\\book\\AI_For_Students.pdf",
+  "sha256": "09D3EE6C585A9BAF8D2580CAD37DF25CA0DA29616DD37909889074DA23CB6397",
+  "bytes": 3941338,
+  "last_modified": 1780847746.4630685,
+  "page_count": 165,
+  "pdf_metadata": {
+    "/Author": "Ron Aceto",
+    "/CreationDate": "D:20260607105546-05'00'",
+    "/ModDate": "D:20260607105546-05'00'",
+    "/Producer": "Microsoft: Print To PDF",
+    "/Title": "Microsoft Word - AI_for_Students_final.docx"
+  },
+  "page_records": [
+    {
+      "page": 1,
+      "chars": 0,
+      "word_count_estimate": 0,
+      "first_lines": []
+    },
+    {
+      "page": 2,
+      "chars": 76,
+      "word_count_estimate": 13,
+      "first_lines": [
+        "AI for Students",
+        "A Practical Guide for School, Learning, and Life",
+        "Ron Aceto"
+      ]
+    },
+    {
+      "page": 3,
+      "chars": 2145,
+      "word_count_estimate": 318,
+      "first_lines": [
+        "Copyright",
+        "Copyright \u00a9 2026 Ron Aceto. All rights reserved. No part of this publication may be",
+        "reproduced without permission from the author. This book is an educational guide for",
+        "students, teachers, and families learning how to use artificial intelligence responsibly.",
+        "This edition is intended for educational use. It is not legal advice, school policy, or a"
+      ]
+    },
+    {
+      "page": 4,
+      "chars": 1272,
+      "word_count_estimate": 198,
+      "first_lines": [
+        "Student AI Agreement",
+        "1. Use AI to learn, not replace thinking.",
+        "2. Be honest about my work and follow teacher directions.",
+        "3. Verify important information before trusting it.",
+        "4. Ask better questions and use AI to deepen understanding."
+      ]
+    },
+    {
+      "page": 5,
+      "chars": 3716,
+      "word_count_estimate": 203,
+      "first_lines": [
+        "Part I \u2014 Understanding AI ................................................................................................................................ 6",
+        "Chapter 1 \u2014 Understanding Artificial Intelligence ........................................................................................ 7",
+        "Chapter 2 \u2014 How AI Actually Works............................................................................................................ 12",
+        "Chapter 3 \u2014 AI as a Learning Partner ........................................................................................................... 18",
+        "Part II \u2014 Learning to Prompt and Think with AI ....................................................................................... 23"
+      ]
+    },
+    {
+      "page": 6,
+      "chars": 247,
+      "word_count_estimate": 38,
+      "first_lines": [
+        "Part I \u2014 Understanding AI",
+        "This part introduces the foundation students need before using AI more actively: what",
+        "artificial intelligence is, how it works at a basic level, and why understanding it matters",
+        "for learning, school, and everyday life."
+      ]
+    },
+    {
+      "page": 7,
+      "chars": 1731,
+      "word_count_estimate": 260,
+      "first_lines": [
+        "Chapter 1 \u2014 Understanding Artificial Intelligence",
+        "Key Question",
+        "What is artificial intelligence, and why does it matter for students today?",
+        "Learning Objectives",
+        "\uf0b7 Understand what artificial intelligence is in simple terms"
+      ]
+    },
+    {
+      "page": 8,
+      "chars": 2264,
+      "word_count_estimate": 364,
+      "first_lines": [
+        "What Is Artificial Intelligence?",
+        "Artificial intelligence, often shortened to AI, refers to computer systems designed to",
+        "perform tasks that usually require human intelligence. These tasks include understanding",
+        "language, identifying patterns, generating responses, solving problems, and making",
+        "predictions."
+      ]
+    },
+    {
+      "page": 9,
+      "chars": 1486,
+      "word_count_estimate": 249,
+      "first_lines": [
+        "AI as a Tool for Thinking",
+        "The most important idea in this chapter is that AI should be understood as a tool for",
+        "thinking, not a shortcut for avoiding thought. There is a major difference between a",
+        "student who uses AI to deepen understanding and a student who uses AI only to",
+        "complete work faster."
+      ]
+    },
+    {
+      "page": 10,
+      "chars": 815,
+      "word_count_estimate": 136,
+      "first_lines": [
+        "Try This",
+        "Prompt Example",
+        "Explain artificial intelligence in a way a high school student would understand.",
+        "Prompt Example",
+        "Give me three examples of how students might use AI for learning."
+      ]
+    },
+    {
+      "page": 11,
+      "chars": 239,
+      "word_count_estimate": 38,
+      "first_lines": [
+        "Chapter Summary",
+        "In this chapter, you explored the basic idea of artificial intelligence and why it matters",
+        "for students. The most important takeaway is simple: AI is most valuable when it",
+        "supports human thinking rather than replaces it."
+      ]
+    },
+    {
+      "page": 12,
+      "chars": 1482,
+      "word_count_estimate": 237,
+      "first_lines": [
+        "Chapter 2 \u2014 How AI Actually Works",
+        "Key Question",
+        "How do artificial intelligence systems generate responses, and why do they sometimes",
+        "make mistakes?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 13,
+      "chars": 2016,
+      "word_count_estimate": 316,
+      "first_lines": [
+        "Training AI Systems",
+        "Artificial intelligence systems do not begin with human-like understanding. They are",
+        "built and trained using enormous amounts of data.",
+        "This training data may include books, articles, websites, research papers, conversations,",
+        "and many other forms of written language. During training, the AI system examines"
+      ]
+    },
+    {
+      "page": 14,
+      "chars": 1728,
+      "word_count_estimate": 291,
+      "first_lines": [
+        "Prediction, Not Understanding",
+        "AI generates responses by prediction, not by understanding.",
+        "When you type a prompt into an AI system, it does not pause and think like a person",
+        "would. It does not reflect on its own experiences or reason through the meaning in the",
+        "same way a human mind does. Instead, it predicts what words are most likely to come"
+      ]
+    },
+    {
+      "page": 15,
+      "chars": 1891,
+      "word_count_estimate": 298,
+      "first_lines": [
+        "AI Is Not a Search Engine",
+        "Many students compare AI tools to search engines, but the two are not the same.  A",
+        "search engine usually finds existing information and links you to sources. An AI tool",
+        "generates a brand-new response based on patterns in data. That makes AI feel more",
+        "conversational, but it also means you must be more careful.  When you use a search"
+      ]
+    },
+    {
+      "page": 16,
+      "chars": 950,
+      "word_count_estimate": 152,
+      "first_lines": [
+        "Try This",
+        "Prompt Example",
+        "Explain how earthquakes happen in simple terms for a high school student.",
+        "Prompt Example",
+        "Explain earthquakes again, but use a real-world analogy."
+      ]
+    },
+    {
+      "page": 17,
+      "chars": 582,
+      "word_count_estimate": 88,
+      "first_lines": [
+        "Chapter Summary",
+        "In this chapter, you learned that AI systems are trained on large amounts of data, use",
+        "pattern recognition to analyze language, and generate responses through prediction",
+        "rather than true understanding. You also learned why AI can sometimes produce",
+        "confident but incorrect answers, and why students should verify important information"
+      ]
+    },
+    {
+      "page": 18,
+      "chars": 1214,
+      "word_count_estimate": 192,
+      "first_lines": [
+        "Chapter 3 \u2014 AI as a Learning Partner",
+        "Key Question",
+        "How can students use artificial intelligence to support learning instead of simply getting",
+        "answers?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 19,
+      "chars": 2721,
+      "word_count_estimate": 443,
+      "first_lines": [
+        "The Difference Between Answers and Understanding",
+        "There is a big difference between receiving an answer and actually understanding",
+        "something. Imagine two students preparing for a science quiz. The first student asks AI",
+        "for the definition of photosynthesis, reads the result, and moves on. The second asks for",
+        "the concept to be explained in simple terms, followed by an example and a quiz"
+      ]
+    },
+    {
+      "page": 20,
+      "chars": 1406,
+      "word_count_estimate": 224,
+      "first_lines": [
+        "This is why AI works best when it does more than explain. It should also help students",
+        "rehearse, test, revise, and strengthen knowledge.",
+        "For example, after receiving an explanation of the water cycle, a student could ask:",
+        "Create five quiz questions about the water cycle.",
+        "Then:"
+      ]
+    },
+    {
+      "page": 21,
+      "chars": 760,
+      "word_count_estimate": 120,
+      "first_lines": [
+        "Try This",
+        "Prompt Example",
+        "Explain the causes of the American Revolution in simple terms for a high school",
+        "student.",
+        "Use the sequence below to see how AI can move from explanation to practice to self-"
+      ]
+    },
+    {
+      "page": 22,
+      "chars": 1050,
+      "word_count_estimate": 168,
+      "first_lines": [
+        "Why This Chapter Matters",
+        "Students do not need AI to become better at finishing tasks quickly. In many cases, they",
+        "can already find information online or copy answers from somewhere else.",
+        "What makes AI different is that it can support a more interactive kind of learning.",
+        "When students use AI well, they are not just getting information. They are engaging in a"
+      ]
+    },
+    {
+      "page": 23,
+      "chars": 256,
+      "word_count_estimate": 42,
+      "first_lines": [
+        "Part II \u2014 Learning to Prompt and Think with AI",
+        "This part focuses on one of the most important student AI skills: asking better",
+        "questions. It helps students learn how prompting, inquiry, and critical thinking shape the",
+        "quality of AI support they receive."
+      ]
+    },
+    {
+      "page": 24,
+      "chars": 1607,
+      "word_count_estimate": 261,
+      "first_lines": [
+        "Chapter 4 \u2014 The Power of Good Prompts",
+        "Key Question",
+        "How does the way you ask a question affect the quality of an AI response?",
+        "Learning Objectives",
+        "\uf0b7 Understand what a prompt is"
+      ]
+    },
+    {
+      "page": 25,
+      "chars": 929,
+      "word_count_estimate": 151,
+      "first_lines": [
+        "The Prompt Pyramid",
+        "A helpful way to think about prompting is to imagine a pyramid. At the bottom are very",
+        "simple prompts. As you move upward, prompts become more powerful because they",
+        "include more structure and more useful detail.",
+        "Basic prompt: \u201cExplain the water cycle.\u201d Better prompt: \u201cExplain the water cycle step"
+      ]
+    },
+    {
+      "page": 26,
+      "chars": 1746,
+      "word_count_estimate": 291,
+      "first_lines": [
+        "How Students Can Improve Their Prompts",
+        "You do not need to write the perfect prompt on your first try. Strong AI users often",
+        "improve prompts as they go. A student might begin with a basic question, realize the",
+        "answer is too broad, and ask again with more detail. That is not failure. It is refinement.",
+        "Student Example"
+      ]
+    },
+    {
+      "page": 27,
+      "chars": 1387,
+      "word_count_estimate": 207,
+      "first_lines": [
+        "Chapter 5 \u2014 AI for Research and Critical",
+        "Thinking",
+        "Key Question",
+        "How can students use AI to support research while still thinking critically and verifying",
+        "information?"
+      ]
+    },
+    {
+      "page": 28,
+      "chars": 1975,
+      "word_count_estimate": 311,
+      "first_lines": [
+        "Using AI to Start Research",
+        "One of the best uses of AI in research is at the beginning of the process, when students",
+        "need help understanding the big picture. For example, a student beginning a project on",
+        "the Industrial Revolution might ask for an overview of the topic and why it changed",
+        "society. A prompt like that can help the student identify major themes before moving"
+      ]
+    },
+    {
+      "page": 29,
+      "chars": 1694,
+      "word_count_estimate": 264,
+      "first_lines": [
+        "This is also where AI can make learning feel more interactive. It can help students",
+        "explore ideas that might otherwise feel abstract or one-sided.",
+        "The AI Time Machine",
+        "One especially engaging research strategy is to use AI to simulate historical or",
+        "perspective-based interviews."
+      ]
+    },
+    {
+      "page": 30,
+      "chars": 1668,
+      "word_count_estimate": 255,
+      "first_lines": [
+        "Students should confirm important information using:",
+        "\uf0b7 textbooks",
+        "\uf0b7 teacher materials",
+        "\uf0b7 library resources",
+        "\uf0b7 academic databases"
+      ]
+    },
+    {
+      "page": 31,
+      "chars": 1147,
+      "word_count_estimate": 171,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use AI as part of a research literacy lesson by asking students to compare",
+        "an AI-generated explanation with textbook or source-based material.",
+        "For example, students might ask AI to summarize the Civil Rights Movement, then",
+        "compare that answer with a class handout or textbook chapter. They can look for:"
+      ]
+    },
+    {
+      "page": 32,
+      "chars": 1092,
+      "word_count_estimate": 171,
+      "first_lines": [
+        "Figure 5.1 \u2014 AI Research Workflow",
+        "This diagram shows the process moving from topic question to AI overview, then to",
+        "deeper questions, source verification, student analysis, and final understanding.",
+        "Why This Chapter Matters",
+        "Research is one of the clearest places where students can benefit from AI while also"
+      ]
+    },
+    {
+      "page": 33,
+      "chars": 325,
+      "word_count_estimate": 49,
+      "first_lines": [
+        "Part III \u2014 AI for School Success",
+        "This part focuses on the everyday ways students can use AI to become more effective",
+        "learners. It brings AI into the practical realities of school by showing how it can support",
+        "studying, writing, problem solving, coding, creativity, and organization without replacing",
+        "independent thinking."
+      ]
+    },
+    {
+      "page": 34,
+      "chars": 1246,
+      "word_count_estimate": 193,
+      "first_lines": [
+        "Chapter 6 \u2014 AI for Studying Smarter",
+        "Key Question",
+        "How can AI help students study more effectively and remember what they learn?",
+        "Learning Objectives",
+        "\uf0b7 Understand how AI can support active studying"
+      ]
+    },
+    {
+      "page": 35,
+      "chars": 1780,
+      "word_count_estimate": 296,
+      "first_lines": [
+        "Turning AI Into a Study Coach",
+        "AI becomes most useful for studying when students treat it like a partner in the review",
+        "process. A student preparing for a biology test, for example, might ask the tool to create",
+        "ten quiz questions about the cell cycle and then explain which answers were wrong and",
+        "why. That sequence turns AI from a passive information source into an active study"
+      ]
+    },
+    {
+      "page": 36,
+      "chars": 1566,
+      "word_count_estimate": 252,
+      "first_lines": [
+        "Quiz me on chemical reactions one question at a time.",
+        "Because AI can respond dynamically, students can keep going, ask follow-up questions,",
+        "and request harder or easier questions depending on how confident they feel.",
+        "This makes studying more flexible and more interactive than simply reading a review",
+        "sheet."
+      ]
+    },
+    {
+      "page": 37,
+      "chars": 1330,
+      "word_count_estimate": 212,
+      "first_lines": [
+        "A student might begin by asking for a short explanation of mitosis. Then they might ask",
+        "for five quiz questions. After missing two of them, they could ask for a simpler",
+        "explanation of those specific ideas. Finally, they could request a second quiz to see",
+        "whether they improved.",
+        "That process is much stronger than reading the same notes over and over."
+      ]
+    },
+    {
+      "page": 38,
+      "chars": 1414,
+      "word_count_estimate": 229,
+      "first_lines": [
+        "might ask the tool to turn notes into a study guide with key terms and definitions, then",
+        "use that guide as the basis for practice questions or self-testing.",
+        "For example, students can ask AI to:",
+        "\uf0b7 summarize a chapter",
+        "\uf0b7 turn notes into flashcards"
+      ]
+    },
+    {
+      "page": 39,
+      "chars": 1605,
+      "word_count_estimate": 259,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use AI as a study support tool by asking students to compare study",
+        "methods.",
+        "For example, one group could review a topic by rereading notes, while another group",
+        "uses AI to generate questions and explain mistakes. Students can then reflect on which"
+      ]
+    },
+    {
+      "page": 40,
+      "chars": 1690,
+      "word_count_estimate": 254,
+      "first_lines": [
+        "Chapter 7 \u2014 AI for Writing, Revision, and",
+        "Communication",
+        "Key Question",
+        "How can students use AI to support writing, revision, and communication without",
+        "losing their own voice and ideas?"
+      ]
+    },
+    {
+      "page": 41,
+      "chars": 1608,
+      "word_count_estimate": 266,
+      "first_lines": [
+        "AI as a Brainstorming Partner",
+        "One of the hardest parts of writing is simply getting started.",
+        "Students may know the general topic of an assignment but still feel uncertain about what",
+        "angle to take, what claim to make, or what ideas are worth developing. In those",
+        "moments, AI can act like a brainstorming partner."
+      ]
+    },
+    {
+      "page": 42,
+      "chars": 1473,
+      "word_count_estimate": 242,
+      "first_lines": [
+        "The response may provide a basic structure:",
+        "\uf0b7 introduction",
+        "\uf0b7 main claim",
+        "\uf0b7 supporting points",
+        "\uf0b7 counterargument"
+      ]
+    },
+    {
+      "page": 43,
+      "chars": 1683,
+      "word_count_estimate": 264,
+      "first_lines": [
+        "Protecting Student Voice",
+        "Student writing should still sound like the student.",
+        "This is one of the most important rules in this chapter.",
+        "A strong essay is not just correct. It reflects the student\u2019s thinking, word choice, and",
+        "interpretation. If AI rewrites too much, the work may begin to sound polished but"
+      ]
+    },
+    {
+      "page": 44,
+      "chars": 1735,
+      "word_count_estimate": 285,
+      "first_lines": [
+        "Used this way, AI supports revision and communication. It does not replace the writer\u2019s",
+        "judgment.",
+        "Writing Across School Subjects",
+        "One useful thing about AI-supported writing is that it can help students communicate",
+        "clearly in many different classes."
+      ]
+    },
+    {
+      "page": 45,
+      "chars": 1310,
+      "word_count_estimate": 210,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use AI in writing instruction by asking students to compare human writing",
+        "choices with AI-generated suggestions.",
+        "For example, students might write a short paragraph and then ask AI for three revision",
+        "suggestions. The class can then discuss:"
+      ]
+    },
+    {
+      "page": 46,
+      "chars": 1217,
+      "word_count_estimate": 187,
+      "first_lines": [
+        "Figure 7.1 \u2014 Writing Development with AI",
+        "This figure illustrates a student-centered writing process in which AI helps generate",
+        "possibilities, clarify structure, and refine language while the student remains responsible",
+        "for choosing ideas, drafting, and preserving voice.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 47,
+      "chars": 1482,
+      "word_count_estimate": 247,
+      "first_lines": [
+        "Chapter 8 \u2014 AI for Problem Solving",
+        "Key Question",
+        "How can students use AI to solve problems more effectively without depending on it",
+        "for every answer?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 48,
+      "chars": 1621,
+      "word_count_estimate": 274,
+      "first_lines": [
+        "Why Problem Solving Feels Hard",
+        "Many school problems are difficult not because the topic is impossible, but because the",
+        "path is unclear.",
+        "A student may know the formula for slope, understand the definition of velocity, or",
+        "remember the parts of an equation, but still feel stuck when facing an unfamiliar"
+      ]
+    },
+    {
+      "page": 49,
+      "chars": 1592,
+      "word_count_estimate": 257,
+      "first_lines": [
+        "These are strong uses of AI because they keep the student focused on understanding the",
+        "reasoning.",
+        "Using AI to Recognize Patterns",
+        "One of the most important parts of problem solving is pattern recognition.",
+        "Students become stronger problem solvers when they begin to notice that many"
+      ]
+    },
+    {
+      "page": 50,
+      "chars": 1255,
+      "word_count_estimate": 212,
+      "first_lines": [
+        "Students can also ask:",
+        "\uf0b7 What is the first thing I should notice in this problem?",
+        "\uf0b7 Why is this formula the right one to use?",
+        "\uf0b7 Where do students usually make mistakes here?",
+        "\uf0b7 Can you give me one easier example and one harder example?"
+      ]
+    },
+    {
+      "page": 51,
+      "chars": 1329,
+      "word_count_estimate": 223,
+      "first_lines": [
+        "Student Example",
+        "A student named Marcus is working on a quadratic equation in algebra. He remembers",
+        "seeing similar problems in class, but he is not sure how to begin.",
+        "He asks AI:",
+        "Show me how to solve this quadratic equation step by step and explain why each step"
+      ]
+    },
+    {
+      "page": 52,
+      "chars": 808,
+      "word_count_estimate": 132,
+      "first_lines": [
+        "Try This",
+        "Prompt Example",
+        "Show me how to solve this algebra problem step by step and explain why each step",
+        "works.",
+        "Prompt Example"
+      ]
+    },
+    {
+      "page": 53,
+      "chars": 972,
+      "word_count_estimate": 151,
+      "first_lines": [
+        "Why This Chapter Matters",
+        "Problem solving is one of the clearest places where AI can either support learning or",
+        "weaken it.",
+        "If students use AI only for final answers, they may become more dependent and less",
+        "confident over time. But if they use AI to understand processes, compare examples, and"
+      ]
+    },
+    {
+      "page": 54,
+      "chars": 1677,
+      "word_count_estimate": 276,
+      "first_lines": [
+        "Chapter 9 \u2014 AI for Coding Help",
+        "Key Question",
+        "How can students use AI to learn coding more effectively without becoming dependent",
+        "on it?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 55,
+      "chars": 1531,
+      "word_count_estimate": 251,
+      "first_lines": [
+        "Why Coding Feels Different From Other Subjects",
+        "Coding is different from many other school tasks because students are not just learning",
+        "facts. They are learning a system.",
+        "To write code successfully, students need to understand:",
+        "\uf0b7 how instructions are structured"
+      ]
+    },
+    {
+      "page": 56,
+      "chars": 1635,
+      "word_count_estimate": 286,
+      "first_lines": [
+        "Using AI to Debug Errors",
+        "Another major use of AI in coding is debugging.",
+        "Debugging means identifying and fixing problems in code. This is a normal part of",
+        "programming. In fact, learning to debug is one of the most important programming",
+        "skills students can develop."
+      ]
+    },
+    {
+      "page": 57,
+      "chars": 1485,
+      "word_count_estimate": 252,
+      "first_lines": [
+        "This kind of back-and-forth can make coding feel much more manageable, especially for",
+        "beginners.",
+        "It also reinforces an important habit: coding is a process of building, testing, revising,",
+        "and improving.",
+        "The Risk of Overdependence"
+      ]
+    },
+    {
+      "page": 58,
+      "chars": 1057,
+      "word_count_estimate": 193,
+      "first_lines": [
+        "\uf0b7 explaining which part to build first",
+        "\uf0b7 helping fix errors along the way",
+        "A student might ask:",
+        "Help me build a simple number guessing game in Python, one step at a time.",
+        "That is a strong prompt because it asks for guided development rather than a finished"
+      ]
+    },
+    {
+      "page": 59,
+      "chars": 1197,
+      "word_count_estimate": 194,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use AI to support debugging lessons by having students compare different",
+        "approaches to solving the same coding problem.",
+        "For example, students might write a short program on their own, then ask AI for an",
+        "explanation of an alternate approach. The class can discuss:"
+      ]
+    },
+    {
+      "page": 60,
+      "chars": 247,
+      "word_count_estimate": 38,
+      "first_lines": [
+        "Figure 9.1 \u2014 Coding Help Workflow",
+        "This figure shows how AI can support coding by helping students interpret errors,",
+        "understand logic, test revisions, and improve code through debugging rather than by",
+        "replacing the student\u2019s own problem solving."
+      ]
+    },
+    {
+      "page": 61,
+      "chars": 981,
+      "word_count_estimate": 161,
+      "first_lines": [
+        "Why This Chapter Matters",
+        "Coding is one of the clearest examples of how AI can either strengthen learning or",
+        "weaken it.",
+        "If students use AI only to generate code quickly, they may become more dependent and",
+        "less confident. But if they use AI to understand code, debug errors, and practice small"
+      ]
+    },
+    {
+      "page": 62,
+      "chars": 1600,
+      "word_count_estimate": 241,
+      "first_lines": [
+        "Chapter 10 \u2014 AI for Creativity and Brainstorming",
+        "Key Question",
+        "How can students use AI to generate ideas and explore creativity without letting the tool",
+        "take over the creative process?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 63,
+      "chars": 1747,
+      "word_count_estimate": 287,
+      "first_lines": [
+        "Why Brainstorming Matters",
+        "Many students struggle most at the beginning of a project.",
+        "They may be assigned a topic but have no idea what angle to take. They may need to",
+        "write a story, build a presentation, design an experiment, or create a project, but feel",
+        "stuck because they cannot think of a strong starting point."
+      ]
+    },
+    {
+      "page": 64,
+      "chars": 1797,
+      "word_count_estimate": 285,
+      "first_lines": [
+        "This is one of the best uses of AI in creativity: not replacing the creator, but helping the",
+        "creator see more than one path.",
+        "Creativity Across Subjects",
+        "Students often assume brainstorming belongs only in creative writing or art, but AI-",
+        "supported creativity can be useful in many school settings."
+      ]
+    },
+    {
+      "page": 65,
+      "chars": 873,
+      "word_count_estimate": 139,
+      "first_lines": [
+        "Those decisions are what make the final project meaningful.",
+        "Asking Better Creative Prompts",
+        "Just like in other chapters, better prompts lead to better results.",
+        "A weak creative prompt might be:",
+        "Give me an idea for a project."
+      ]
+    },
+    {
+      "page": 66,
+      "chars": 1593,
+      "word_count_estimate": 246,
+      "first_lines": [
+        "Student Example",
+        "A student named Riley needs to create a presentation for class on the future of",
+        "transportation.",
+        "At first, Riley\u2019s only idea is \u201ccars in the future,\u201d which feels too broad. Riley asks AI:",
+        "Give me five creative presentation ideas about the future of transportation for a high"
+      ]
+    },
+    {
+      "page": 67,
+      "chars": 473,
+      "word_count_estimate": 79,
+      "first_lines": [
+        "Try This",
+        "Prompt Example",
+        "Give me three creative project ideas related to a topic I am",
+        "studying in school.",
+        "Then try this follow-up:"
+      ]
+    },
+    {
+      "page": 68,
+      "chars": 1199,
+      "word_count_estimate": 185,
+      "first_lines": [
+        "Figure 10.1 \u2014 AI Creativity Workflow",
+        "This figure illustrates how a student can move from a broad topic to multiple AI-",
+        "generated possibilities, select the strongest direction, develop it into a plan, and shape",
+        "the final work through personal choice and revision.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 69,
+      "chars": 1683,
+      "word_count_estimate": 256,
+      "first_lines": [
+        "Chapter 11 \u2014 AI for Productivity and",
+        "Organization",
+        "Key Question",
+        "How can students use AI to stay organized, manage their time, and complete",
+        "schoolwork more effectively?"
+      ]
+    },
+    {
+      "page": 70,
+      "chars": 1770,
+      "word_count_estimate": 300,
+      "first_lines": [
+        "Why Students Get Overwhelmed",
+        "Many students do not struggle because they are lazy or incapable. They struggle because",
+        "large tasks are hard to manage when they feel unclear.",
+        "A ten-page reading assignment, a science project, or a research paper may seem",
+        "manageable to a teacher who has completed many such tasks, but to a student, the same"
+      ]
+    },
+    {
+      "page": 71,
+      "chars": 1712,
+      "word_count_estimate": 278,
+      "first_lines": [
+        "This does not mean students should follow every AI-generated plan exactly. The point is",
+        "to create structure. Once the structure exists, students can adjust it to fit their own",
+        "schedule, class requirements, and working style.",
+        "Creating Work Plans and Schedules",
+        "AI can also be helpful when students are trying to plan their week, manage deadlines, or"
+      ]
+    },
+    {
+      "page": 72,
+      "chars": 1872,
+      "word_count_estimate": 316,
+      "first_lines": [
+        "A student preparing for a presentation might ask:",
+        "Organize these ideas into a three-part presentation structure.",
+        "In each case, AI is helping transform scattered material into a clearer format. This can",
+        "save time and reduce confusion, especially when students already have the information",
+        "but need help making sense of it."
+      ]
+    },
+    {
+      "page": 73,
+      "chars": 1259,
+      "word_count_estimate": 211,
+      "first_lines": [
+        "In this example, AI helps Leila get organized, but she still decides how to use the plan",
+        "and how much work to complete each day. The AI supports her productivity without",
+        "replacing her responsibility.",
+        "Classroom Idea",
+        "Teachers can use AI productively by having students compare an AI-generated work"
+      ]
+    },
+    {
+      "page": 74,
+      "chars": 1334,
+      "word_count_estimate": 211,
+      "first_lines": [
+        "Figure 11.1 \u2014 AI Productivity Planner",
+        "This figure illustrates a workflow in which a student turns a large assignment into",
+        "smaller tasks, organizes those tasks into a realistic schedule, and completes the work step",
+        "by step with AI support for planning and structure.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 75,
+      "chars": 284,
+      "word_count_estimate": 45,
+      "first_lines": [
+        "Part IV \u2014 AI Across the Subjects",
+        "This part shows what responsible AI use looks like inside real school subjects. Instead of",
+        "treating AI as a general tool only, these chapters explore how its strengths and limits",
+        "change across English, math, history, science, and wellness learning."
+      ]
+    },
+    {
+      "page": 76,
+      "chars": 2436,
+      "word_count_estimate": 370,
+      "first_lines": [
+        "Chapter 12 \u2014 AI in English Language Arts",
+        "Key Question",
+        "How can students use AI to become stronger readers, writers, speakers, and thinkers in",
+        "English language arts without losing their own voice or doing dishonest work?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 77,
+      "chars": 2249,
+      "word_count_estimate": 367,
+      "first_lines": [
+        "language, while another student preparing for discussion might ask for major themes to",
+        "watch for while reading.",
+        "Students often encounter difficult texts in ELA, especially when reading older literature,",
+        "unfamiliar vocabulary, or complex nonfiction. AI can be useful in these situations when",
+        "students need help understanding the language or structure of a text."
+      ]
+    },
+    {
+      "page": 78,
+      "chars": 1757,
+      "word_count_estimate": 278,
+      "first_lines": [
+        "Suggest two ways to make this paragraph more clear without changing my",
+        "meaning.",
+        "Or:",
+        "What is one place in this essay where I need stronger evidence?",
+        "These are strong uses because the student\u2019s own draft remains at the center. The AI is"
+      ]
+    },
+    {
+      "page": 79,
+      "chars": 1494,
+      "word_count_estimate": 245,
+      "first_lines": [
+        "\uf0b7 copying AI interpretations without understanding or agreeing with them",
+        "\uf0b7 submitting revised text that no longer sounds like the student\u2019s own writing",
+        "The question is not simply whether AI was used. The question is whether the student",
+        "still did the reading, thinking, and writing that the assignment was meant to develop.",
+        "Student Example"
+      ]
+    },
+    {
+      "page": 80,
+      "chars": 939,
+      "word_count_estimate": 149,
+      "first_lines": [
+        "Try This",
+        "Try using the prompt below as a starting point, then compare the response to the text",
+        "itself and to your own interpretation before deciding which ideas are actually useful.",
+        "Prompt Example",
+        "I\u2019m writing a literary analysis paragraph about a symbol in a novel. Help me"
+      ]
+    },
+    {
+      "page": 81,
+      "chars": 1848,
+      "word_count_estimate": 290,
+      "first_lines": [
+        "Chapter 13 \u2014 AI in Math",
+        "Key Question",
+        "How can students use AI to understand mathematical reasoning, practice more",
+        "effectively, and learn from mistakes without depending on AI for final answers?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 82,
+      "chars": 1701,
+      "word_count_estimate": 288,
+      "first_lines": [
+        "Using AI to Understand Steps",
+        "Many students get stuck in math not because the entire topic is impossible, but because",
+        "one step is unclear. AI can be helpful when students need a process explained more",
+        "carefully.",
+        "For example, a student might ask:"
+      ]
+    },
+    {
+      "page": 83,
+      "chars": 1432,
+      "word_count_estimate": 247,
+      "first_lines": [
+        "What is one common mistake students make on this kind of problem?",
+        "This is a strong use of AI because students often learn more from corrected mistakes",
+        "than from finished solutions. The student is still involved in the math. The tool is simply",
+        "helping reveal what needs more attention.",
+        "What AI Should Not Replace in Math"
+      ]
+    },
+    {
+      "page": 84,
+      "chars": 1578,
+      "word_count_estimate": 262,
+      "first_lines": [
+        "Student Example: Learning From the Second Try",
+        "A student named Marcus is learning systems of equations. He understands the general",
+        "idea, but one homework problem keeps going wrong. Instead of asking for the answer",
+        "immediately, he asks AI:",
+        "Show me how to solve this system step by step and explain why substitution"
+      ]
+    },
+    {
+      "page": 85,
+      "chars": 352,
+      "word_count_estimate": 54,
+      "first_lines": [
+        "Chapter Summary",
+        "In this chapter, you learned that AI can support math by explaining steps, generating",
+        "practice, and helping students learn from mistakes. You also learned that math",
+        "understanding depends on reasoning, not just answers. AI is most useful in math when",
+        "it strengthens practice and explanation rather than replacing the work of solving."
+      ]
+    },
+    {
+      "page": 86,
+      "chars": 1972,
+      "word_count_estimate": 287,
+      "first_lines": [
+        "Chapter 14 \u2014 AI in History and Social Studies",
+        "Key Question",
+        "How can students use AI to explore history and social studies more deeply while still",
+        "thinking critically, checking sources, and understanding multiple perspectives?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 87,
+      "chars": 1821,
+      "word_count_estimate": 286,
+      "first_lines": [
+        "Using AI to Build Background Knowledge",
+        "One of the best uses of AI in history is at the beginning of a topic. Students often need",
+        "a quick overview before they are ready to study details more closely.",
+        "For example, a student beginning a unit on the Industrial Revolution might ask:",
+        "Give me an overview of the Industrial Revolution and explain why it changed"
+      ]
+    },
+    {
+      "page": 88,
+      "chars": 1725,
+      "word_count_estimate": 248,
+      "first_lines": [
+        "Compare how factory owners and workers experienced the Industrial Revolution.",
+        "These questions encourage deeper thinking because they move students beyond a single",
+        "viewpoint. They also help students prepare for discussions, essays, and document-based",
+        "questions where multiple perspectives matter.",
+        "AI and Historical Simulations"
+      ]
+    },
+    {
+      "page": 89,
+      "chars": 1464,
+      "word_count_estimate": 232,
+      "first_lines": [
+        "Using AI Responsibly in History and Social Studies",
+        "In history and social studies, responsible use means treating AI as a tool for inquiry",
+        "rather than as evidence. AI can help students organize events, compare viewpoints, or",
+        "clarify a topic, but the student still has to check dates, confirm claims, and ask what",
+        "perspective may be missing. The more a task depends on evidence and source"
+      ]
+    },
+    {
+      "page": 90,
+      "chars": 946,
+      "word_count_estimate": 140,
+      "first_lines": [
+        "Try This",
+        "Use the prompt below as a way to begin historical inquiry, not to end it. After",
+        "reading the response, pay attention to what feels informative, what seems incomplete,",
+        "and what still needs source support.",
+        "Prompt Example"
+      ]
+    },
+    {
+      "page": 91,
+      "chars": 2026,
+      "word_count_estimate": 279,
+      "first_lines": [
+        "Chapter 15 \u2014 AI in Science",
+        "Key Question",
+        "How can students use AI to understand scientific ideas, ask better questions, and",
+        "strengthen lab and class learning while still relying on evidence and scientific reasoning?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 92,
+      "chars": 1602,
+      "word_count_estimate": 256,
+      "first_lines": [
+        "AI for Explaining Difficult Concepts",
+        "One of the best uses of AI in science is asking it to explain ideas more clearly. A student",
+        "who does not fully understand osmosis, Newton\u2019s laws, chemical bonding, or the rock",
+        "cycle may benefit from a simpler explanation or an analogy. A biology student, for",
+        "example, might ask for photosynthesis to be explained in simple terms with an everyday"
+      ]
+    },
+    {
+      "page": 93,
+      "chars": 1774,
+      "word_count_estimate": 259,
+      "first_lines": [
+        "AI and Scientific Questions",
+        "AI can also help students ask better science questions.",
+        "Science learning becomes stronger when students are curious about how and why things",
+        "happen. AI can support that curiosity by generating follow-up questions, possible",
+        "hypotheses, or review prompts."
+      ]
+    },
+    {
+      "page": 94,
+      "chars": 1577,
+      "word_count_estimate": 253,
+      "first_lines": [
+        "Student Example",
+        "A student named Elena is reviewing cellular respiration for a biology test. Her notes feel",
+        "complicated, and she keeps mixing up the role of mitochondria and glucose.",
+        "She asks AI:",
+        "Explain cellular respiration in simple terms for a high school biology student and"
+      ]
+    },
+    {
+      "page": 95,
+      "chars": 371,
+      "word_count_estimate": 51,
+      "first_lines": [
+        "Chapter Summary",
+        "In this chapter, you learned that AI can support science by clarifying concepts,",
+        "comparing vocabulary, generating questions, and helping students review more actively.",
+        "You also learned that science depends on evidence, accuracy, and safe procedures, so AI",
+        "should support scientific learning rather than replace observation, data, or teacher"
+      ]
+    },
+    {
+      "page": 96,
+      "chars": 1981,
+      "word_count_estimate": 286,
+      "first_lines": [
+        "Chapter 16 \u2014 AI in PE, Health, and Personal",
+        "Wellness",
+        "Key Question",
+        "How can students use AI to support fitness, health learning, goal setting, and personal",
+        "wellness in safe, thoughtful ways without replacing professional or teacher guidance?"
+      ]
+    },
+    {
+      "page": 97,
+      "chars": 1715,
+      "word_count_estimate": 273,
+      "first_lines": [
+        "AI for Understanding Health and Fitness Concepts",
+        "For example, a student might ask:",
+        "Explain the difference between aerobic and anaerobic exercise in simple terms.",
+        "Or:",
+        "What are the main benefits of sleep for learning and physical recovery?"
+      ]
+    },
+    {
+      "page": 98,
+      "chars": 1396,
+      "word_count_estimate": 191,
+      "first_lines": [
+        "Privacy and Personal Boundaries",
+        "Students must be especially careful about privacy in this subject area.",
+        "They should avoid entering sensitive personal information into AI tools, including:",
+        "\uf0b7 private health details",
+        "\uf0b7 mental health crises or emergency concerns"
+      ]
+    },
+    {
+      "page": 99,
+      "chars": 1435,
+      "word_count_estimate": 227,
+      "first_lines": [
+        "Irresponsible uses include:",
+        "\uf0b7 sharing private health information",
+        "\uf0b7 using AI instead of trusted adults for serious concerns",
+        "\uf0b7 following unverified fitness or nutrition advice blindly",
+        "\uf0b7 treating AI as a doctor, therapist, or emergency response tool"
+      ]
+    },
+    {
+      "page": 100,
+      "chars": 1124,
+      "word_count_estimate": 178,
+      "first_lines": [
+        "Try This",
+        "Use the prompt below to turn a general wellness goal into something more realistic",
+        "and specific. As you read, think about which suggestions feel practical for your life",
+        "and which ones would still need support from a trusted adult.",
+        "Prompt Example"
+      ]
+    },
+    {
+      "page": 101,
+      "chars": 291,
+      "word_count_estimate": 44,
+      "first_lines": [
+        "Part V \u2014 Responsible and Future-Ready AI Use",
+        "This part looks beyond classroom tasks and focuses on the bigger responsibilities that",
+        "come with using AI well. It connects ethics, integrity, future readiness, and long-term",
+        "learning habits so students can use AI with judgment and confidence."
+      ]
+    },
+    {
+      "page": 102,
+      "chars": 1491,
+      "word_count_estimate": 217,
+      "first_lines": [
+        "Chapter 17 \u2014 Using AI Responsibly",
+        "Key Question",
+        "What does it mean for students to use artificial intelligence responsibly, ethically, and",
+        "honestly in school?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 103,
+      "chars": 1180,
+      "word_count_estimate": 189,
+      "first_lines": [
+        "Responsibility Begins With Purpose",
+        "The first question students should ask when using AI is simple:",
+        "Why am I using this tool?",
+        "That question matters because the same AI feature can be used responsibly in one",
+        "situation and irresponsibly in another."
+      ]
+    },
+    {
+      "page": 104,
+      "chars": 2136,
+      "word_count_estimate": 347,
+      "first_lines": [
+        "Academic Integrity and AI",
+        "Schools have always expected students to do their own work honestly.",
+        "That expectation does not disappear just because new technology exists.",
+        "Academic integrity means being truthful about what work is yours, what ideas came",
+        "from others, and what kind of help you used. In the past, that meant not copying from"
+      ]
+    },
+    {
+      "page": 105,
+      "chars": 1540,
+      "word_count_estimate": 212,
+      "first_lines": [
+        "Verifying AI-Generated Information",
+        "Responsibility also includes checking whether AI responses are accurate.",
+        "As you learned earlier in the book, AI systems can generate incorrect information that",
+        "sounds polished and believable. This can include false facts, made-up details, inaccurate",
+        "summaries, and invented sources."
+      ]
+    },
+    {
+      "page": 106,
+      "chars": 1087,
+      "word_count_estimate": 157,
+      "first_lines": [
+        "When a topic has multiple perspectives, responsible AI use means asking broader",
+        "questions, comparing responses, and checking additional sources rather than accepting",
+        "one answer too quickly.",
+        "This is another reason human judgment matters so much. AI can help students explore",
+        "ideas, but students must still evaluate fairness, accuracy, and perspective."
+      ]
+    },
+    {
+      "page": 107,
+      "chars": 1562,
+      "word_count_estimate": 249,
+      "first_lines": [
+        "Using AI to Strengthen Learning",
+        "The most responsible use of AI is the kind that clearly strengthens learning.",
+        "Students are usually on solid ground when they use AI to:",
+        "\uf0b7 ask for clearer explanations",
+        "\uf0b7 generate practice questions"
+      ]
+    },
+    {
+      "page": 108,
+      "chars": 1238,
+      "word_count_estimate": 196,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use this chapter to lead a discussion about what responsible AI use looks",
+        "like in real classroom situations.",
+        "For example, students can be given sample scenarios and asked to decide whether each",
+        "one reflects responsible or irresponsible use."
+      ]
+    },
+    {
+      "page": 109,
+      "chars": 1318,
+      "word_count_estimate": 200,
+      "first_lines": [
+        "Figure 17.1 \u2014 Responsible AI Use Framework",
+        "This figure illustrates a responsible-use sequence in which a student begins with a",
+        "learning goal, uses AI for support, evaluates the response, verifies important",
+        "information, and makes an ethical decision about how to use the result.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 110,
+      "chars": 1746,
+      "word_count_estimate": 264,
+      "first_lines": [
+        "Chapter 18 \u2014 AI, Media Literacy, and What to",
+        "Trust",
+        "Key Question",
+        "How can students tell what to trust in a world where AI can generate realistic text,",
+        "images, audio, and video that may be misleading or false?"
+      ]
+    },
+    {
+      "page": 111,
+      "chars": 2030,
+      "word_count_estimate": 316,
+      "first_lines": [
+        "What AI-Generated Misinformation Looks Like",
+        "Misinformation is false or misleading information that spreads as if it were true.",
+        "Sometimes it is shared by people who do not realize it is wrong. Other times it is created",
+        "or reshaped on purpose to influence, confuse, embarrass, or manipulate others.",
+        "AI makes misinformation easier to produce because it can generate believable content"
+      ]
+    },
+    {
+      "page": 112,
+      "chars": 2390,
+      "word_count_estimate": 363,
+      "first_lines": [
+        "False Summaries and Confident Errors",
+        "Not all AI misinformation looks dramatic. Some of it looks ordinary and helpful.",
+        "A student might read an AI-generated summary of an article, video, or event and assume",
+        "it captures the truth. But summaries can be misleading when they leave out context,",
+        "flatten disagreement, exaggerate one point, or quietly include incorrect details. This is"
+      ]
+    },
+    {
+      "page": 113,
+      "chars": 2064,
+      "word_count_estimate": 325,
+      "first_lines": [
+        "locate, interpret, and evaluate media in a world shaped by deepfakes and",
+        "misinformation.",
+        "Useful verification habits include:",
+        "\uf0b7 cross-checking a claim with trusted news or educational sources",
+        "\uf0b7 using reverse-image search when a photo feels suspicious or appears out of"
+      ]
+    },
+    {
+      "page": 114,
+      "chars": 1137,
+      "word_count_estimate": 186,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can show students a mix of media examples such as a real news image, an AI-",
+        "generated image, a misleading caption, and a short summary of a current event. Students",
+        "can work in groups to decide what questions they would ask before trusting or sharing",
+        "each one."
+      ]
+    },
+    {
+      "page": 115,
+      "chars": 1416,
+      "word_count_estimate": 229,
+      "first_lines": [
+        "Figure 18.1 \u2014 Verifying AI-Generated Media",
+        "This figure illustrates a verification path that begins with a suspicious post, image, or clip",
+        "and moves through a pause, source check, reverse-image search or cross-check, evidence",
+        "review, and a final decision about whether the content deserves trust.",
+        "Students do not just need to learn how to use AI. They also need to learn how to live in"
+      ]
+    },
+    {
+      "page": 116,
+      "chars": 1594,
+      "word_count_estimate": 258,
+      "first_lines": [
+        "Chapter 19 \u2014 AI and the Future of Work",
+        "Key Question",
+        "How is artificial intelligence changing jobs, careers, and the skills students will need in",
+        "the future?",
+        "Learning Objectives"
+      ]
+    },
+    {
+      "page": 117,
+      "chars": 1916,
+      "word_count_estimate": 306,
+      "first_lines": [
+        "AI Is Changing Work, Not Ending Work",
+        "One of the biggest misunderstandings about AI is the belief that it will simply \u201ctake all",
+        "the jobs.\u201d",
+        "The truth is more complicated.",
+        "AI is changing how work gets done, especially in jobs that involve repetitive tasks, large"
+      ]
+    },
+    {
+      "page": 118,
+      "chars": 1791,
+      "word_count_estimate": 267,
+      "first_lines": [
+        "The Skills That Will Matter More",
+        "As AI becomes more capable, some human skills become even more important.",
+        "Students often assume that if AI can generate writing, solve problems, or answer",
+        "questions, then human thinking matters less. In reality, the opposite is often true.",
+        "When information becomes easier to generate, it becomes more important to evaluate,"
+      ]
+    },
+    {
+      "page": 119,
+      "chars": 1965,
+      "word_count_estimate": 323,
+      "first_lines": [
+        "The goal is not to become dependent on AI. The goal is to become capable in a world",
+        "where AI is part of daily work.",
+        "AI Will Affect Different Careers in Different Ways",
+        "Not every career will be changed in exactly the same way.",
+        "Some jobs may rely heavily on AI tools for efficiency. Others may use AI only"
+      ]
+    },
+    {
+      "page": 120,
+      "chars": 721,
+      "word_count_estimate": 117,
+      "first_lines": [
+        "Student Example",
+        "A student named Jada enjoys both art and technology but is unsure how those interests",
+        "could connect in a future career.",
+        "She asks AI:",
+        "What careers combine creativity and technology?"
+      ]
+    },
+    {
+      "page": 121,
+      "chars": 1114,
+      "word_count_estimate": 187,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use this chapter as part of a discussion on future readiness.",
+        "Students might work in groups to choose a career field\u2014such as healthcare, education,",
+        "engineering, media, or law\u2014and investigate how AI may affect that field. They can then",
+        "present:"
+      ]
+    },
+    {
+      "page": 122,
+      "chars": 926,
+      "word_count_estimate": 152,
+      "first_lines": [
+        "Figure 19.1 \u2014 AI Skills for the Future",
+        "This figure illustrates AI literacy at the center of a larger future-ready skill set that",
+        "includes critical thinking, communication, creativity, research, problem solving,",
+        "adaptability, and ethical judgment.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 123,
+      "chars": 489,
+      "word_count_estimate": 79,
+      "first_lines": [
+        "Chapter Summary",
+        "In this chapter, you learned how AI is changing the world of work, why AI literacy is",
+        "becoming an important skill, and why human strengths such as critical thinking,",
+        "creativity, communication, and ethics remain essential. You also explored how students",
+        "can use AI to begin thinking more clearly about future careers."
+      ]
+    },
+    {
+      "page": 124,
+      "chars": 1926,
+      "word_count_estimate": 305,
+      "first_lines": [
+        "Chapter 20 \u2014 The 25 Powerful Prompts Every",
+        "Student Should Know",
+        "Key Question",
+        "What kinds of prompts help students get the most useful, responsible, and",
+        "educational results from AI?"
+      ]
+    },
+    {
+      "page": 125,
+      "chars": 1147,
+      "word_count_estimate": 182,
+      "first_lines": [
+        "In other words, strong prompts guide the AI toward being helpful in a specific way.",
+        "For example, compare these two prompts:",
+        "Weak prompt:",
+        "Explain photosynthesis.",
+        "Stronger prompt:"
+      ]
+    },
+    {
+      "page": 126,
+      "chars": 1096,
+      "word_count_estimate": 184,
+      "first_lines": [
+        "4. Compare two ideas",
+        "Compare these two concepts in a way that makes the difference easy to understand.",
+        "Why it works:",
+        "Comparison helps students sort out details that may otherwise seem too similar.",
+        "5. Identify common misunderstandings"
+      ]
+    },
+    {
+      "page": 127,
+      "chars": 1283,
+      "word_count_estimate": 202,
+      "first_lines": [
+        "9. Turn notes into a study guide",
+        "Turn these notes into a short study guide with key ideas and vocabulary.",
+        "Why it works:",
+        "This helps students organize what matters most before reviewing.",
+        "10. Create flashcards"
+      ]
+    },
+    {
+      "page": 128,
+      "chars": 1135,
+      "word_count_estimate": 175,
+      "first_lines": [
+        "15. Simulate a historical interview",
+        "Act as [historical figure] during [time period] and answer my questions as if I were",
+        "interviewing you.",
+        "Why it works:",
+        "This makes history more interactive and encourages perspective-based questioning."
+      ]
+    },
+    {
+      "page": 129,
+      "chars": 1132,
+      "word_count_estimate": 189,
+      "first_lines": [
+        "20. Improve transitions",
+        "Suggest better transitions between these ideas so the writing flows more smoothly.",
+        "Why it works:",
+        "This is especially useful for students who struggle with structure and paragraph flow.",
+        "Prompts for Problem Solving and Coding"
+      ]
+    },
+    {
+      "page": 130,
+      "chars": 1086,
+      "word_count_estimate": 176,
+      "first_lines": [
+        "Prompts for Creativity and Projects",
+        "These prompts help students generate new ideas and push projects in more",
+        "original directions.",
+        "25. Expand a project idea",
+        "Give me three creative ways to make this project more original or interesting."
+      ]
+    },
+    {
+      "page": 131,
+      "chars": 689,
+      "word_count_estimate": 121,
+      "first_lines": [
+        "Student Example",
+        "A student named Sophia is preparing for a test on the causes of World War I and also",
+        "needs to write a short paragraph response for class.",
+        "She uses several prompts from this chapter:",
+        "First, she asks:"
+      ]
+    },
+    {
+      "page": 132,
+      "chars": 942,
+      "word_count_estimate": 145,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can turn this chapter into a practical workshop by having students work in",
+        "small groups to test and compare prompts.",
+        "For example, each group could be assigned one category:",
+        "\uf0b7 learning"
+      ]
+    },
+    {
+      "page": 133,
+      "chars": 694,
+      "word_count_estimate": 113,
+      "first_lines": [
+        "Figure 20.1 \u2014 Prompt Development Flow",
+        "This figure illustrates how a student moves from a learning need to a clear prompt,",
+        "receives an AI response, reflects on the result, revises the prompt if needed, and arrives",
+        "at a stronger final outcome.",
+        "Why This Chapter Matters"
+      ]
+    },
+    {
+      "page": 134,
+      "chars": 2086,
+      "word_count_estimate": 327,
+      "first_lines": [
+        "Chapter 21 \u2014 Becoming an AI-Empowered",
+        "Learner",
+        "Key Question",
+        "How can students use artificial intelligence in ways that strengthen learning, curiosity,",
+        "and future readiness?"
+      ]
+    },
+    {
+      "page": 135,
+      "chars": 1915,
+      "word_count_estimate": 305,
+      "first_lines": [
+        "Curiosity Still Matters Most",
+        "One of the greatest mistakes students can make is thinking that AI replaces the need for",
+        "curiosity.",
+        "In reality, curiosity becomes even more important in the age of AI.",
+        "AI can generate answers quickly, but it does not decide which questions matter most. It"
+      ]
+    },
+    {
+      "page": 136,
+      "chars": 1589,
+      "word_count_estimate": 258,
+      "first_lines": [
+        "AI Should Strengthen Independence, Not Weaken It",
+        "There is a difference between getting help and becoming dependent.",
+        "A student who uses AI to understand a concept, organize a project, or practice a skill is",
+        "using the technology in a way that strengthens independence. Over time, that student",
+        "should become more confident, more capable, and more prepared to do similar work on"
+      ]
+    },
+    {
+      "page": 137,
+      "chars": 1394,
+      "word_count_estimate": 237,
+      "first_lines": [
+        "Those habits matter in school, but they matter just as much in adult life.",
+        "Student Example",
+        "A student named Maya began using AI mostly to help with homework.",
+        "At first, she used it to explain science concepts and generate quiz questions. Over time,",
+        "she became more comfortable asking follow-up questions, checking explanations against"
+      ]
+    },
+    {
+      "page": 138,
+      "chars": 840,
+      "word_count_estimate": 145,
+      "first_lines": [
+        "As you continue using AI, challenge yourself to use it in ways that make you more",
+        "thoughtful, not less.",
+        "Try to be the kind of student who:",
+        "\uf0b7 asks better questions",
+        "\uf0b7 looks for understanding, not just speed"
+      ]
+    },
+    {
+      "page": 139,
+      "chars": 243,
+      "word_count_estimate": 33,
+      "first_lines": [
+        "Figure 21.1 \u2014 The AI-Empowered Learner",
+        "This figure illustrates the student at the center of an interconnected learning system",
+        "shaped by curiosity, critical thinking, responsible AI use, creativity, practice, reflection,",
+        "and lifelong growth."
+      ]
+    },
+    {
+      "page": 140,
+      "chars": 1178,
+      "word_count_estimate": 202,
+      "first_lines": [
+        "Why This Chapter Matters",
+        "This chapter matters because it brings the book\u2019s main message into focus.",
+        "AI is powerful. It can support learning in remarkable ways. But the real difference will",
+        "always come from how students choose to use it.",
+        "Students who use AI only for quick answers may gain convenience."
+      ]
+    },
+    {
+      "page": 141,
+      "chars": 2223,
+      "word_count_estimate": 373,
+      "first_lines": [
+        "Appendix A \u2014 Using AI to Build With AI",
+        "Purpose of This Appendix",
+        "This appendix shows students how to use AI for a different kind of work: not just",
+        "answering questions, but helping plan, design, build, test, and improve a project. The",
+        "goal is to introduce a practical workflow for using AI across multiple stages of creation"
+      ]
+    },
+    {
+      "page": 142,
+      "chars": 2098,
+      "word_count_estimate": 347,
+      "first_lines": [
+        "A Student-Friendly Example Project",
+        "To make this process concrete, this appendix uses a simple sample project: an AI Study",
+        "Quiz Generator. The idea is straightforward. A student enters a topic they want to",
+        "review, and the project displays a small set of quiz questions for practice.",
+        "This kind of project works well as an example because it connects directly to the rest of"
+      ]
+    },
+    {
+      "page": 143,
+      "chars": 1989,
+      "word_count_estimate": 329,
+      "first_lines": [
+        "The Builder",
+        "This role helps generate the first workable version of the project. Depending on the",
+        "task, that might mean writing code, drafting text, creating a checklist, building slides, or",
+        "producing a rough prototype.",
+        "The Tester and Reviewer"
+      ]
+    },
+    {
+      "page": 144,
+      "chars": 1910,
+      "word_count_estimate": 316,
+      "first_lines": [
+        "Step 4 \u2014 Build a First Draft or Prototype",
+        "Once the structure is clear, AI can help generate the first version. If the project involves",
+        "code, this may be starter code. If it involves a presentation or plan, it may be a draft",
+        "outline or rough content. The goal at this stage is not perfection. The goal is to create",
+        "something workable that can be improved."
+      ]
+    },
+    {
+      "page": 145,
+      "chars": 1864,
+      "word_count_estimate": 298,
+      "first_lines": [
+        "Common Mistakes to Avoid",
+        "\uf0b7 Trying to build something too large before the simple version works",
+        "\uf0b7 Accepting AI output without checking whether it matches the goal",
+        "\uf0b7 Letting AI make all the design decisions without student judgment",
+        "\uf0b7 Using code or project content that the student does not understand"
+      ]
+    },
+    {
+      "page": 146,
+      "chars": 1217,
+      "word_count_estimate": 196,
+      "first_lines": [
+        "Recommended AI Tools for Students",
+        "Artificial intelligence tools are becoming part of everyday learning. Students can now use",
+        "AI to ask questions, study for tests, organize ideas, improve writing, generate images,",
+        "practice coding, and explore possible careers. But not every AI tool does the same thing",
+        "well. Some are strongest at conversation and explanation, while others are better for"
+      ]
+    },
+    {
+      "page": 147,
+      "chars": 1649,
+      "word_count_estimate": 233,
+      "first_lines": [
+        "AI Chat Assistants",
+        "AI chat assistants are the tools most students will recognize first.",
+        "These systems allow students to ask questions in conversational language and receive",
+        "responses that feel more like dialogue than a search engine result. They are often useful",
+        "for explanation, brainstorming, summarizing, studying, and practicing follow-up"
+      ]
+    },
+    {
+      "page": 148,
+      "chars": 1662,
+      "word_count_estimate": 231,
+      "first_lines": [
+        "At the same time, students should remember that ChatGPT can make mistakes.",
+        "Important information should still be checked against class materials, teacher guidance,",
+        "or trusted sources.",
+        "Claude",
+        "Claude is another AI chat assistant that many students find useful for explanation,"
+      ]
+    },
+    {
+      "page": 149,
+      "chars": 1661,
+      "word_count_estimate": 234,
+      "first_lines": [
+        "\uf0b7 create outlines for essays or presentations",
+        "\uf0b7 summarize written material",
+        "\uf0b7 support planning and note organization",
+        "\uf0b7 assist with data-heavy school tasks",
+        "It is especially practical for students who already rely on Microsoft applications for their"
+      ]
+    },
+    {
+      "page": 150,
+      "chars": 1115,
+      "word_count_estimate": 146,
+      "first_lines": [
+        "AI Research Tools",
+        "Research tools are different from chat assistants because they are more focused on",
+        "helping users locate, organize, and verify information.",
+        "These tools can be especially useful when students are:",
+        "\uf0b7 starting a research paper"
+      ]
+    },
+    {
+      "page": 151,
+      "chars": 1137,
+      "word_count_estimate": 164,
+      "first_lines": [
+        "Elicit",
+        "Elicit is more research-oriented and may be especially useful for students or advanced",
+        "learners who want help finding academic-style information or summarizing research",
+        "sources. It is less of a general chat assistant and more of a research helper.",
+        "Students may use Elicit to:"
+      ]
+    },
+    {
+      "page": 152,
+      "chars": 1402,
+      "word_count_estimate": 203,
+      "first_lines": [
+        "AI Writing Tools",
+        "Some AI tools are designed specifically to help with writing, editing, and organization.",
+        "These tools are often best used after a student has already started writing. They can",
+        "help improve clarity, grammar, structure, and tone, but they should not replace the",
+        "student\u2019s own ideas and voice."
+      ]
+    },
+    {
+      "page": 153,
+      "chars": 952,
+      "word_count_estimate": 134,
+      "first_lines": [
+        "AI Image and Design Tools",
+        "Some AI tools are especially helpful for visual work.",
+        "These tools can support:",
+        "\uf0b7 school presentations",
+        "\uf0b7 posters"
+      ]
+    },
+    {
+      "page": 154,
+      "chars": 1351,
+      "word_count_estimate": 185,
+      "first_lines": [
+        "Canva AI",
+        "Canva is especially useful because it combines design tools with AI-assisted features.",
+        "Students can use it to create polished presentations, posters, reports, or infographics.",
+        "This makes Canva especially practical for school because it supports both creativity and",
+        "communication."
+      ]
+    },
+    {
+      "page": 155,
+      "chars": 1614,
+      "word_count_estimate": 272,
+      "first_lines": [
+        "Used poorly, however, it can make students overdependent. That is why it should be",
+        "treated as a coach, not as a replacement for understanding.",
+        "Choosing the Right Tool",
+        "One of the most important AI skills students can develop is learning how to choose the",
+        "right tool for the task."
+      ]
+    },
+    {
+      "page": 156,
+      "chars": 1428,
+      "word_count_estimate": 220,
+      "first_lines": [
+        "Classroom Idea",
+        "Teachers can use this section to help students compare AI tool categories rather than",
+        "focusing only on brand names.",
+        "For example, a class might discuss:",
+        "\uf0b7 Which tool is best for studying?"
+      ]
+    },
+    {
+      "page": 157,
+      "chars": 1544,
+      "word_count_estimate": 235,
+      "first_lines": [
+        "Glossary of AI Terms",
+        "How to use this glossary",
+        "Students do not need to memorize every definition in this section.",
+        "Instead, this glossary is meant to be a reference tool. Readers can return to it",
+        "whenever they encounter a word in the book that feels unfamiliar or when they"
+      ]
+    },
+    {
+      "page": 158,
+      "chars": 1473,
+      "word_count_estimate": 224,
+      "first_lines": [
+        "Chatbot",
+        "A computer program designed to simulate conversation with a user through text or",
+        "voice. Many modern AI chatbots are powered by large language models.",
+        "Collaboration",
+        "Working together to complete a task or solve a problem. In the context of this book,"
+      ]
+    },
+    {
+      "page": 159,
+      "chars": 1421,
+      "word_count_estimate": 203,
+      "first_lines": [
+        "Deep Learning",
+        "A type of machine learning that uses layered systems called neural networks to recognize",
+        "complex patterns in large amounts of data.",
+        "Digital Literacy",
+        "The ability to use digital tools effectively and responsibly. AI literacy is becoming an"
+      ]
+    },
+    {
+      "page": 160,
+      "chars": 1297,
+      "word_count_estimate": 200,
+      "first_lines": [
+        "Innovation",
+        "The process of creating or improving ideas, systems, or tools in ways that add value or",
+        "solve problems.",
+        "Iteration",
+        "The process of improving something through repeated attempts. In AI use, students"
+      ]
+    },
+    {
+      "page": 161,
+      "chars": 1261,
+      "word_count_estimate": 190,
+      "first_lines": [
+        "Plagiarism",
+        "Presenting someone else\u2019s words, ideas, or work as your own without proper credit. AI",
+        "use can create plagiarism risks if students submit work they did not truly create or",
+        "understand.",
+        "Prediction"
+      ]
+    },
+    {
+      "page": 162,
+      "chars": 1303,
+      "word_count_estimate": 201,
+      "first_lines": [
+        "Robotics",
+        "A field of technology focused on machines that can perform physical tasks, often with",
+        "some level of automation or AI support.",
+        "Simulation",
+        "A representation of a real-world process or scenario. AI can be used in simulations for"
+      ]
+    },
+    {
+      "page": 163,
+      "chars": 347,
+      "word_count_estimate": 53,
+      "first_lines": [
+        "Verification",
+        "The act of checking information to confirm that it is accurate and trustworthy.",
+        "Workflow",
+        "A sequence of steps used to complete a task. AI can help students understand or",
+        "improve workflows in studying, writing, coding, and projects."
+      ]
+    },
+    {
+      "page": 164,
+      "chars": 1703,
+      "word_count_estimate": 200,
+      "first_lines": [
+        "Recommended Resources and Sources",
+        "The following sources informed the research-backed guidance in this curriculum edition.",
+        "Tool features and access policies change over time; teachers and families should check",
+        "current official documentation before implementation.",
+        "U.S. Department of Education. Artificial Intelligence and the Future of Teaching and"
+      ]
+    },
+    {
+      "page": 165,
+      "chars": 1518,
+      "word_count_estimate": 224,
+      "first_lines": [
+        "About the Author",
+        "Ronnie \u201cRon\u201d Aceto is a technology leader, educator, and advocate for thoughtful,",
+        "responsible artificial intelligence use in education.",
+        "With more than 30 years of experience in software, digital systems, and leadership, Ron",
+        "has spent much of his career helping organizations solve complex problems through"
+      ]
+    }
+  ],
+  "chapter_candidates": [
+    {
+      "page": 3,
+      "line": "Copyright \u00a9 2026 Ron Aceto. All rights reserved. No part of this publication may be"
+    },
+    {
+      "page": 4,
+      "line": "1. Use AI to learn, not replace thinking."
+    },
+    {
+      "page": 4,
+      "line": "2. Be honest about my work and follow teacher directions."
+    },
+    {
+      "page": 4,
+      "line": "3. Verify important information before trusting it."
+    },
+    {
+      "page": 4,
+      "line": "4. Ask better questions and use AI to deepen understanding."
+    },
+    {
+      "page": 4,
+      "line": "5. Protect personal information and respect the privacy of others."
+    },
+    {
+      "page": 4,
+      "line": "6. Use AI responsibly at school and at home."
+    },
+    {
+      "page": 5,
+      "line": "Part I \u2014 Understanding AI ................................................................................................................................ 6"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 1 \u2014 Understanding Artificial Intelligence ........................................................................................ 7"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 2 \u2014 How AI Actually Works............................................................................................................ 12"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 3 \u2014 AI as a Learning Partner ........................................................................................................... 18"
+    },
+    {
+      "page": 5,
+      "line": "Part II \u2014 Learning to Prompt and Think with AI ....................................................................................... 23"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 4 \u2014 The Power of Good Prompts .................................................................................................. 24"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 5 \u2014 AI for Research and Critical Thinking .................................................................................... 27"
+    },
+    {
+      "page": 5,
+      "line": "Part III \u2014 AI for School Success .................................................................................................................... 33"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 6 \u2014 AI for Studying Smarter ............................................................................................................ 34"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 7 \u2014 AI for Writing, Revision, and Communication ..................................................................... 40"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 8 \u2014 AI for Problem Solving ............................................................................................................. 47"
+    },
+    {
+      "page": 5,
+      "line": "Chapter 9 \u2014 AI for Coding Help ................................................................................................................... 54"
+    },
+    {
+      "page": 6,
+      "line": "Part I \u2014 Understanding AI"
+    },
+    {
+      "page": 6,
+      "line": "This part introduces the foundation students need before using AI more actively: what"
+    },
+    {
+      "page": 7,
+      "line": "Chapter 1 \u2014 Understanding Artificial Intelligence"
+    },
+    {
+      "page": 7,
+      "line": "\uf0b7 Recognize how AI is already part of everyday life"
+    },
+    {
+      "page": 7,
+      "line": "or advanced technology labs. It is already part of everyday life."
+    },
+    {
+      "page": 9,
+      "line": "The most important idea in this chapter is that AI should be understood as a tool for"
+    },
+    {
+      "page": 11,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 11,
+      "line": "In this chapter, you explored the basic idea of artificial intelligence and why it matters"
+    },
+    {
+      "page": 12,
+      "line": "Chapter 2 \u2014 How AI Actually Works"
+    },
+    {
+      "page": 17,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 17,
+      "line": "In this chapter, you learned that AI systems are trained on large amounts of data, use"
+    },
+    {
+      "page": 17,
+      "line": "In the next chapter, we will build on this idea by exploring how AI can become a"
+    },
+    {
+      "page": 18,
+      "line": "Chapter 3 \u2014 AI as a Learning Partner"
+    },
+    {
+      "page": 22,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 22,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 22,
+      "line": "In this chapter, you learned that AI is most useful when it helps students build"
+    },
+    {
+      "page": 23,
+      "line": "Part II \u2014 Learning to Prompt and Think with AI"
+    },
+    {
+      "page": 23,
+      "line": "This part focuses on one of the most important student AI skills: asking better"
+    },
+    {
+      "page": 24,
+      "line": "Chapter 4 \u2014 The Power of Good Prompts"
+    },
+    {
+      "page": 27,
+      "line": "Chapter 5 \u2014 AI for Research and Critical"
+    },
+    {
+      "page": 31,
+      "line": "Teachers can use AI as part of a research literacy lesson by asking students to compare"
+    },
+    {
+      "page": 31,
+      "line": "compare that answer with a class handout or textbook chapter. They can look for:"
+    },
+    {
+      "page": 32,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 32,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 32,
+      "line": "In this chapter, you learned how AI can help students begin research, generate better"
+    },
+    {
+      "page": 33,
+      "line": "Part III \u2014 AI for School Success"
+    },
+    {
+      "page": 33,
+      "line": "This part focuses on the everyday ways students can use AI to become more effective"
+    },
+    {
+      "page": 34,
+      "line": "Chapter 6 \u2014 AI for Studying Smarter"
+    },
+    {
+      "page": 34,
+      "line": "student can spend an hour rereading a chapter and still feel unprepared when the test"
+    },
+    {
+      "page": 37,
+      "line": "Teachers can use this chapter to help students see how AI becomes most useful when it"
+    },
+    {
+      "page": 38,
+      "line": "\uf0b7 summarize a chapter"
+    },
+    {
+      "page": 40,
+      "line": "Chapter 7 \u2014 AI for Writing, Revision, and"
+    },
+    {
+      "page": 43,
+      "line": "This is one of the most important rules in this chapter."
+    },
+    {
+      "page": 46,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 46,
+      "line": "This chapter matters because it teaches students how to use AI for support without"
+    },
+    {
+      "page": 47,
+      "line": "Chapter 8 \u2014 AI for Problem Solving"
+    },
+    {
+      "page": 50,
+      "line": "This chapter may be one of the easiest places for students to misuse AI."
+    },
+    {
+      "page": 53,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 53,
+      "line": "That is why this chapter matters. It teaches students how to keep control of the learning"
+    },
+    {
+      "page": 53,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 53,
+      "line": "In this chapter, you learned how AI can support problem solving by explaining steps,"
+    },
+    {
+      "page": 54,
+      "line": "Chapter 9 \u2014 AI for Coding Help"
+    },
+    {
+      "page": 56,
+      "line": "Debugging means identifying and fixing problems in code. This is a normal part of"
+    },
+    {
+      "page": 58,
+      "line": "\uf0b7 explaining which part to build first"
+    },
+    {
+      "page": 61,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 61,
+      "line": "That is why this chapter matters. It shows students how to use AI in a way that builds"
+    },
+    {
+      "page": 61,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 61,
+      "line": "In this chapter, you learned how AI can help students understand code, debug errors,"
+    },
+    {
+      "page": 62,
+      "line": "Chapter 10 \u2014 AI for Creativity and Brainstorming"
+    },
+    {
+      "page": 68,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 68,
+      "line": "This chapter matters because it shows students how to use AI to expand their creativity"
+    },
+    {
+      "page": 68,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 69,
+      "line": "Chapter 11 \u2014 AI for Productivity and"
+    },
+    {
+      "page": 72,
+      "line": "Organize these ideas into a three-part presentation structure."
+    },
+    {
+      "page": 74,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 74,
+      "line": "That is why this chapter matters. It shows students how to use AI to become more"
+    },
+    {
+      "page": 75,
+      "line": "Part IV \u2014 AI Across the Subjects"
+    },
+    {
+      "page": 75,
+      "line": "This part shows what responsible AI use looks like inside real school subjects. Instead of"
+    },
+    {
+      "page": 76,
+      "line": "Chapter 12 \u2014 AI in English Language Arts"
+    },
+    {
+      "page": 80,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 81,
+      "line": "Chapter 13 \u2014 AI in Math"
+    },
+    {
+      "page": 85,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 85,
+      "line": "In this chapter, you learned that AI can support math by explaining steps, generating"
+    },
+    {
+      "page": 86,
+      "line": "Chapter 14 \u2014 AI in History and Social Studies"
+    },
+    {
+      "page": 87,
+      "line": "For example, a student beginning a unit on the Industrial Revolution might ask:"
+    },
+    {
+      "page": 89,
+      "line": "I. He starts with AI for a broad overview, but the real learning happens when he notices"
+    },
+    {
+      "page": 91,
+      "line": "Chapter 15 \u2014 AI in Science"
+    },
+    {
+      "page": 95,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 95,
+      "line": "In this chapter, you learned that AI can support science by clarifying concepts,"
+    },
+    {
+      "page": 96,
+      "line": "Chapter 16 \u2014 AI in PE, Health, and Personal"
+    },
+    {
+      "page": 101,
+      "line": "Part V \u2014 Responsible and Future-Ready AI Use"
+    },
+    {
+      "page": 101,
+      "line": "This part looks beyond classroom tasks and focuses on the bigger responsibilities that"
+    },
+    {
+      "page": 102,
+      "line": "Chapter 17 \u2014 Using AI Responsibly"
+    },
+    {
+      "page": 108,
+      "line": "Teachers can use this chapter to lead a discussion about what responsible AI use looks"
+    },
+    {
+      "page": 109,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 110,
+      "line": "Chapter 18 \u2014 AI, Media Literacy, and What to"
+    },
+    {
+      "page": 115,
+      "line": "longer optional. It is part of responsible digital citizenship, academic judgment, and"
+    },
+    {
+      "page": 115,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 116,
+      "line": "Chapter 19 \u2014 AI and the Future of Work"
+    },
+    {
+      "page": 119,
+      "line": "where AI is part of daily work."
+    },
+    {
+      "page": 119,
+      "line": "A teacher may use AI to generate practice materials or simplify lesson preparation."
+    },
+    {
+      "page": 121,
+      "line": "Teachers can use this chapter as part of a discussion on future readiness."
+    },
+    {
+      "page": 121,
+      "line": "This kind of activity helps students see that AI is not just a school topic. It is part of the"
+    },
+    {
+      "page": 122,
+      "line": "Why This Chapter Matters"
+    },
+    {
+      "page": 122,
+      "line": "Students are growing up in a world where AI will likely be part of many careers, whether"
+    },
+    {
+      "page": 122,
+      "line": "That is why this chapter matters. It helps students see AI not as a threat to their future,"
+    },
+    {
+      "page": 123,
+      "line": "Chapter Summary"
+    },
+    {
+      "page": 123,
+      "line": "In this chapter, you learned how AI is changing the world of work, why AI literacy is"
+    },
+    {
+      "page": 123,
+      "line": "In the next chapter, we will shift from the future of work back to practical classroom use"
+    },
+    {
+      "page": 124,
+      "line": "Chapter 20 \u2014 The 25 Powerful Prompts Every"
+    },
+    {
+      "page": 125,
+      "line": "what students should look for throughout this chapter."
+    },
+    {
+      "page": 125,
+      "line": "1. Explain a concept simply"
+    },
+    {
+      "page": 126,
+      "line": "4. Compare two ideas"
+    },
+    {
+      "page": 126,
+      "line": "5. Identify common misunderstandings"
+    },
+    {
+      "page": 126,
+      "line": "This prompt helps students focus on the part of a concept that is most likely to cause"
+    },
+    {
+      "page": 126,
+      "line": "6. Generate a quiz"
+    },
+    {
+      "page": 127,
+      "line": "9. Turn notes into a study guide"
+    },
+    {
+      "page": 127,
+      "line": "10. Create flashcards"
+    },
+    {
+      "page": 127,
+      "line": "11. Start a topic overview"
+    },
+    {
+      "page": 128,
+      "line": "15. Simulate a historical interview"
+    },
+    {
+      "page": 128,
+      "line": "16. Brainstorm ideas"
+    }
+  ]
+}

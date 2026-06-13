@@ -1,0 +1,23 @@
+Classroom Idea 
+Teachers can turn this chapter into a practical workshop by having students work in 
+small groups to test and compare prompts. 
+For example, each group could be assigned one category: 
+ learning 
+ studying 
+ research 
+ writing 
+ coding 
+ creativity 
+Students could try one or two prompts, examine the responses, and then discuss: 
+ Which prompt worked best? 
+ What made it effective? 
+ How could it be improved? 
+ Which prompts support learning most clearly? 
+This helps students move from simply using AI to understanding how and why good 
+prompts work. 
+Try This 
+Try three prompts from different categories in this chapter: one for understanding, one 
+for studying, and one for writing or creativity. As you compare the responses, ask 
+yourself which prompt gave you the most useful help, which felt too broad, and what 
+you would change next time. This helps you begin building your own personal prompt 
+toolkit.

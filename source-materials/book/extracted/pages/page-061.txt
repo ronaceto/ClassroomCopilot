@@ -1,0 +1,16 @@
+Why This Chapter Matters 
+Coding is one of the clearest examples of how AI can either strengthen learning or 
+weaken it. 
+If students use AI only to generate code quickly, they may become more dependent and 
+less confident. But if they use AI to understand code, debug errors, and practice small 
+examples, they can become much stronger programmers over time. 
+That is why this chapter matters. It shows students how to use AI in a way that builds 
+skill instead of bypassing it. 
+Chapter Summary 
+In this chapter, you learned how AI can help students understand code, debug errors, 
+and build small programming projects step by step. You also explored why copying code 
+without understanding it weakens learning and why AI works best as a coding coach 
+rather than a coding replacement. 
+In the next chapter, we will look at how AI can support creativity and brainstorming by 
+helping students generate ideas, explore possibilities, and develop projects in more 
+imaginative ways.

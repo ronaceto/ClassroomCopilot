@@ -1,0 +1,32 @@
+A Student-Friendly Example Project 
+To make this process concrete, this appendix uses a simple sample project: an AI Study 
+Quiz Generator. The idea is straightforward. A student enters a topic they want to 
+review, and the project displays a small set of quiz questions for practice. 
+This kind of project works well as an example because it connects directly to the rest of 
+the book. It also shows how AI can support something educational, manageable, and 
+realistic for students to imagine building. 
+A simple version of the project might work like this: 
+ The user enters a topic such as photosynthesis, the Civil War, or quadratic 
+equations. 
+ The system displays a short set of practice questions. 
+ The student uses the questions to review and check understanding. 
+In a classroom demo or beginner project, the quiz questions might be prewritten or 
+simulated. In a more advanced version, a live AI tool might help generate the questions. 
+Either way, the learning value comes from understanding the project workflow. 
+The Five Core Roles in the Workflow 
+To keep the workflow simple and useful, students can think in terms of five core roles. 
+These roles are not jobs students must memorize. They are just a helpful way to 
+organize what kind of help AI is providing at each stage. 
+The Student or Builder 
+The student begins the process by identifying the problem, defining the goal, and 
+deciding what kind of project is worth building. AI can help clarify the idea, but the 
+student is still responsible for choosing the direction. 
+The Planner 
+This role helps define the purpose of the project, the audience, and the most important 
+features. Students can ask AI to act like a planner or product manager and help answer 
+questions such as: What problem does this solve? What is the simplest useful version? 
+What should happen first? 
+The Designer 
+This role helps map out the structure of the project. In a coding project, that may mean 
+deciding what screens, components, or steps are needed. In another kind of project, it 
+may mean outlining the process, sequence, or layout.

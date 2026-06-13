@@ -1,0 +1,25 @@
+Chapter 8 — AI for Problem Solving 
+ 
+Key Question 
+How can students use AI to solve problems more effectively without depending on it 
+for every answer? 
+Learning Objectives 
+ Understand how AI can support step-by-step problem solving 
+ Learn how AI can help students recognize patterns in math and science 
+ Use AI to clarify confusing steps and strengthen reasoning 
+ Practice using AI as a guide rather than a shortcut 
+Introduction 
+Many students find problem solving frustrating. 
+This is especially true in subjects like math, physics, chemistry, and economics, where 
+one wrong step can make an entire answer fall apart. Even when students understand 
+the topic in general, they may still struggle to figure out what to do first, how to move 
+from one step to the next, or why a solution works the way it does. 
+This is one area where AI can be genuinely helpful. 
+Artificial intelligence can break down complicated problems, explain processes step by 
+step, and offer examples that help students see patterns more clearly. It can also respond 
+to follow-up questions in a way that feels more flexible than a worksheet or textbook. 
+But there is a risk here too. 
+If students use AI only to get the final answer, they may finish faster, but they often 
+learn less. The real value of AI in problem solving is not the answer itself. It is the 
+support it gives students while they learn the process. 
+This chapter is about using AI to strengthen reasoning, not replace it.

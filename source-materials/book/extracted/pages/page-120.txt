@@ -1,0 +1,13 @@
+Student Example 
+A student named Jada enjoys both art and technology but is unsure how those interests 
+could connect in a future career. 
+She asks AI: 
+What careers combine creativity and technology? 
+The AI suggests careers such as user experience design, digital marketing, animation, 
+game design, and product design. Jada then follows up: 
+What does a user experience designer actually do? 
+And later: 
+What classes and skills would help a high school student prepare for that kind of job? 
+In this example, AI helps Jada move from a vague interest to more focused career 
+exploration. It does not choose her path for her, but it gives her language, possibilities, 
+and direction she can use in future conversations.

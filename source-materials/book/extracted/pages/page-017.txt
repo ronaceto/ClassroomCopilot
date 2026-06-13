@@ -1,0 +1,9 @@
+Chapter Summary 
+In this chapter, you learned that AI systems are trained on large amounts of data, use 
+pattern recognition to analyze language, and generate responses through prediction 
+rather than true understanding. You also learned why AI can sometimes produce 
+confident but incorrect answers, and why students should verify important information 
+instead of assuming every response is accurate. 
+In the next chapter, we will build on this idea by exploring how AI can become a 
+learning partner when students use it thoughtfully and ask questions that deepen 
+understanding.

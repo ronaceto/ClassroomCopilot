@@ -1,0 +1,15 @@
+Try This 
+Prompt Example 
+Give me three creative project ideas related to a topic I am 
+studying in school. 
+ 
+Then try this follow-up: 
+Prompt Example 
+Take the best idea and turn it into a simple project plan. 
+ 
+Finally, ask: 
+Prompt Example 
+Suggest one unusual twist that would make this project more 
+original. 
+As you work through the responses, pay attention to which parts feel helpful 
+and which parts still need your own thinking to make the project truly yours.

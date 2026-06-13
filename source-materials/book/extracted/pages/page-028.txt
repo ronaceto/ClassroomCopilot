@@ -1,0 +1,31 @@
+Using AI to Start Research 
+One of the best uses of AI in research is at the beginning of the process, when students 
+need help understanding the big picture. For example, a student beginning a project on 
+the Industrial Revolution might ask for an overview of the topic and why it changed 
+society. A prompt like that can help the student identify major themes before moving 
+into more detailed sources. AI is especially useful for generating background knowledge, 
+surfacing key terms, and helping students see possible angles for a project or essay. 
+Generating Better Research Questions 
+Strong research depends on strong questions. 
+Many students begin with topics that are too broad. For example, “World War II” is not 
+really a research question. It is a huge topic. A better research process begins when 
+students narrow their focus and ask something more specific. 
+AI can help with that. 
+A student might ask: 
+Help me narrow my topic on climate change into a question suitable for a school 
+presentation. 
+This is one of AI’s most useful roles in research. It can help students move from a broad 
+topic toward a clearer, more manageable question. That shift improves the quality of the 
+entire project. 
+Exploring Perspectives 
+Good research often involves looking at more than one point of view. 
+This is especially important in subjects such as history, government, literature, and social 
+studies, where events and ideas are often interpreted differently depending on 
+perspective. AI can help students compare viewpoints and see how different groups or 
+individuals may have understood the same event. 
+For example, a student might ask: 
+Explain the American Revolution from both the British and colonial perspectives. 
+Or: 
+Compare how different groups were affected by the Industrial Revolution. 
+These kinds of prompts help students move beyond memorizing facts and begin 
+thinking more deeply about interpretation, cause and effect, and historical context.

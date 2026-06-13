@@ -1,0 +1,24 @@
+What is one common mistake students make on this kind of problem? 
+This is a strong use of AI because students often learn more from corrected mistakes 
+than from finished solutions. The student is still involved in the math. The tool is simply 
+helping reveal what needs more attention. 
+ 
+What AI Should Not Replace in Math 
+AI should not replace the parts of math that help students build reasoning. 
+If a student asks AI for the final answer and copies it, the student may finish the 
+assignment but will likely struggle the next time a similar problem appears. This is 
+especially true on quizzes, tests, and later units that depend on earlier understanding. 
+Math learning becomes stronger when students: 
+ try the problem first 
+ ask for help on the step that is confusing 
+ study the logic of the solution 
+ practice a similar example independently 
+ check whether the answer makes sense 
+AI should support that cycle, not bypass it. 
+Using AI Responsibly in Math 
+In math, responsible use is less about whether AI appears at all and more about what 
+the student is still doing. If AI is explaining steps, generating practice, or helping 
+locate mistakes, it is supporting learning. If it is replacing the student’s attempt, 
+reasoning, or written work, it is weakening the very skill math class is meant to build. 
+A good rule is this: If AI solves it for you, ask it to teach you how. Then try a new 
+one on your own.

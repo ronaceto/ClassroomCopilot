@@ -1,0 +1,33 @@
+A student preparing for a presentation might ask: 
+Organize these ideas into a three-part presentation structure. 
+In each case, AI is helping transform scattered material into a clearer format. This can 
+save time and reduce confusion, especially when students already have the information 
+but need help making sense of it. 
+There is one important caution here. 
+Students should not become dependent on AI for every planning decision. Productivity 
+tools are most helpful when they teach students habits they can begin using on their 
+own. 
+For example, if a student repeatedly asks AI to break tasks into steps, over time the 
+student may begin to notice the same pattern and learn how to do it independently. That 
+is a good outcome. 
+The goal is not to need AI forever for every checklist or schedule. The goal is to use AI 
+in ways that strengthen organization skills over time. 
+This means students should still practice asking themselves: 
+ What is the final goal? 
+ What smaller steps lead to that goal? 
+ Which task matters most right now? 
+ How much time do I realistically need? 
+ What can I do today to make tomorrow easier? 
+AI can support those questions, but students still benefit from learning to think that way 
+themselves. 
+Student Example 
+A student named Leila has three major assignments due in the same week: a science 
+project, a history quiz, and an English essay draft. 
+At first, she feels overwhelmed and is not sure where to start. Instead of panicking, she 
+asks AI: 
+I have a science project, a history quiz, and an English draft due this week. Help me 
+create a plan for what I should work on each day. 
+The AI suggests a schedule that spreads the work over several days and groups similar 
+tasks together. Leila follows up with: 
+Break the science project into smaller steps. 
+Help me turn my history notes into a short review guide.

@@ -1,0 +1,25 @@
+Classroom Idea 
+Teachers can use AI as part of a research literacy lesson by asking students to compare 
+an AI-generated explanation with textbook or source-based material. 
+For example, students might ask AI to summarize the Civil Rights Movement, then 
+compare that answer with a class handout or textbook chapter. They can look for: 
+ accurate information 
+ missing details 
+ oversimplified explanations 
+ possible errors 
+This kind of activity teaches students that research is not just about getting information. 
+It is about evaluating information. 
+Try This 
+Use the two prompts below to move from a broad topic toward more focused 
+inquiry. As you read the responses, pay attention to what seems useful, what still 
+needs verification, and which question would lead to the strongest project. 
+Prompt Example 
+Give me an overview of the Industrial Revolution and explain why it changed society. 
+ 
+Prompt Example 
+Suggest three research questions a high school student could explore about the 
+Industrial Revolution. 
+ 
+ What seems useful here? 
+ What still needs to be verified? 
+ Which question would lead to the strongest project?

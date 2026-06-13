@@ -1,0 +1,28 @@
+Deep Learning 
+A type of machine learning that uses layered systems called neural networks to recognize 
+complex patterns in large amounts of data. 
+Digital Literacy 
+The ability to use digital tools effectively and responsibly. AI literacy is becoming an 
+increasingly important part of digital literacy. 
+Digital Tools 
+Software or online platforms used to complete tasks such as writing, designing, 
+organizing, studying, or communicating. 
+Ethics 
+Principles that guide responsible behavior and decision-making. In AI, ethics includes 
+questions of fairness, honesty, privacy, and responsible use. 
+Feedback Loop 
+A cycle in which information about performance is used to improve the next attempt. 
+AI can support learning by helping students work through feedback loops. 
+Generative AI 
+A type of AI that creates new content such as text, images, code, music, or video based 
+on patterns it has learned from training data. 
+Hallucination 
+An AI-generated response that sounds believable but is inaccurate, misleading, or 
+completely made up. Hallucinations are one reason students must verify important 
+information. 
+Human Judgment 
+A person’s ability to evaluate information, consider context, weigh consequences, and 
+make thoughtful decisions. Human judgment remains essential when using AI. 
+Input 
+The information given to a system. In AI, input may include prompts, uploaded text, 
+questions, or instructions.

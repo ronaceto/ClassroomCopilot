@@ -1,0 +1,27 @@
+Student Example 
+A student named Riley needs to create a presentation for class on the future of 
+transportation. 
+At first, Riley’s only idea is “cars in the future,” which feels too broad. Riley asks AI: 
+Give me five creative presentation ideas about the future of transportation for a high 
+school student. 
+The AI suggests several possibilities, including self-driving cars, flying taxis, smart public 
+transportation, and environmentally friendly transit systems. Riley chooses the idea 
+about future city transportation and then asks: 
+Turn this into a presentation outline with three main sections. 
+After that, Riley asks: 
+Suggest two visual ideas that would make this presentation more interesting. 
+In this example, AI helped Riley brainstorm, narrow the focus, organize the content, and 
+improve the presentation design. But Riley still made the key creative choices. 
+That is exactly the kind of balance students should aim for. 
+Classroom Idea 
+Teachers can use AI in brainstorming activities by asking students to compare AI-
+generated ideas with their own. 
+For example, a class could begin with a topic like “future schools” or “clean energy.” 
+Students first brainstorm ideas on paper by themselves. Then they ask AI for additional 
+possibilities. Finally, they compare the two sets of ideas and discuss: 
+ Which AI ideas are useful? 
+ Which ideas feel too generic? 
+ What human ideas are more original? 
+ How can AI suggestions be improved or combined with student thinking? 
+This helps students see AI as a source of inspiration, not as a replacement for 
+imagination.

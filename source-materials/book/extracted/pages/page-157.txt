@@ -1,0 +1,28 @@
+Glossary of AI Terms 
+How to use this glossary 
+Students do not need to memorize every definition in this section. 
+Instead, this glossary is meant to be a reference tool. Readers can return to it 
+whenever they encounter a word in the book that feels unfamiliar or when they 
+want a quick reminder of a key concept. 
+Teachers may also find it useful when introducing vocabulary or reviewing 
+important ideas related to AI literacy. 
+Algorithm 
+A set of instructions a computer follows to solve a problem or complete a task. 
+Algorithms are the step-by-step logic behind many digital tools, including AI systems. 
+Artificial Intelligence (AI) 
+Computer systems designed to perform tasks that usually require human intelligence, 
+such as understanding language, recognizing patterns, generating ideas, or making 
+predictions. 
+AI Assistant 
+A digital tool that uses artificial intelligence to help users complete tasks such as 
+answering questions, explaining concepts, organizing information, or generating content. 
+AI Literacy 
+The ability to understand what AI is, how it works at a basic level, how to use it 
+responsibly, and how to evaluate the quality of its output. 
+Automation 
+Using technology to complete tasks automatically with less direct human effort. AI often 
+increases automation by helping computers handle more complex tasks. 
+Bias 
+A tendency toward unfairness, imbalance, or incomplete representation. In AI, bias can 
+appear when a system reflects patterns in its training data that lead to unfair or 
+inaccurate results.

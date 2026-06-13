@@ -1,0 +1,27 @@
+Irresponsible uses include: 
+ sharing private health information 
+ using AI instead of trusted adults for serious concerns 
+ following unverified fitness or nutrition advice blindly 
+ treating AI as a doctor, therapist, or emergency response tool 
+A good rule is this: Use AI for learning and planning, but use trusted people for 
+care, safety, and real support. 
+Student Example 
+A student named Leila is working on a health class project about stress management. 
+She understands the basic topic, but she wants help organizing her ideas. 
+She asks AI: 
+Explain three healthy ways students can manage stress at school and why each 
+one helps. 
+Then she asks: 
+Give me five reflection questions I could answer about stress and focus in my 
+own life. 
+AI helps Leila understand the topic and think more clearly about her project, but she 
+still uses class materials and her teacher’s instructions to complete the assignment. 
+Classroom Idea 
+Teachers can ask students to review several sample prompts and decide which ones are 
+appropriate for AI and which should be taken to a trusted adult instead. For example: 
+ Explain the benefits of stretching before exercise. 
+ Help me plan a healthier sleep routine for school nights. 
+ Tell me what to do about a serious injury. 
+ Give me reflection questions about managing screen time. 
+This helps students understand both the value and the limits of AI in wellness-related 
+topics.

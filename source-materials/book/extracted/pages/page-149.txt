@@ -1,0 +1,27 @@
+ create outlines for essays or presentations 
+ summarize written material 
+ support planning and note organization 
+ assist with data-heavy school tasks 
+It is especially practical for students who already rely on Microsoft applications for their 
+schoolwork. 
+Grok 
+Grok is an AI assistant developed by xAI and available through its own app and the X 
+platform. It can help users answer questions, brainstorm ideas, summarize information, 
+conduct research, and create written or visual content. Because Grok can draw on 
+current online information and content from X, it may be especially useful for exploring 
+recent topics, public conversations, and developing events. 
+Students may use Grok to: 
+• explore current events or trending topics 
+• brainstorm ideas for projects or presentations 
+• ask questions about topics they are studying 
+• summarize information or compare viewpoints 
+• generate creative ideas, images, or starting points for research 
+One feature that makes Grok different from some other AI tools is its connection to 
+real-time information and conversations occurring online. This can make it helpful when 
+a student wants to understand what people are discussing about a current issue. 
+However, current information is not always reliable information. Social media posts may 
+be incomplete, biased, misleading, or false. Students using Grok should carefully verify 
+important claims with trusted sources, especially when researching news, science, 
+history, or controversial topics. In a school setting, students should also use only 
+teacher-approved or district-approved AI tools and follow classroom rules for 
+appropriate use.

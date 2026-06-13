@@ -1,0 +1,27 @@
+Chapter 9 — AI for Coding Help 
+ 
+Key Question 
+How can students use AI to learn coding more effectively without becoming dependent 
+on it? 
+Learning Objectives 
+ Understand how AI can support students who are learning to code 
+ Learn how AI can help explain code, debug errors, and suggest next steps 
+ Recognize the difference between learning from AI and copying from AI 
+ Use AI as a coding coach rather than a replacement for problem solving 
+Introduction 
+Learning to code can be exciting, but it can also be frustrating. 
+Students often start programming with curiosity and energy, only to run into error 
+messages, confusing logic problems, or code that almost works but not quite. A missing 
+bracket, a misspelled variable name, or one incorrect line can stop an entire program 
+from running. For beginners, this can make coding feel overwhelming very quickly. 
+This is one of the reasons AI can be so useful in computer science. 
+AI tools can help students understand what code is doing, explain why an error is 
+happening, suggest possible fixes, and guide them through the process of building small 
+programs. When used well, AI can act like a coding coach that helps students keep 
+moving instead of getting stuck for long periods of time. 
+But this is also an area where students need to be thoughtful. 
+If a student pastes in a programming task and simply copies the finished solution, very 
+little learning takes place. The code may work, but the student has not developed the 
+logic, vocabulary, or debugging habits that programming is supposed to teach. 
+This chapter is about using AI to support coding in a way that builds understanding and 
+confidence.

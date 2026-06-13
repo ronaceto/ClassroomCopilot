@@ -1,0 +1,24 @@
+4. Compare two ideas 
+Compare these two concepts in a way that makes the difference easy to understand. 
+Why it works: 
+Comparison helps students sort out details that may otherwise seem too similar. 
+5. Identify common misunderstandings 
+What is one thing students often misunderstand about this topic? 
+Why it works: 
+This prompt helps students focus on the part of a concept that is most likely to cause 
+confusion. 
+Prompts for Studying and Review 
+These prompts are especially useful before quizzes, tests, or class reviews. 
+6. Generate a quiz 
+Create a five-question practice quiz on this topic for a high school student. 
+Why it works: 
+This turns AI into a study partner instead of just an explanation tool. 
+7. Quiz one question at a time 
+Quiz me on this topic one question at a time and wait for my answer before giving 
+feedback. 
+Why it works: 
+This creates a more active and realistic study experience. 
+8. Explain mistakes 
+Explain why this answer is wrong and how I should think about it instead. 
+Why it works: 
+Students often learn more from mistakes than from correct answers.

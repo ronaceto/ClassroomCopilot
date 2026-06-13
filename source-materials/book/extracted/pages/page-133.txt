@@ -1,0 +1,11 @@
+Figure 20.1 — Prompt Development Flow 
+This figure illustrates how a student moves from a learning need to a clear prompt, 
+receives an AI response, reflects on the result, revises the prompt if needed, and arrives 
+at a stronger final outcome. 
+Why This Chapter Matters 
+In this chapter, you explored 25 powerful prompts that students can use for learning, 
+studying, research, writing, problem solving, coding, and creativity. You also learned why 
+strong prompts matter and how students can adapt them to fit their own academic 
+needs. 
+In the final chapter, we will step back and bring everything together by looking at what it 
+means to become an AI-empowered learner in school and beyond.

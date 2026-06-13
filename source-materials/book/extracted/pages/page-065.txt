@@ -1,0 +1,16 @@
+Those decisions are what make the final project meaningful. 
+Asking Better Creative Prompts 
+Just like in other chapters, better prompts lead to better results. 
+A weak creative prompt might be: 
+Give me an idea for a project. 
+That may produce something generic. 
+A stronger prompt might be: 
+Give me three creative project ideas about climate change for a high school 
+presentation, and make each one different in style. 
+That prompt gives the AI a clearer task, audience, and direction. 
+Students can also improve creative prompts by asking for contrast. For example: 
+ Give me one realistic idea, one unusual idea, and one funny idea. 
+ Suggest three project ideas with different levels of difficulty. 
+ Show me three different ways to approach this topic. 
+These kinds of prompts often produce more interesting results because they ask the AI 
+to vary its response.

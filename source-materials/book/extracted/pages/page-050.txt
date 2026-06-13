@@ -1,0 +1,21 @@
+Students can also ask: 
+ What is the first thing I should notice in this problem? 
+ Why is this formula the right one to use? 
+ Where do students usually make mistakes here? 
+ Can you give me one easier example and one harder example? 
+These kinds of questions develop stronger habits of reasoning. 
+Avoiding Shortcut Learning 
+This chapter may be one of the easiest places for students to misuse AI. 
+A student facing a difficult problem may be tempted to paste it into an AI tool, copy the 
+answer, and move on. That can feel efficient in the short term, but it weakens learning 
+over time. 
+The problem is not just academic honesty, though that matters. The deeper issue is that 
+copying solutions prevents students from developing confidence and independence. 
+Students do not become better problem solvers by reading correct answers. They 
+become better problem solvers by practicing, making mistakes, asking questions, and 
+gradually building skill. 
+AI should make that process easier to access, not easier to avoid. 
+A good rule is this: 
+If AI gives you the answer, ask it to teach you the process. If it teaches you the 
+process, ask for a new problem so you can try it yourself. 
+That sequence turns AI from a shortcut into a learning tool.

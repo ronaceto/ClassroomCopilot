@@ -1,0 +1,29 @@
+This does not mean students should follow every AI-generated plan exactly. The point is 
+to create structure. Once the structure exists, students can adjust it to fit their own 
+schedule, class requirements, and working style. 
+Creating Work Plans and Schedules 
+AI can also be helpful when students are trying to plan their week, manage deadlines, or 
+balance several assignments at once. 
+For example, a student might ask: 
+Help me create a work plan for finishing a science project that is due next week. 
+Or: 
+I have a math assignment due Thursday, an English draft due Friday, and a club event 
+after school. Help me plan my work time this week. 
+These kinds of prompts allow students to see how much time different tasks may 
+require and how to distribute work more realistically across several days. 
+Instead of waiting until the last minute and trying to do everything at once, students can 
+use AI to create a plan that includes: 
+ which assignment or deadline to tackle each day 
+ how long each work session should last 
+ when to leave time for revision or unexpected problems 
+ when to stop and avoid overload 
+This kind of planning supports both productivity and learning. 
+Organizing Information More Clearly 
+Another major challenge for students is information overload. 
+Students often gather many notes, articles, ideas, slides, handouts, and reminders, but 
+struggle to organize them in a useful way. AI can help by summarizing, grouping, and 
+restructuring information into forms that are easier to use. 
+For example, a student might ask: 
+Summarize the key points from these notes about the Industrial Revolution. 
+Or: 
+Turn my class notes into a study guide with main ideas and key terms.

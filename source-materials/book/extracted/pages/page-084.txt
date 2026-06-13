@@ -1,0 +1,29 @@
+Student Example: Learning From the Second Try 
+A student named Marcus is learning systems of equations. He understands the general 
+idea, but one homework problem keeps going wrong. Instead of asking for the answer 
+immediately, he asks AI: 
+Show me how to solve this system step by step and explain why substitution 
+works here. 
+After reading the explanation, Marcus tries a second problem alone. Then he asks: 
+Give me one more problem like this and check my work after I try it. 
+In this example, AI helps Marcus understand the method and practice it independently. 
+That is much more valuable than simply seeing the finished answer once. 
+ 
+Classroom Idea 
+Teachers can ask students to compare three kinds of math prompts: 
+ an answer-only prompt 
+ a step-by-step explanation prompt 
+ a practice-and-feedback prompt 
+Students can discuss which prompt leads to the strongest learning and why. This helps 
+them understand that how they ask for help affects what kind of help they receive. 
+Try This 
+Use the prompt below and then work through the follow-up problem carefully on 
+your own. The goal is not just to watch the process, but to notice whether you can 
+apply the reasoning independently afterward. 
+Prompt Example 
+Show me how to solve this problem step by step, explain why each step works, and 
+then give me one similar problem to try by myself. 
+After using the prompt, ask yourself: 
+ Did I understand the reasoning, or did I only follow the steps? 
+ Could I solve a similar problem without help? 
+ What kind of mistake am I most likely to make next time?

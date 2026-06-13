@@ -1,0 +1,32 @@
+AI Writing Tools 
+Some AI tools are designed specifically to help with writing, editing, and organization. 
+These tools are often best used after a student has already started writing. They can 
+help improve clarity, grammar, structure, and tone, but they should not replace the 
+student’s own ideas and voice. 
+Examples include: 
+ Grammarly 
+ Notion AI 
+Grammarly 
+Grammarly is useful for helping students improve grammar, sentence clarity, and writing 
+flow. It is less about generating ideas from scratch and more about polishing work that 
+already exists. 
+Students can use Grammarly to: 
+ correct grammar issues 
+ improve sentence structure 
+ strengthen word choice 
+ reduce awkward phrasing 
+ make writing more clear and readable 
+It is especially useful during revision, but students should still decide which suggestions 
+actually improve their writing. 
+Notion AI 
+Notion AI is useful for students who want help organizing information, notes, tasks, 
+and writing ideas in one place. Because Notion is built around planning and structured 
+organization, its AI features can support both productivity and writing. 
+Students can use Notion AI to: 
+ summarize notes 
+ generate outlines 
+ organize project ideas 
+ build study systems 
+ track tasks and deadlines 
+It can be especially useful for students who like keeping schoolwork, project planning, 
+and writing support in one system.

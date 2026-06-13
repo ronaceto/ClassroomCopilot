@@ -1,0 +1,29 @@
+AI for Understanding Health and Fitness Concepts 
+For example, a student might ask: 
+Explain the difference between aerobic and anaerobic exercise in simple terms. 
+Or: 
+What are the main benefits of sleep for learning and physical recovery? 
+These are strong uses of AI because they support class learning. Students can also ask 
+for examples, comparisons, and short summaries before quizzes or class discussions. 
+AI for Goal Setting and Planning 
+One of the most practical uses of AI in wellness is planning. 
+Students often need help turning broad goals into specific actions. AI can help organize 
+a plan, create a checklist, or break a wellness goal into manageable steps. 
+For example, a student might ask: 
+Help me create a simple weekly plan for improving hydration and sleep habits. 
+Or: 
+Give me a checklist for getting ready for a fitness assessment at school. 
+These prompts can support self-management and reflection, especially when students 
+are learning how healthy routines connect to school, sports, and daily life. 
+Using AI for Reflection 
+Health and wellness learning often includes reflection. Students may think about habits, 
+challenges, goals, or how they feel before and after making changes. 
+AI can support reflection by helping students organize thoughts or generate questions 
+for journaling. For example: 
+Give me three reflection questions about how stress affects my focus at school. 
+Or: 
+Help me reflect on what makes it easier or harder for me to stay active each 
+week. 
+These are useful because they help students think more clearly about habits and choices. 
+The goal is not to let AI decide what the student feels. The goal is to help the student 
+reflect more thoughtfully.

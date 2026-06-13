@@ -1,0 +1,30 @@
+Step 4 — Build a First Draft or Prototype 
+Once the structure is clear, AI can help generate the first version. If the project involves 
+code, this may be starter code. If it involves a presentation or plan, it may be a draft 
+outline or rough content. The goal at this stage is not perfection. The goal is to create 
+something workable that can be improved. 
+This step helps turn a rough idea into a clear product concept. 
+Prompt example: Act like a builder. Create a simple first version of this project that I 
+can review and improve. 
+Step 5 — Test What Works and What Does Not 
+Good builders test early. Students should ask whether the project is clear, whether the 
+instructions make sense, whether parts are missing, and whether the result actually 
+solves the original problem. 
+Prompt example: Act like a tester. Review this project and point out anything 
+confusing, missing, or likely to cause problems. 
+Step 6 — Revise and Improve 
+After testing, use AI to help improve the project one issue at a time. Students should 
+avoid asking for a total rewrite too quickly. It is usually better to make focused 
+improvements so they can understand what changed and why. 
+Prompt example: Improve this project by making the instructions clearer, the layout 
+easier to follow, and the final result more useful for students. 
+Practical Rules for Students Using AI to Build 
+ Start small. Build the simplest useful version before adding extras. 
+ Stay in charge. AI can suggest, draft, and organize, but the student should still 
+decide what belongs in the final project. 
+ Check accuracy. If AI generates facts, instructions, or code explanations, 
+verify what matters before trusting it. 
+ Revise in stages. Improve one part at a time rather than asking AI to redo 
+everything at once. 
+ Understand what you built. If you cannot explain how your own project 
+works, more learning still needs to happen.

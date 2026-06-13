@@ -1,0 +1,73 @@
+{
+  "modeGroup": "higher-ed-ai-program-builder",
+  "purpose": "Support community-college AI Technology faculty and program-coordinator workflows.",
+  "roleModel": "Faculty - Technologies (Artificial Intelligence), community college",
+  "modes": [
+    {
+      "id": "college-course-builder",
+      "label": "College Course",
+      "primaryUserNeed": "Create a syllabus-ready AI Technology course with outcomes, weekly modules, labs, assignments, assessments, and delivery-format notes.",
+      "inputs": ["courseTitle", "courseLevel", "creditHours", "termLength", "deliveryFormat", "studentBackground", "topicEmphasis", "assessmentModel"],
+      "outputs": ["courseDescription", "courseLearningOutcomes", "weeklySchedule", "moduleDescriptions", "labSequence", "assignmentSequence", "assessmentPlan", "finalProject", "toolsPlatforms", "ethicsPolicy", "syllabusDraft"]
+    },
+    {
+      "id": "applied-lab-builder",
+      "label": "Applied Lab",
+      "primaryUserNeed": "Create hands-on AI labs for Python, data analysis, machine learning, generative AI, neural networks, or responsible AI.",
+      "inputs": ["topic", "skillLevel", "labLength", "toolPlatform", "dataAvailability", "studentDeliverable", "grouping"],
+      "outputs": ["labObjective", "prerequisites", "setupInstructions", "labSteps", "checkpoints", "reflectionQuestions", "troubleshootingNotes", "rubric", "extensionChallenge"]
+    },
+    {
+      "id": "program-map-builder",
+      "label": "Program Map",
+      "primaryUserNeed": "Draft certificate or degree pathway structures with outcomes, competencies, assessment points, and workforce alignment.",
+      "inputs": ["pathwayType", "numberOfCourses", "targetStudentProfile", "workforceGoal", "technicalCompetencies", "advisoryFeedback", "institutionalRequirements"],
+      "outputs": ["programOutcomes", "courseSequence", "competencyMap", "courseOutcomeAlignment", "assessmentMap", "pathwayRecommendations", "employerSkillNarrative", "advisoryDiscussionGuide", "cqiStarter"]
+    },
+    {
+      "id": "assessment-cqi-builder",
+      "label": "Assessment / CQI",
+      "primaryUserNeed": "Create course- and program-level assessment documentation and continuous improvement artifacts.",
+      "inputs": ["courseOrProgram", "learningOutcomes", "assignmentArtifact", "performanceCriteria", "term", "evidenceCollected", "improvementConcern"],
+      "outputs": ["assessmentPlan", "rubric", "evidenceSummaryTemplate", "cqiReflection", "actionPlan", "followUpMeasure", "advisoryFeedbackNote", "programReviewDraft"]
+    },
+    {
+      "id": "advisory-workforce-builder",
+      "label": "Advisory / Workforce",
+      "primaryUserNeed": "Prepare advisory board, employer partner, internship, outreach, and workforce alignment materials.",
+      "inputs": ["industrySector", "targetRoles", "employerSkills", "localWorkforceNeeds", "programCourses", "meetingGoal"],
+      "outputs": ["advisoryAgenda", "industryFeedbackQuestions", "skillGapTemplate", "employerOutreachEmail", "internshipPartnerBrief", "programPromotionTalkingPoints", "recruitmentOnePager"]
+    }
+  ],
+  "competencyAreas": [
+    "Python fundamentals for AI",
+    "Data literacy and analysis",
+    "Data cleaning and visualization",
+    "Machine learning concepts",
+    "Supervised and unsupervised learning",
+    "Model evaluation",
+    "Neural network foundations",
+    "Generative AI tools and prompting",
+    "AI APIs and frameworks",
+    "Responsible, ethical, and legal AI use",
+    "Privacy, data governance, and FERPA-aware handling",
+    "Applied AI project design",
+    "Communication of technical findings",
+    "Career readiness and portfolio development"
+  ],
+  "productGuardrails": [
+    "Generated syllabi, program maps, and CQI artifacts are drafts for faculty review.",
+    "Do not invent official institutional policy.",
+    "Include FERPA-aware cautions when dealing with student records or data.",
+    "Include accessibility and multiple delivery-format considerations.",
+    "Avoid claiming accreditation compliance; generate documentation starters for local review.",
+    "Treat advisory board and workforce materials as planning drafts requiring local review."
+  ],
+  "recommendedBuildOrder": [
+    "college-course-builder",
+    "applied-lab-builder",
+    "assessment-cqi-builder",
+    "program-map-builder",
+    "advisory-workforce-builder"
+  ]
+}

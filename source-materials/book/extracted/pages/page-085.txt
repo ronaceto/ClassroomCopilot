@@ -1,0 +1,5 @@
+Chapter Summary 
+In this chapter, you learned that AI can support math by explaining steps, generating 
+practice, and helping students learn from mistakes. You also learned that math 
+understanding depends on reasoning, not just answers. AI is most useful in math when 
+it strengthens practice and explanation rather than replacing the work of solving.

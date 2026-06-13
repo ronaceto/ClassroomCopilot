@@ -1,0 +1,31 @@
+Turning AI Into a Study Coach 
+AI becomes most useful for studying when students treat it like a partner in the review 
+process. A student preparing for a biology test, for example, might ask the tool to create 
+ten quiz questions about the cell cycle and then explain which answers were wrong and 
+why. That sequence turns AI from a passive information source into an active study 
+coach. 
+For example, a student preparing for a biology test might ask: 
+Create 10 quiz questions about the cell cycle for a high school biology student. 
+That prompt immediately transforms AI into a practice tool. Instead of passively 
+rereading notes, the student is now testing knowledge. 
+After answering the questions, the student can ask: 
+Explain which answers I got wrong and why. 
+This next step is where the real learning happens. It is not enough to know that an 
+answer is wrong. What matters is understanding why it is wrong and how to think about 
+the concept more clearly next time. 
+Students can also ask AI to: 
+ create flashcards 
+ summarize a chapter 
+ turn notes into a review sheet 
+ generate harder or easier questions 
+ explain common mistakes students make on a topic 
+The more actively a student uses AI, the more useful the tool becomes. 
+Why Active Recall Works 
+One of the most powerful study methods is called active recall. Active recall means 
+trying to retrieve information from memory without looking directly at notes or a 
+textbook. This forces the brain to work harder, and that effort strengthens memory. 
+AI tools are excellent for active recall because they can generate questions instantly on 
+almost any topic. 
+A student studying history might ask: 
+Ask me five quiz questions about the causes of World War I. 
+A student reviewing chemistry might ask:

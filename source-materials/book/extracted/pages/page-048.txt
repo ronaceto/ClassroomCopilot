@@ -1,0 +1,31 @@
+Why Problem Solving Feels Hard 
+Many school problems are difficult not because the topic is impossible, but because the 
+path is unclear. 
+A student may know the formula for slope, understand the definition of velocity, or 
+remember the parts of an equation, but still feel stuck when facing an unfamiliar 
+problem. What students often need most is not just a correct answer. They need help 
+seeing the structure of the problem. 
+This is where AI can help. 
+A student might ask: 
+Show me how to solve this algebra problem step by step and explain why each step 
+works. 
+That kind of prompt does something important. It shifts the focus away from “What is 
+the answer?” and toward “How does this work?” 
+That shift is where real learning happens. 
+Learning the Process, Not Just the Result 
+Strong problem solving depends on understanding the process. 
+If a student only copies the answer, the learning is shallow and temporary. But if the 
+student sees how the problem is set up, how the numbers relate to one another, and why 
+each step leads to the next, then the student is much more likely to solve a similar 
+problem independently later. 
+AI can support that by explaining: 
+ which information matters 
+ what step should come first 
+ why a formula applies 
+ what common mistakes to avoid 
+ how to check whether the answer makes sense 
+For example, a student working on a physics problem might ask: 
+Explain how to solve this velocity problem step by step and tell me why each formula is 
+used. 
+A student working on geometry might ask: 
+Help me understand why this triangle problem uses the Pythagorean theorem.

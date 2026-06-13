@@ -1,0 +1,32 @@
+Using AI to Understand Steps 
+Many students get stuck in math not because the entire topic is impossible, but because 
+one step is unclear. AI can be helpful when students need a process explained more 
+carefully. 
+For example, a student might ask: 
+Show me how to solve this equation step by step and explain why each step 
+works. 
+That is a strong prompt because it focuses on understanding, not just the answer. 
+Students can also ask for simpler explanations, alternate methods, or examples with 
+smaller numbers first. 
+This is especially useful in algebra, geometry, and statistics, where students may know 
+some of the pieces but struggle to see how they fit together. AI can make the structure 
+of a problem more visible. 
+AI for Practice and Pattern Recognition 
+One of the best ways to learn math is to practice different versions of the same kind of 
+problem. AI can help by creating new examples that match the concept a student is 
+trying to learn. 
+A student might ask: 
+Give me three practice problems like this one and make them get harder each 
+time. 
+Or: 
+Show me two examples of how this type of problem usually works. 
+This kind of use is powerful because it builds pattern recognition. Students begin to 
+notice that certain problems share structures and strategies. Over time, that helps them 
+become more independent problem solvers. 
+Using AI to Learn from Mistakes 
+Error analysis is one of the most useful math habits students can build. 
+Sometimes a student gets a wrong answer but does not know where the mistake 
+happened. AI can help identify the likely problem and explain it more clearly. 
+For example: 
+Check my work and explain where my reasoning went off track. 
+Or:

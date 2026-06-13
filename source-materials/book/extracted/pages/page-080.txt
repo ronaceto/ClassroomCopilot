@@ -1,0 +1,17 @@
+Try This 
+Try using the prompt below as a starting point, then compare the response to the text 
+itself and to your own interpretation before deciding which ideas are actually useful. 
+Prompt Example 
+I’m writing a literary analysis paragraph about a symbol in a novel. Help me 
+brainstorm two possible interpretations, then suggest one question I should answer 
+to make my paragraph stronger. 
+After reading the response, ask yourself: 
+ Which ideas seem useful? 
+ Which ideas actually match the text? 
+ What would I still need to explain in my own words? 
+Chapter Summary 
+In this chapter, you learned that AI can support English language arts by helping 
+students understand texts, brainstorm ideas, revise writing, and prepare for discussion. 
+You also learned that student voice and interpretation still matter deeply in ELA. AI 
+works best as a reading and writing coach, not as a replacement for reading, thinking, or 
+composing.

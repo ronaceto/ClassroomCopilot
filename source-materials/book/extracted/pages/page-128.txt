@@ -1,0 +1,24 @@
+15. Simulate a historical interview 
+Act as [historical figure] during [time period] and answer my questions as if I were 
+interviewing you. 
+Why it works: 
+This makes history more interactive and encourages perspective-based questioning. 
+Prompts for Writing and Revision 
+These prompts are useful when students are brainstorming, outlining, revising, 
+or strengthening their writing. 
+16. Brainstorm ideas 
+Help me brainstorm three possible ideas for an essay or project on this topic. 
+Why it works: 
+This helps students get unstuck at the beginning of the writing process. 
+17. Create an outline 
+Create a simple outline for a high school essay on this topic. 
+Why it works: 
+This provides structure without replacing student thinking. 
+18. Improve clarity 
+Suggest two ways I can improve the clarity of this paragraph without changing my voice. 
+Why it works: 
+This supports revision while keeping the student’s writing at the center. 
+19. Strengthen an argument 
+Tell me how I can make this argument stronger and more convincing. 
+Why it works: 
+This helps students improve reasoning and evidence rather than just polish wording.

@@ -1,0 +1,32 @@
+This kind of back-and-forth can make coding feel much more manageable, especially for 
+beginners. 
+It also reinforces an important habit: coding is a process of building, testing, revising, 
+and improving. 
+The Risk of Overdependence 
+Because AI can generate working code quickly, students may be tempted to let it do too 
+much of the work. 
+This is where coding with AI can become risky. 
+A student who copies large sections of AI-generated code without understanding what 
+the code does may complete an assignment, but they will not build the habits that real 
+programmers need. When the next assignment comes, or when the code breaks in a 
+slightly different way, that student may not know how to proceed. 
+This is why students should regularly ask themselves: 
+ Do I understand what this code does? 
+ Could I explain it to someone else? 
+ Could I modify it on my own? 
+ Do I know why this fix worked? 
+If the answer is no, then more learning still needs to happen. 
+A useful rule is this: 
+Use AI to explain, guide, and debug. Do not use it as a substitute for thinking 
+through the code yourself. 
+Building Small Projects With AI 
+AI can also be very useful when students are building small projects. 
+For example, students might use AI to help them create: 
+ a number guessing game 
+ a simple quiz app 
+ a basic calculator 
+ a to-do list program 
+ a small website 
+In these cases, AI can help by: 
+ breaking the project into steps 
+ suggesting how to organize the code

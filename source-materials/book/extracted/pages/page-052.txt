@@ -1,0 +1,17 @@
+Try This 
+Prompt Example 
+Show me how to solve this algebra problem step by step and explain why each step 
+works. 
+Prompt Example 
+Now give me a similar problem to solve on my own. 
+Prompt Example 
+Check my answer and explain any mistakes I made. 
+Then use the next boxed prompts to practice on your own and check your reasoning. As 
+you work through the sequence, pay attention to how the process feels different from 
+simply copying the answer. AI becomes most useful when it helps students practice, 
+reflect, and try again independently. 
+ 
+Figure 8.1 — Problem Solving with AI 
+This figure shows a guided problem-solving cycle: the student identifies the problem, AI 
+helps explain the process and highlight the next step, the student practices 
+independently, and feedback leads to stronger reasoning.

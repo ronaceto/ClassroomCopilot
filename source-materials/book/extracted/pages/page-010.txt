@@ -1,0 +1,16 @@
+Try This 
+Prompt Example 
+Explain artificial intelligence in a way a high school student would understand. 
+ 
+Prompt Example 
+Give me three examples of how students might use AI for learning. 
+ 
+Figure 1.1 — AI as a Learning Tool 
+This diagram shows how a student can ask AI a question, receive an explanation, 
+practice and evaluate understanding, and use what they learn to ask better questions. 
+Used thoughtfully, AI can support an ongoing cycle of deeper learning. 
+Why AI Literacy Matters 
+AI literacy means understanding what AI is, how it works at a basic level, what it can do 
+well, where it makes mistakes, and how to use it responsibly. Students who build AI 
+literacy are better prepared not only for school, but also for future careers and a world 
+where intelligent tools will be increasingly common.

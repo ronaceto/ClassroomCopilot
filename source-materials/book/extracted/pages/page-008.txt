@@ -1,0 +1,30 @@
+What Is Artificial Intelligence? 
+Artificial intelligence, often shortened to AI, refers to computer systems designed to 
+perform tasks that usually require human intelligence. These tasks include understanding 
+language, identifying patterns, generating responses, solving problems, and making 
+predictions. 
+That definition may sound technical, but the basic idea is simple. AI systems are built to 
+process information in ways that imitate certain parts of human thinking. They do not 
+think like people, and they do not understand the world in the same way humans do, but 
+they can still perform useful tasks that make them seem surprisingly smart. 
+For students, the most important thing to understand is that AI is not magic. It is a tool 
+created by people, built using data and algorithms, and designed to respond to questions 
+or tasks in ways that seem helpful and intelligent. 
+AI Is Already Part of Students’ Lives 
+One reason AI matters so much is that it is already woven into the tools students use 
+every day. When a streaming platform recommends a movie, AI may be involved. When 
+a phone suggests the next word in a text message, AI may be involved. When a search 
+engine predicts what someone is trying to find, AI may be involved. Even photo apps, 
+translation tools, and spam filters often rely on AI systems in some form. 
+Because these systems are so common, students are growing up in a world where AI is 
+becoming a normal part of learning, communication, and decision-making. That means 
+AI literacy is becoming just as important as digital literacy. 
+Why AI Matters in Education 
+In school, AI can be a powerful academic support tool. A student who is confused 
+about a science concept can ask for a simpler explanation. A student preparing for a 
+history quiz can ask for practice questions. A student working on an essay can 
+brainstorm ideas, test an argument, or ask for feedback on clarity and organization. 
+This does not mean AI should replace teachers, textbooks, or classroom instruction. 
+Teachers provide guidance, judgment, structure, and human understanding that AI 
+cannot replace. Textbooks provide curated knowledge and reliable organization. AI 
+works best when it is used alongside these resources, not instead of them.

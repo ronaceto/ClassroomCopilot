@@ -1,0 +1,31 @@
+This is why AI works best when it does more than explain. It should also help students 
+rehearse, test, revise, and strengthen knowledge. 
+For example, after receiving an explanation of the water cycle, a student could ask: 
+Create five quiz questions about the water cycle. 
+Then: 
+Explain any answers I get wrong. 
+That turns AI from an answer source into a learning system. 
+ explanation 
+ practice 
+ feedback 
+ correction 
+ improvement 
+A Student Example 
+Imagine a student named Elena who is preparing for a test on cellular respiration. 
+At first, the topic feels overwhelming. The textbook explanation is dense, and her notes 
+are full of terms she does not fully understand. 
+In this example, AI helped Elena do three important things: 
+1. understand the idea 
+2. connect it to something familiar 
+3. practice and correct mistakes 
+Teachers can use this chapter to help students distinguish between AI as a shortcut and 
+AI as a support tool. 
+One classroom activity could involve giving students the same topic and asking them to 
+generate two types of prompts: 
+ one prompt that only asks for an answer 
+ one prompt that supports actual learning 
+Learning-focused prompt: 
+Explain the three main causes of World War I in simple terms for a high school student 
+and then ask me three quiz questions. 
+Students can compare the results and discuss which prompt better supports 
+understanding.

@@ -1,0 +1,28 @@
+Used poorly, however, it can make students overdependent. That is why it should be 
+treated as a coach, not as a replacement for understanding. 
+Choosing the Right Tool 
+One of the most important AI skills students can develop is learning how to choose the 
+right tool for the task. 
+A student who needs help understanding a difficult topic may want an AI chat assistant. 
+A student beginning a research project may want a research-focused tool. 
+A student revising an essay may want a writing assistant. 
+A student creating a presentation may want a design-oriented tool. 
+A student learning Python may want a coding support tool. 
+This is why the book includes diagrams such as The AI Landscape and Choosing the 
+Right AI Tool. They help students see that “AI” is not just one thing. It is an 
+ecosystem of different tools with different strengths. 
+Students do not need to master every tool. They do need to become thoughtful about 
+choosing the right one. 
+Student Example 
+A student named Ethan is working on three different tasks in the same week: 
+ a history research project 
+ a persuasive essay 
+ a science presentation 
+Instead of using the same AI tool in the same way for every task, Ethan chooses based 
+on the need. 
+For the history project, he uses a research-oriented tool to explore source-based 
+background information. 
+For the essay, he uses a writing tool to improve clarity in his draft. 
+For the science presentation, he uses a design tool to help create clearer visuals. 
+This is a good example of AI literacy in action. Ethan is not just “using AI.” He is 
+choosing tools intentionally.

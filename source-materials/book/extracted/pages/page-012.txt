@@ -1,0 +1,24 @@
+Chapter 2 — How AI Actually Works 
+ 
+Key Question 
+How do artificial intelligence systems generate responses, and why do they sometimes 
+make mistakes? 
+Learning Objectives 
+ Understand the basic idea behind how AI systems are trained 
+ Learn how AI uses patterns and prediction to generate responses 
+ Recognize why AI can sound confident even when it is wrong 
+ Begin thinking more critically about what AI can and cannot do 
+Introduction 
+For many students, artificial intelligence can feel mysterious. You type a question into a 
+chat window, and within seconds the system gives you an answer that sounds organized, 
+detailed, and surprisingly human. It may explain a science concept, summarize a 
+historical event, or help brainstorm an essay topic. Because the response sounds fluent 
+and confident, it is easy to assume the AI truly understands what it is saying. 
+To use AI well, students need to understand an important truth: AI does not think the 
+way humans do. It does not “know” things in the way a teacher, student, or scientist 
+knows them. Instead, it works by learning patterns from massive amounts of 
+information and then using those patterns to predict what kind of response is most 
+likely to make sense. 
+This chapter explains that process in simple terms. You do not need to know advanced 
+computer science to understand the big idea. What matters is knowing enough to use AI 
+thoughtfully, especially when the information it gives you sounds convincing.

@@ -1,0 +1,4 @@
+Figure 9.1 — Coding Help Workflow 
+This figure shows how AI can support coding by helping students interpret errors, 
+understand logic, test revisions, and improve code through debugging rather than by 
+replacing the student’s own problem solving.

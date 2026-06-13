@@ -1,0 +1,22 @@
+AI as a Tool for Thinking 
+The most important idea in this chapter is that AI should be understood as a tool for 
+thinking, not a shortcut for avoiding thought. There is a major difference between a 
+student who uses AI to deepen understanding and a student who uses AI only to 
+complete work faster. 
+For example, one student might ask AI to explain the water cycle step by step, provide 
+an analogy, and then generate a few quiz questions. Another student might simply ask 
+AI to answer a homework question and then copy the response. Both students used AI, 
+but only one of them used it in a way that supports learning. 
+Student Example 
+Imagine a student named Maya who is studying biology and struggling to understand 
+photosynthesis. She asks for an AI tool to explain photosynthesis in simple terms for a 
+high school student, then follows up with a request for an everyday analogy and a short 
+practice quiz. Within a few minutes, she has an explanation, a memory aid, and a mini 
+review activity. What made the difference was not just the tool. It was the way she used 
+it. 
+Classroom Idea 
+Teachers can ask students to list places where artificial intelligence already appears in 
+their daily lives, streaming recommendations, navigation apps, search tools, social media 
+feeds, text prediction, and translation tools. From there, the class can discuss which of 
+these tools help people learn, which influence decisions, and why understanding AI 
+matters beyond the classroom.

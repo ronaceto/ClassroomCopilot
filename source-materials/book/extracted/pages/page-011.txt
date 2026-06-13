@@ -1,0 +1,4 @@
+Chapter Summary 
+In this chapter, you explored the basic idea of artificial intelligence and why it matters 
+for students. The most important takeaway is simple: AI is most valuable when it 
+supports human thinking rather than replaces it.

@@ -1,0 +1,29 @@
+How Students Can Improve Their Prompts 
+You do not need to write the perfect prompt on your first try. Strong AI users often 
+improve prompts as they go. A student might begin with a basic question, realize the 
+answer is too broad, and ask again with more detail. That is not failure. It is refinement. 
+Student Example 
+A student preparing for a quiz on the American Revolution first asks, “Tell me about 
+the American Revolution.” The answer is broad and not especially helpful. They revise it 
+to: “Explain the three main causes of the American Revolution in simple terms for a 
+high school student and end with three quiz questions.” The response becomes more 
+focused and directly useful for studying. 
+Classroom Idea 
+Teachers can give students the same weak prompt and ask them to improve it in pairs or 
+small groups. This helps students see that prompt writing is really about precision, 
+purpose, and communication. 
+Try This 
+Use the two prompts below to compare how AI changes its explanation when you ask 
+for a different kind of response. Then think carefully about what still needs verification 
+and which version actually helped you understand the concept more clearly. 
+Prompt Example 
+Create a study guide for the causes of World War I suitable for a high school student. 
+ 
+Prompt Example 
+Create a study guide for the causes of World War I suitable for a high school student. 
+Include bullet points, key events, and three quiz questions at the end. 
+Chapter Summary 
+In this chapter, you learned that prompting is one of the most important AI skills 
+students can develop. You explored what prompts are, why stronger prompts lead to 
+better results, and how context, task, audience, and format make AI responses more 
+useful.

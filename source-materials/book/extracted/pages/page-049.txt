@@ -1,0 +1,29 @@
+These are strong uses of AI because they keep the student focused on understanding the 
+reasoning. 
+Using AI to Recognize Patterns 
+One of the most important parts of problem solving is pattern recognition. 
+Students become stronger problem solvers when they begin to notice that many 
+problems follow similar structures. In algebra, for example, certain types of equations 
+are solved in familiar ways. In chemistry, balancing equations involves repeated logic. In 
+economics, supply-and-demand scenarios often rely on recurring relationships. 
+AI can help students recognize these patterns by showing multiple examples and 
+comparing them. 
+For example, a student could ask: 
+Show me three examples of how to solve systems of equations and explain what pattern 
+stays the same each time. 
+Or: 
+Compare these two chemistry problems and explain what strategy they have in common. 
+This kind of use is powerful because students are not just solving one problem. They are 
+learning how to see the structure behind many problems. 
+That is what helps them improve over time. 
+Asking Better Problem-Solving Questions 
+The quality of the prompt matters here just as much as in research or writing. 
+A weak prompt might be: 
+Solve this. 
+A stronger prompt might be: 
+Solve this equation step by step and explain why each step is necessary. 
+An even better prompt might be: 
+Solve this equation step by step, explain why each step is necessary, and then give me a 
+similar problem to try on my own. 
+That last prompt is especially useful because it turns AI into both a tutor and a practice 
+partner.

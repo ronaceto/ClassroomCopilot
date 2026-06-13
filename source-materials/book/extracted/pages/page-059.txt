@@ -1,0 +1,26 @@
+Classroom Idea 
+Teachers can use AI to support debugging lessons by having students compare different 
+approaches to solving the same coding problem. 
+For example, students might write a short program on their own, then ask AI for an 
+explanation of an alternate approach. The class can discuss: 
+ Which approach is easier to understand? 
+ Which is more efficient? 
+ What mistakes are beginners likely to make? 
+ How does AI explain the code differently than a teacher or textbook? 
+This helps students see AI as a support tool, not as the source of all solutions. 
+Try This 
+Prompt Example 
+Explain what this Python code does line by line like I am a beginner programmer. 
+ 
+Then try this follow-up: 
+Prompt Example 
+Find one possible error in this code and explain how I can fix it without rewriting the 
+whole program. 
+ 
+Finally, ask: 
+Prompt Example 
+Give me a similar coding example so I can practice on my own. 
+As you work through the responses, notice how AI becomes most useful when it helps 
+you understand and practice rather than simply handing you the final solution. The 
+strongest learning usually happens in the back-and-forth between explanation, revision, 
+and trying again.

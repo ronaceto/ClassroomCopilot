@@ -1,0 +1,30 @@
+AI and Scientific Questions 
+AI can also help students ask better science questions. 
+Science learning becomes stronger when students are curious about how and why things 
+happen. AI can support that curiosity by generating follow-up questions, possible 
+hypotheses, or review prompts. 
+For example, a student studying ecosystems might ask: 
+Give me three questions a scientist might ask about how pollution affects a 
+freshwater ecosystem. 
+This is useful because it helps students think like investigators rather than only 
+memorizing facts. 
+What AI Cannot Replace in Science 
+Science is not only about explanation. It is also about evidence. 
+That means AI should not replace: 
+ teacher-approved lab procedures 
+ actual observations from experiments 
+ data collection and interpretation 
+ safety directions in class or labs 
+ source-checked scientific claims 
+Students should be especially careful not to use AI for safety advice, medical decisions, 
+or unapproved lab instructions. AI can help students understand lab ideas, but it should 
+never replace teacher supervision or proper scientific procedure. 
+Using AI Responsibly in Science 
+In science, responsible use means letting AI support explanation and review while still 
+relying on evidence, observation, and approved procedures. AI can help students 
+understand concepts and ask better questions, but it should not stand in for real data, 
+safe lab directions, or conclusions that need evidence. Science remains strongest when 
+students use AI to learn the concepts while trusting experiments, sources, and teacher 
+guidance for what counts as valid scientific work. 
+A useful rule in science is this: Let AI help you understand the science, but let 
+evidence and proper procedure guide what you conclude.

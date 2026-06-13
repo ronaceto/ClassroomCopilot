@@ -1,0 +1,213 @@
+{
+  "workflowId": "build-curriculum-pack",
+  "title": "Build an AI Literacy Curriculum Pack",
+  "subtitle": "Start from the AI for Students curriculum, choose your classroom context, and generate teacher-ready materials.",
+  "primaryAction": "Build Curriculum Pack",
+  "sourceData": "curriculum-map/data/modules.json",
+  "sections": [
+    {
+      "id": "curriculum-source",
+      "title": "Choose Curriculum Source",
+      "description": "Pick the unit and lesson module from the AI for Students curriculum.",
+      "fields": [
+        {
+          "id": "unitId",
+          "label": "Unit",
+          "control": "select",
+          "source": "units",
+          "required": true,
+          "default": "unit-1"
+        },
+        {
+          "id": "moduleId",
+          "label": "Module",
+          "control": "select",
+          "source": "selectedUnit.modules",
+          "required": true,
+          "default": "module-01"
+        },
+        {
+          "id": "modulePreview",
+          "label": "Module Preview",
+          "control": "preview",
+          "source": "selectedModule",
+          "shows": ["essentialQuestion", "objectives", "vocabulary", "activity", "assessment", "guardrails"]
+        }
+      ]
+    },
+    {
+      "id": "classroom-context",
+      "title": "Set Classroom Context",
+      "description": "Adapt the curriculum module to grade level, subject, standards, time, and format.",
+      "fields": [
+        {
+          "id": "gradeLevel",
+          "label": "Grade Level",
+          "control": "select",
+          "options": ["6", "7", "8", "9", "10", "11", "12", "College intro", "Custom"],
+          "default": "10",
+          "required": true
+        },
+        {
+          "id": "readingLevel",
+          "label": "Reading Level",
+          "control": "select",
+          "options": ["Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+          "defaultFrom": "gradeLevel",
+          "required": true
+        },
+        {
+          "id": "subjectContext",
+          "label": "Subject / Context",
+          "control": "select",
+          "options": ["AI Literacy", "ELA", "Math", "Science", "Social Studies", "CTE", "Computer Science", "Advisory", "Library/Media", "Career Readiness", "Custom"],
+          "default": "AI Literacy",
+          "required": true
+        },
+        {
+          "id": "standardsTarget",
+          "label": "Standards Target",
+          "control": "select",
+          "options": ["None", "ISTE", "Common Core ELA", "Tennessee", "Missouri", "Kansas", "State standards", "Custom"],
+          "default": "ISTE",
+          "required": true
+        },
+        {
+          "id": "timeAvailable",
+          "label": "Time Available",
+          "control": "select",
+          "options": ["30 min", "45 min", "60 min", "90 min", "3-day mini-unit", "5-day unit"],
+          "default": "60 min",
+          "required": true
+        },
+        {
+          "id": "classFormat",
+          "label": "Class Format",
+          "control": "select",
+          "options": ["Whole class", "Small group", "Individual", "Station rotation", "Online/asynchronous"],
+          "default": "Whole class",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "student-ai-access",
+      "title": "Set Student AI Access Level",
+      "description": "Choose how students will interact with AI in this lesson.",
+      "fields": [
+        {
+          "id": "studentAiAccessLevel",
+          "label": "Student AI Access",
+          "control": "segmented",
+          "default": "teacher_demo_ai",
+          "required": true,
+          "options": [
+            {
+              "value": "no_student_ai",
+              "label": "No student AI",
+              "description": "Students use printable or discussion-based activities without direct AI access.",
+              "generationRules": ["Generate no-AI alternatives.", "Use sample AI outputs when needed.", "Avoid student prompt entry."]
+            },
+            {
+              "value": "teacher_demo_ai",
+              "label": "Teacher-demo AI",
+              "description": "Teacher demonstrates AI while students observe, critique, and reflect.",
+              "generationRules": ["Include projected prompt scripts.", "Add discussion pauses.", "Include teacher facilitation notes."]
+            },
+            {
+              "value": "supervised_student_ai",
+              "label": "Supervised student AI",
+              "description": "Students use teacher-approved prompts with structured reflection and monitoring.",
+              "generationRules": ["Include prompt cards.", "Add privacy warnings.", "Add monitoring and reflection steps."]
+            },
+            {
+              "value": "independent_student_ai",
+              "label": "Independent student AI",
+              "description": "Students use AI individually within teacher, family, school, and platform rules.",
+              "generationRules": ["Include disclosure language.", "Add self-checklists.", "Require verification and reflection."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deliverables",
+      "title": "Choose Deliverables",
+      "description": "Choose the pack preset and optional materials to generate.",
+      "fields": [
+        {
+          "id": "packPreset",
+          "label": "Pack Preset",
+          "control": "cards",
+          "default": "full_lesson_pack",
+          "required": true,
+          "options": [
+            {
+              "value": "quick_class_activity",
+              "label": "Quick Class Activity",
+              "deliverables": ["student_handout", "guided_ai_activity", "exit_ticket"]
+            },
+            {
+              "value": "full_lesson_pack",
+              "label": "Full Lesson Pack",
+              "deliverables": ["teacher_plan", "student_handout", "guided_ai_activity", "formative_check", "exit_ticket", "rubric_checklist"]
+            },
+            {
+              "value": "admin_ready_sample",
+              "label": "Admin-Ready Curriculum Sample",
+              "deliverables": ["teacher_plan", "standards_alignment", "parent_admin_summary", "rubric_checklist"]
+            },
+            {
+              "value": "no_ai_classroom_version",
+              "label": "No-AI Classroom Version",
+              "deliverables": ["teacher_plan", "no_ai_alternative", "student_handout", "discussion_questions", "exit_ticket"]
+            },
+            {
+              "value": "mini_unit",
+              "label": "Mini-Unit",
+              "deliverables": ["multi_day_sequence", "daily_activities", "assessments", "reflection"]
+            }
+          ]
+        },
+        {
+          "id": "deliverables",
+          "label": "Included Materials",
+          "control": "checkboxes",
+          "defaultFrom": "packPreset.deliverables",
+          "options": [
+            "teacher_plan",
+            "student_handout",
+            "guided_ai_activity",
+            "no_ai_alternative",
+            "slides_outline",
+            "quiz_exit_ticket",
+            "rubric_checklist",
+            "parent_admin_summary",
+            "standards_alignment",
+            "discussion_questions",
+            "multi_day_sequence"
+          ]
+        },
+        {
+          "id": "differentiation",
+          "label": "Differentiation",
+          "control": "checkboxes",
+          "options": ["ELL supports", "IEP/504 accommodations", "Extension challenge", "Lower reading level", "More examples"],
+          "default": ["ELL supports", "IEP/504 accommodations", "Extension challenge"]
+        },
+        {
+          "id": "outputDepth",
+          "label": "Output Depth",
+          "control": "segmented",
+          "options": ["Quick", "Standard", "Detailed"],
+          "default": "Standard"
+        }
+      ]
+    }
+  ],
+  "reviewSummary": ["unitId", "moduleId", "gradeLevel", "readingLevel", "subjectContext", "standardsTarget", "timeAvailable", "classFormat", "studentAiAccessLevel", "packPreset", "deliverables", "differentiation", "outputDepth"],
+  "generatedPackTabs": ["Teacher Plan", "Student Handout", "AI Activity", "Assessment", "Rubric", "Summary"],
+  "refinementActions": ["Make more hands-on", "Shorten to 30 minutes", "Add ELL supports", "Add IEP/504 accommodations", "Add extension challenge", "Make no-AI version", "Align to different standards", "Export"],
+  "requiredOutputSections": ["Title", "Source unit/module/chapter", "Grade and time", "Essential question", "Learning objectives", "Vocabulary", "Materials", "Teacher preparation", "Lesson sequence with timing", "Guided AI activity or no-AI alternative", "Student directions", "Differentiation supports", "AI-use guardrails", "Formative check", "Exit ticket", "Rubric/checklist", "Teacher notes", "Export metadata"],
+  "mobileSteps": ["Module", "Classroom", "AI Access", "Deliverables", "Review"]
+}

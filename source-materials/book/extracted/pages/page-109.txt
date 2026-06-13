@@ -1,0 +1,20 @@
+Figure 17.1 — Responsible AI Use Framework 
+This figure illustrates a responsible-use sequence in which a student begins with a 
+learning goal, uses AI for support, evaluates the response, verifies important 
+information, and makes an ethical decision about how to use the result. 
+Why This Chapter Matters 
+This may be one of the most important chapters in the entire book. 
+Students will continue to encounter AI in school, work, and everyday life. Knowing how 
+to use the technology is valuable, but knowing how to use it responsibly is even more 
+important. Responsibility is what keeps learning honest, thinking active, and technology 
+useful. 
+Without responsibility, AI becomes a shortcut. 
+With responsibility, it becomes a powerful educational tool. 
+That distinction is what allows schools, teachers, and students to trust it. 
+Chapter Summary 
+In this chapter, you learned that responsible AI use depends on purpose, honesty, 
+verification, and judgment. You explored how academic integrity still applies in the age 
+of AI, why students should check information carefully, and why privacy and fairness 
+matter when using digital tools. 
+In the next chapter, we will turn from responsible AI use to another essential skill: how 
+to evaluate AI-generated media, misinformation, and what deserves trust online.

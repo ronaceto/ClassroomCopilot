@@ -1,0 +1,24 @@
+In other words, strong prompts guide the AI toward being helpful in a specific way. 
+For example, compare these two prompts: 
+Weak prompt: 
+Explain photosynthesis. 
+Stronger prompt: 
+Explain photosynthesis in simple terms for a high school student, then give me three 
+quiz questions to check my understanding. 
+The second version works better because it asks for explanation and practice. That is 
+what students should look for throughout this chapter. 
+Prompts for Learning and Understanding 
+These prompts are useful when students are trying to understand a concept more clearly. 
+1. Explain a concept simply 
+Explain this concept in simple terms for a high school student. 
+Why it works: 
+This prompt helps students move from confusion to clarity by asking the AI to simplify 
+the explanation without making it childish. 
+2. Teach step by step 
+Teach me this topic step by step as if you were my tutor. 
+Why it works: 
+This encourages a guided explanation rather than a quick summary. 
+3. Use an analogy 
+Explain this concept using a real-world analogy. 
+Why it works: 
+Analogies help students connect unfamiliar ideas to familiar experiences.

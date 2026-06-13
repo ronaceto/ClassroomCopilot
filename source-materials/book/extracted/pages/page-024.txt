@@ -1,0 +1,28 @@
+Chapter 4 — The Power of Good Prompts 
+ 
+Key Question 
+How does the way you ask a question affect the quality of an AI response? 
+Learning Objectives 
+ Understand what a prompt is 
+ Learn why clear prompts produce better results 
+ Recognize the parts of an effective prompt 
+ Practice improving weak prompts 
+Introduction 
+Artificial intelligence tools can be incredibly helpful, but they are only as useful as the 
+instructions they receive. If you ask a vague question, you will usually get a vague 
+answer. If you ask a thoughtful, specific question, the response is much more likely to be 
+useful. Prompting is not just a technical skill. It is also a thinking skill, because writing a 
+good prompt requires students to know what they want, what they need help with, and 
+how to guide the tool in the right direction. 
+What Is a Prompt? 
+A prompt is the instruction, question, or request you give to an AI tool. Some prompts 
+are short and simple, but stronger prompts give the AI more direction by defining the 
+topic, audience, and format of the response. 
+Compare these two prompts: “Explain climate change.” and “Explain climate change in 
+simple terms for a high school student and include three examples of real-world effects.” 
+The second version is better because it gives the AI a clearer job to do. 
+Why Better Prompts Matter 
+Good prompts help students get more accurate explanations, save time by reducing 
+confusion, receive answers at the right difficulty level, and generate more useful 
+examples. In school, that means stronger studying, clearer writing, and more targeted 
+feedback.

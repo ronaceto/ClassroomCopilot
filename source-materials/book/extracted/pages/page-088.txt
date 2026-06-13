@@ -1,0 +1,29 @@
+Compare how factory owners and workers experienced the Industrial Revolution. 
+These questions encourage deeper thinking because they move students beyond a single 
+viewpoint. They also help students prepare for discussions, essays, and document-based 
+questions where multiple perspectives matter. 
+AI and Historical Simulations 
+AI can also support interactive history learning through simulations. A student might 
+ask AI to respond as if it were a historical figure from a certain time period, which can 
+make learning more engaging and help history feel like lived experience rather than 
+distant information. For example, a student could ask the tool to respond as a factory 
+worker during the Industrial Revolution and then use that exchange to think more 
+carefully about daily life, perspective, and historical context. 
+For example, a student could ask: 
+Act as a factory worker during the Industrial Revolution and answer my 
+questions about daily life. 
+This kind of prompt can be useful for perspective-taking and curiosity. But students 
+should remember that the response is still a modern AI-generated interpretation, not a 
+real primary source. Simulations are tools for exploration, not proof. 
+What Students Must Verify 
+History and social studies require verification because errors can change meaning 
+significantly. 
+Students should be especially careful with: 
+ dates and timelines 
+ quotations 
+ statistics 
+ primary source claims 
+ descriptions of causes and effects 
+AI can produce a clear explanation that still leaves out key details or blends facts 
+incorrectly. That is why students should compare AI responses with textbooks, class 
+notes, teacher guidance, and reliable historical sources.
