@@ -3,12 +3,16 @@ import {
   Archive,
   BookOpen,
   BrainCircuit,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle2,
   Clipboard,
   ClipboardList,
   FileText,
   Gauge,
   GraduationCap,
+  HelpCircle,
+  Eye,
   Library,
   Layers3,
   LibraryBig,
@@ -87,6 +91,13 @@ interface WorkflowConfig {
   title: string;
   subtitle: string;
   sections: WorkflowSection[];
+}
+
+interface BuilderStep {
+  title: string;
+  description: string;
+  complete: boolean;
+  content: React.ReactNode;
 }
 
 const curriculumData = curriculumDataJson as CurriculumData;
@@ -201,6 +212,62 @@ const refinementPresets = [
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
   { label: 'Convert to HyFlex', instruction: 'Convert the package to HyFlex delivery with in-person, online synchronous, and asynchronous options.' },
+];
+
+const aiLiteracyComponents = [
+  'Understand AI',
+  'Use AI responsibly',
+  'Evaluate AI outputs',
+  'Prompt effectively',
+  'Recognize bias',
+];
+
+const curriculumQuickStarts = [
+  {
+    title: '10th Grade AI Mini-Unit',
+    description: 'A five-day sequence for AI basics, verification, prompting, and responsible use.',
+    settings: {
+      gradeLevel: '10',
+      readingLevel: 'Grade 10',
+      subjectContext: 'AI Literacy',
+      standardsTarget: 'ISTE',
+      timeAvailable: '5-day unit',
+      classFormat: 'Whole class',
+      studentAiAccessLevel: 'teacher_demo_ai',
+      packPreset: 'mini_unit',
+      policyOutput: 'Classroom AI Use Policy',
+    },
+  },
+  {
+    title: 'Responsible AI Lesson',
+    description: 'A single-period lesson focused on privacy, verification, citation, and AI limits.',
+    settings: {
+      gradeLevel: '9',
+      readingLevel: 'Grade 9',
+      subjectContext: 'Advisory',
+      standardsTarget: 'ISTE',
+      timeAvailable: '45 min',
+      classFormat: 'Whole class',
+      studentAiAccessLevel: 'teacher_demo_ai',
+      packPreset: 'full_lesson_pack',
+      policyOutput: 'Student Responsible AI Agreement',
+    },
+  },
+  {
+    title: 'No-Student-AI Version',
+    description: 'Printable and discussion-based materials for schools that restrict student AI access.',
+    settings: {
+      gradeLevel: '8',
+      readingLevel: 'Grade 8',
+      subjectContext: 'AI Literacy',
+      standardsTarget: 'ISTE',
+      timeAvailable: '60 min',
+      classFormat: 'Small group',
+      studentAiAccessLevel: 'no_student_ai',
+      packPreset: 'no_ai_classroom_version',
+      policyOutput: 'Family / Guardian AI Notice',
+    },
+  },
 ];
 
 const samplePackages: Array<{ title: string; mode: BuilderMode; description: string; content: string }> = [
@@ -383,6 +450,7 @@ function CurriculumPackBuilder({
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
 }) {
+  const [activeStep, setActiveStep] = useState(0);
   const [unitId, setUnitId] = useState(curriculumData.units[0].id);
   const selectedUnit = useMemo(
     () => curriculumData.units.find((unit) => unit.id === unitId) ?? curriculumData.units[0],
@@ -410,9 +478,15 @@ function CurriculumPackBuilder({
   const packOptions = getFieldOptions(curriculumWorkflow, 'deliverables', 'packPreset') as OptionItem[];
   const studentAccessOptions = getFieldOptions(curriculumWorkflow, 'student-ai-access', 'studentAiAccessLevel') as OptionItem[];
   const selectedPack = packOptions.find((option) => option.value === settings.packPreset) ?? packOptions[1];
+  const selectedAccess = studentAccessOptions.find((option) => option.value === settings.studentAiAccessLevel);
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
+  };
+
+  const applyQuickStart = (quickStart: (typeof curriculumQuickStarts)[number]) => {
+    setSettings(quickStart.settings);
+    setActiveStep(1);
   };
 
   const buildPrompt = () => {
@@ -447,6 +521,7 @@ function CurriculumPackBuilder({
       `Student AI access level: ${labelFromValue(settings.studentAiAccessLevel)} - ${studentAccessNotes[settings.studentAiAccessLevel]}`,
       `Output package: ${selectedPack.label}`,
       `Included deliverables: ${(selectedPack.deliverables ?? []).map(labelFromValue).join(', ')}`,
+      `AI literacy components to emphasize: ${aiLiteracyComponents.join(', ')}`,
       `Requested policy artifact: ${settings.policyOutput}`,
       sourceNotes.trim() ? `Additional source/context notes from educator: ${sourceNotes.trim()}` : 'Additional source/context notes from educator: none provided.',
       '',
@@ -461,6 +536,118 @@ function CurriculumPackBuilder({
     onBuild(prompt, config);
   };
 
+  const steps = [
+    {
+      title: 'Start',
+      description: 'Choose the source module or start from a teacher-ready high school template.',
+      complete: Boolean(selectedUnit && selectedModule),
+      content: (
+        <Panel title="Choose Curriculum Source" icon={LibraryBig}>
+          <GuidanceNote>
+            Pick a quick start when you want the fastest teacher path, or choose a specific unit and module from the AI for Students curriculum map.
+          </GuidanceNote>
+          <QuickStartGrid quickStarts={curriculumQuickStarts} onApply={applyQuickStart} />
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <SelectField
+              label="Unit"
+              value={unitId}
+              onChange={(value) => {
+                const nextUnit = curriculumData.units.find((unit) => unit.id === value);
+                setUnitId(value);
+                setModuleId(nextUnit?.modules[0]?.id ?? '');
+              }}
+              options={curriculumData.units.map((unit) => ({ value: unit.id, label: unit.title }))}
+              help="This anchors the package in the book instead of a blank AI prompt."
+            />
+            <SelectField
+              label="Module"
+              value={selectedModule.id}
+              onChange={setModuleId}
+              options={selectedUnit.modules.map((module) => ({ value: module.id, label: `${module.chapter}. ${module.title}` }))}
+              help="Modules become the lesson topic, objectives, vocabulary, activity seed, and assessment seed."
+            />
+          </div>
+          <ModulePreview module={selectedModule} />
+        </Panel>
+      ),
+    },
+    {
+      title: 'Context',
+      description: 'Set the grade, subject, standards, time, and format.',
+      complete: Boolean(settings.gradeLevel && settings.subjectContext && settings.timeAvailable),
+      content: (
+        <Panel title="Set Classroom Context" icon={SlidersHorizontal}>
+          <GuidanceNote>
+            The simple high-school path only needs grade, subject, time, and AI access. Standards and reading level can stay on the defaults unless the school requires something specific.
+          </GuidanceNote>
+          <FieldGrid>
+            <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} help="Used to tune examples, independence, guardrails, and reading level." />
+            <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} help="Student-facing instructions and handouts should match this level." />
+            <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
+            <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
+            <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} help="Controls pacing, activity depth, and assessment scope." />
+            <SelectField label="Format" value={settings.classFormat} onChange={(value) => updateSetting('classFormat', value)} options={toSelectOptions(['Whole class', 'Small group', 'Individual', 'Station rotation', 'Online/asynchronous'])} help="Shapes directions, facilitation notes, and participation structures." />
+          </FieldGrid>
+          <div className="mt-5">
+            <LiteracyComponentStrip />
+          </div>
+        </Panel>
+      ),
+    },
+    {
+      title: 'AI Access',
+      description: 'Choose how students may interact with AI.',
+      complete: Boolean(settings.studentAiAccessLevel),
+      content: (
+        <Panel title="Set Student AI Access" icon={Sparkles}>
+          <GuidanceNote>
+            This is the core safety decision. The generated lesson will match the selected access level and include the right privacy, citation, and verification guardrails.
+          </GuidanceNote>
+          <SegmentedOptions value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
+          <p className="mt-3 text-sm text-slate-600">{studentAccessNotes[settings.studentAiAccessLevel]}</p>
+        </Panel>
+      ),
+    },
+    {
+      title: 'Deliverables',
+      description: 'Pick the package type and included materials.',
+      complete: Boolean(settings.packPreset),
+      content: (
+        <Panel title="Choose Deliverables" icon={ClipboardList}>
+          <GuidanceNote>
+            Start with Full Lesson Pack for most classrooms. Mini-Unit is best when you want multiple days, and No-AI Version is best for restrictive school policies.
+          </GuidanceNote>
+          <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
+          <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
+        </Panel>
+      ),
+    },
+    {
+      title: 'Sources',
+      description: 'Add local policy, standards, or notes when needed.',
+      complete: true,
+      content: (
+        <SourceContextPanel
+          title="Source / Local Requirements"
+          hint="Optional, but powerful: add local standards, policies, or constraints to make the generated package more review-ready."
+          policyOutput={settings.policyOutput}
+          onPolicyChange={(value) => updateSetting('policyOutput', value)}
+          sourceNotes={sourceNotes}
+          onSourceNotesChange={setSourceNotes}
+          placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
+        />
+      ),
+    },
+  ];
+
+  const previewItems = [
+    ['Source', `${selectedUnit.title} / ${selectedModule.title}`],
+    ['Classroom', `Grade ${settings.gradeLevel}, ${settings.timeAvailable}, ${settings.classFormat}`],
+    ['AI access', selectedAccess?.label ?? labelFromValue(settings.studentAiAccessLevel)],
+    ['Output', selectedPack?.label ?? 'Full Lesson Pack'],
+    ['AI literacy', aiLiteracyComponents.join(', ')],
+  ];
+
   return (
     <BuilderFrame
       eyebrow="Curriculum Pack"
@@ -469,6 +656,11 @@ function CurriculumPackBuilder({
       buttonLabel="Build Curriculum Pack"
       isLoading={isLoading}
       onBuild={buildPrompt}
+      steps={steps}
+      activeStep={activeStep}
+      onStepChange={setActiveStep}
+      previewTitle="Live Curriculum Preview"
+      previewItems={previewItems}
       summary={[
         ['Source', `${selectedUnit.title} / ${selectedModule.title}`],
         ['Classroom', `Grade ${settings.gradeLevel}, ${settings.timeAvailable}`],
@@ -476,58 +668,7 @@ function CurriculumPackBuilder({
         ['Output', selectedPack?.label ?? 'Full Lesson Pack'],
       ]}
     >
-      <section className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Choose Curriculum Source" icon={LibraryBig}>
-          <SelectField
-            label="Unit"
-            value={unitId}
-            onChange={(value) => {
-              const nextUnit = curriculumData.units.find((unit) => unit.id === value);
-              setUnitId(value);
-              setModuleId(nextUnit?.modules[0]?.id ?? '');
-            }}
-            options={curriculumData.units.map((unit) => ({ value: unit.id, label: unit.title }))}
-          />
-          <SelectField
-            label="Module"
-            value={selectedModule.id}
-            onChange={setModuleId}
-            options={selectedUnit.modules.map((module) => ({ value: module.id, label: `${module.chapter}. ${module.title}` }))}
-          />
-          <ModulePreview module={selectedModule} />
-        </Panel>
-
-        <Panel title="Set Classroom Context" icon={SlidersHorizontal}>
-          <FieldGrid>
-            <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} />
-            <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} />
-            <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} />
-            <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} />
-            <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} />
-            <SelectField label="Format" value={settings.classFormat} onChange={(value) => updateSetting('classFormat', value)} options={toSelectOptions(['Whole class', 'Small group', 'Individual', 'Station rotation', 'Online/asynchronous'])} />
-          </FieldGrid>
-        </Panel>
-
-        <Panel title="Set Student AI Access" icon={Sparkles}>
-          <SegmentedOptions value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
-          <p className="mt-3 text-sm text-slate-600">{studentAccessNotes[settings.studentAiAccessLevel]}</p>
-        </Panel>
-
-        <Panel title="Choose Deliverables" icon={ClipboardList}>
-          <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
-          <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
-        </Panel>
-
-        <SourceContextPanel
-          title="Source / Local Requirements"
-          hint="Use local standards, policies, or constraints to make the generated package more review-ready."
-          policyOutput={settings.policyOutput}
-          onPolicyChange={(value) => updateSetting('policyOutput', value)}
-          sourceNotes={sourceNotes}
-          onSourceNotesChange={setSourceNotes}
-          placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
-        />
-      </section>
+      {steps[activeStep].content}
     </BuilderFrame>
   );
 }
@@ -539,6 +680,7 @@ function CollegeCourseBuilder({
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
 }) {
+  const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
     courseTitle: 'Introduction to Artificial Intelligence Technology',
     courseLevel: 'Introductory',
@@ -599,23 +741,16 @@ function CollegeCourseBuilder({
     onBuild(prompt, { ...baseConfig, subjects: 'Artificial Intelligence Technology', grades: 'College intro', standards: { type: 'ISTE' } });
   };
 
-  return (
-    <BuilderFrame
-      eyebrow="College Course"
-      title={courseWorkflow.title}
-      subtitle={courseWorkflow.subtitle}
-      buttonLabel="Build Course"
-      isLoading={isLoading}
-      onBuild={buildPrompt}
-      summary={[
-        ['Course', settings.courseTitle],
-        ['Format', `${settings.creditHours} credits, ${settings.termLength}, ${settings.deliveryFormat}`],
-        ['Learners', settings.targetLearnerProfile],
-        ['Output', selectedOutput.label],
-      ]}
-    >
-      <section className="grid gap-5 lg:grid-cols-2">
+  const steps = [
+    {
+      title: 'Basics',
+      description: 'Name the course, level, credits, term, and delivery format.',
+      complete: Boolean(settings.courseTitle && settings.courseLevel && settings.deliveryFormat),
+      content: (
         <Panel title="Course Basics" icon={GraduationCap}>
+          <GuidanceNote>
+            Keep this close to catalog language. The generated package will treat these choices as draft syllabus assumptions for faculty and department review.
+          </GuidanceNote>
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Course title</span>
             <input
@@ -625,47 +760,110 @@ function CollegeCourseBuilder({
             />
           </label>
           <FieldGrid>
-            <SelectField label="Level" value={settings.courseLevel} onChange={(value) => updateSetting('courseLevel', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'courseLevel')} />
-            <SelectField label="Credits" value={settings.creditHours} onChange={(value) => updateSetting('creditHours', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'creditHours')} />
-            <SelectField label="Term" value={settings.termLength} onChange={(value) => updateSetting('termLength', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'termLength')} />
-            <SelectField label="Delivery" value={settings.deliveryFormat} onChange={(value) => updateSetting('deliveryFormat', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'deliveryFormat')} />
-            <SelectField label="Learners" value={settings.targetLearnerProfile} onChange={(value) => updateSetting('targetLearnerProfile', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'targetLearnerProfile')} />
+            <SelectField label="Level" value={settings.courseLevel} onChange={(value) => updateSetting('courseLevel', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'courseLevel')} help="Sets the depth of concepts, labs, vocabulary, and assessments." />
+            <SelectField label="Credits" value={settings.creditHours} onChange={(value) => updateSetting('creditHours', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'creditHours')} help="Used to size workload and weekly contact expectations." />
+            <SelectField label="Term" value={settings.termLength} onChange={(value) => updateSetting('termLength', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'termLength')} help="Controls the weekly module sequence." />
+            <SelectField label="Delivery" value={settings.deliveryFormat} onChange={(value) => updateSetting('deliveryFormat', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'deliveryFormat')} help="Adds face-to-face, online, hybrid, or HyFlex teaching notes." />
+            <SelectField label="Learners" value={settings.targetLearnerProfile} onChange={(value) => updateSetting('targetLearnerProfile', value)} options={fieldSelectOptions(courseWorkflow, 'course-basics', 'targetLearnerProfile')} help="Sets beginner supports and prerequisite assumptions." />
           </FieldGrid>
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Competencies',
+      description: 'Set the technical depth for AI, coding, math, and data.',
+      complete: Boolean(settings.mathIntensity && settings.codingIntensity && settings.dataRequirement),
+      content: (
         <Panel title="Competency Focus" icon={Layers3}>
+          <GuidanceNote>
+            These defaults map tightly to the AI faculty/program-coordinator role: foundations, Python, data, ML, generative AI, ethics, and career readiness.
+          </GuidanceNote>
           <ChipList items={['AI foundations', 'Python', 'Data analysis', 'Machine learning', 'Generative AI', 'Responsible AI', 'Career readiness']} />
           <FieldGrid>
-            <SelectField label="Math" value={settings.mathIntensity} onChange={(value) => updateSetting('mathIntensity', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'mathIntensity')} />
-            <SelectField label="Coding" value={settings.codingIntensity} onChange={(value) => updateSetting('codingIntensity', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'codingIntensity')} />
-            <SelectField label="Data" value={settings.dataRequirement} onChange={(value) => updateSetting('dataRequirement', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'dataRequirement')} />
+            <SelectField label="Math" value={settings.mathIntensity} onChange={(value) => updateSetting('mathIntensity', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'mathIntensity')} help="Choose conceptual math unless the course explicitly requires formulas or quantitative work." />
+            <SelectField label="Coding" value={settings.codingIntensity} onChange={(value) => updateSetting('codingIntensity', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'codingIntensity')} help="Sets Python scaffolding, lab detail, and troubleshooting support." />
+            <SelectField label="Data" value={settings.dataRequirement} onChange={(value) => updateSetting('dataRequirement', value)} options={fieldSelectOptions(courseWorkflow, 'competency-focus', 'dataRequirement')} help="Shapes examples, datasets, and privacy/data governance cautions." />
           </FieldGrid>
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Applied Work',
+      description: 'Choose labs, projects, and assessment model.',
+      complete: Boolean(settings.labCadence && settings.finalProjectType && settings.assessmentModel),
+      content: (
         <Panel title="Applied Learning and Assessment" icon={ClipboardList}>
+          <GuidanceNote>
+            Applied evidence is what makes the course credible: labs, notebooks, ethics cases, portfolio artifacts, and a final project.
+          </GuidanceNote>
           <FieldGrid>
-            <SelectField label="Labs" value={settings.labCadence} onChange={(value) => updateSetting('labCadence', value)} options={fieldSelectOptions(courseWorkflow, 'applied-learning', 'labCadence')} />
-            <SelectField label="Final project" value={settings.finalProjectType} onChange={(value) => updateSetting('finalProjectType', value)} options={fieldSelectOptions(courseWorkflow, 'applied-learning', 'finalProjectType')} />
-            <SelectField label="Assessment" value={settings.assessmentModel} onChange={(value) => updateSetting('assessmentModel', value)} options={fieldSelectOptions(courseWorkflow, 'assessment-cqi', 'assessmentModel')} />
+            <SelectField label="Labs" value={settings.labCadence} onChange={(value) => updateSetting('labCadence', value)} options={fieldSelectOptions(courseWorkflow, 'applied-learning', 'labCadence')} help="Controls how often students produce hands-on evidence." />
+            <SelectField label="Final project" value={settings.finalProjectType} onChange={(value) => updateSetting('finalProjectType', value)} options={fieldSelectOptions(courseWorkflow, 'applied-learning', 'finalProjectType')} help="Becomes the capstone or portfolio spine." />
+            <SelectField label="Assessment" value={settings.assessmentModel} onChange={(value) => updateSetting('assessmentModel', value)} options={fieldSelectOptions(courseWorkflow, 'assessment-cqi', 'assessmentModel')} help="Balances labs, quizzes, projects, reflection, and practical demonstrations." />
           </FieldGrid>
           <ChipList items={['Coding labs', 'Data notebooks', 'Ethics cases', 'Portfolio artifacts', 'Capstone project']} />
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Outputs',
+      description: 'Pick the course packet to generate.',
+      complete: Boolean(settings.outputPreset),
+      content: (
         <Panel title="Course Package Outputs" icon={CheckCircle2}>
+          <GuidanceNote>
+            Full Course Package is best for a first build. Program Coordinator Packet is best when the output needs CQI, advisory board, or workforce alignment evidence.
+          </GuidanceNote>
           <CardOptions value={settings.outputPreset} onChange={(value) => updateSetting('outputPreset', value)} options={outputOptions} detailKey="includedOutputs" />
           <ChipList items={(selectedOutput.includedOutputs ?? []).map(labelFromValue)} />
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Sources',
+      description: 'Add institutional notes, employer skills, or policy language.',
+      complete: true,
+      content: (
         <SourceContextPanel
           title="Source / Local Requirements"
-          hint="Use institutional notes, employer skills, or policy language to make the course package review-ready."
+          hint="Optional, but powerful: add institutional notes, employer skills, or policy language to make the course package review-ready."
           policyOutput={settings.policyOutput}
           onPolicyChange={(value) => updateSetting('policyOutput', value)}
           sourceNotes={sourceNotes}
           onSourceNotesChange={setSourceNotes}
           placeholder="Paste program outcomes, local workforce needs, advisory board notes, syllabus constraints, institutional policy language, or accreditation/CQI expectations."
         />
-      </section>
+      ),
+    },
+  ];
+
+  return (
+    <BuilderFrame
+      eyebrow="College Course"
+      title={courseWorkflow.title}
+      subtitle={courseWorkflow.subtitle}
+      buttonLabel="Build Course"
+      isLoading={isLoading}
+      onBuild={buildPrompt}
+      steps={steps}
+      activeStep={activeStep}
+      onStepChange={setActiveStep}
+      previewTitle="Live Course Preview"
+      previewItems={[
+        ['Course', settings.courseTitle],
+        ['Format', `${settings.creditHours} credits, ${settings.termLength}, ${settings.deliveryFormat}`],
+        ['Technical depth', `${settings.codingIntensity}, ${settings.mathIntensity}, ${settings.dataRequirement}`],
+        ['Applied work', `${settings.labCadence}, ${settings.finalProjectType}, ${settings.assessmentModel}`],
+        ['Output', selectedOutput.label],
+      ]}
+      summary={[
+        ['Course', settings.courseTitle],
+        ['Format', `${settings.creditHours} credits, ${settings.termLength}, ${settings.deliveryFormat}`],
+        ['Learners', settings.targetLearnerProfile],
+        ['Output', selectedOutput.label],
+      ]}
+    >
+      {steps[activeStep].content}
     </BuilderFrame>
   );
 }
@@ -677,6 +875,7 @@ function CollegeProgramBuilder({
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
 }) {
+  const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
     programName: 'Artificial Intelligence Technology',
     credentialType: 'Technical certificate + AAS pathway',
@@ -730,23 +929,16 @@ function CollegeProgramBuilder({
     onBuild(prompt, { ...baseConfig, subjects: 'Artificial Intelligence Technology Program', grades: 'College intro', standards: { type: 'ISTE' } });
   };
 
-  return (
-    <BuilderFrame
-      eyebrow="College Program"
-      title="Build an AI Technology Program Package"
-      subtitle="Create certificate and pathway drafts with outcomes, course sequences, CQI evidence, advisory board materials, and recruitment assets."
-      buttonLabel="Build Program Package"
-      isLoading={isLoading}
-      onBuild={buildPrompt}
-      summary={[
-        ['Program', settings.programName],
-        ['Credential', settings.credentialType],
-        ['Pathway', settings.pathwayModel],
-        ['CQI', settings.cqiCadence],
-      ]}
-    >
-      <section className="grid gap-5 lg:grid-cols-2">
+  const steps = [
+    {
+      title: 'Basics',
+      description: 'Set credential, length, learners, and pathway.',
+      complete: Boolean(settings.programName && settings.credentialType && settings.pathwayModel),
+      content: (
         <Panel title="Program Basics" icon={GraduationCap}>
+          <GuidanceNote>
+            This mode is for certificates, pathways, CQI evidence, advisory boards, and recruitment assets. Keep the basics broad enough for institutional review.
+          </GuidanceNote>
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Program name</span>
             <input
@@ -756,15 +948,24 @@ function CollegeProgramBuilder({
             />
           </label>
           <FieldGrid>
-            <SelectField label="Credential" value={settings.credentialType} onChange={(value) => updateSetting('credentialType', value)} options={toSelectOptions(['Technical certificate', 'AAS degree', 'Technical certificate + AAS pathway', 'Noncredit workforce certificate', 'Dual enrollment pathway'])} />
-            <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} />
-            <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} />
-            <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} />
-            <SelectField label="Package" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={toSelectOptions(['Program Proposal Package', 'Certificate Pathway Package', 'AAS Degree Pathway Package', 'Advisory Board Package', 'Recruitment Package'])} />
+            <SelectField label="Credential" value={settings.credentialType} onChange={(value) => updateSetting('credentialType', value)} options={toSelectOptions(['Technical certificate', 'AAS degree', 'Technical certificate + AAS pathway', 'Noncredit workforce certificate', 'Dual enrollment pathway'])} help="Determines whether the output reads like a short certificate, degree pathway, or stacked credential." />
+            <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} help="Sizes the course sequence and implementation roadmap." />
+            <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} help="Shapes student success supports, recruitment copy, and prerequisite assumptions." />
+            <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} help="Frames certificate milestones and degree progression." />
+            <SelectField label="Package" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={toSelectOptions(['Program Proposal Package', 'Certificate Pathway Package', 'AAS Degree Pathway Package', 'Advisory Board Package', 'Recruitment Package'])} help="Program Proposal Package is the most complete institutional-review output." />
           </FieldGrid>
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Workforce',
+      description: 'Describe local roles, tools, and applied AI skills.',
+      complete: Boolean(settings.workforceFocus),
+      content: (
         <Panel title="Workforce and Applied Learning" icon={Layers3}>
+          <GuidanceNote>
+            The stronger this section is, the stronger the program proposal becomes for advisory board and workforce alignment conversations.
+          </GuidanceNote>
           <TextAreaField
             label="Workforce focus"
             value={settings.workforceFocus}
@@ -773,11 +974,20 @@ function CollegeProgramBuilder({
           />
           <ChipList items={['Python foundations', 'Data analysis', 'ML concepts', 'Generative AI tools', 'Ethics', 'Automation projects', 'Portfolio evidence']} />
         </Panel>
-
+      ),
+    },
+    {
+      title: 'CQI',
+      description: 'Set review cadence, advisory focus, and recruitment angle.',
+      complete: Boolean(settings.cqiCadence && settings.advisoryFocus && settings.recruitmentAngle),
+      content: (
         <Panel title="CQI and Advisory Board" icon={ClipboardList}>
+          <GuidanceNote>
+            CQI and advisory board evidence are the program-coordinator differentiators. This is where the package becomes more than a course list.
+          </GuidanceNote>
           <FieldGrid>
-            <SelectField label="CQI cadence" value={settings.cqiCadence} onChange={(value) => updateSetting('cqiCadence', value)} options={toSelectOptions(['Semester review with annual advisory board input', 'Annual program review', 'Midterm and end-of-term evidence review', 'Quarterly employer feedback cycle', 'Custom'])} />
-            <SelectField label="Advisory focus" value={settings.advisoryFocus} onChange={(value) => updateSetting('advisoryFocus', value)} options={toSelectOptions(['Employer skill validation and internship/project feedback', 'Course sequence review', 'Tool/platform relevance', 'Workforce placement feedback', 'Recruitment and retention feedback'])} />
+            <SelectField label="CQI cadence" value={settings.cqiCadence} onChange={(value) => updateSetting('cqiCadence', value)} options={toSelectOptions(['Semester review with annual advisory board input', 'Annual program review', 'Midterm and end-of-term evidence review', 'Quarterly employer feedback cycle', 'Custom'])} help="Controls how evidence is collected, reviewed, and turned into improvements." />
+            <SelectField label="Advisory focus" value={settings.advisoryFocus} onChange={(value) => updateSetting('advisoryFocus', value)} options={toSelectOptions(['Employer skill validation and internship/project feedback', 'Course sequence review', 'Tool/platform relevance', 'Workforce placement feedback', 'Recruitment and retention feedback'])} help="Shapes the advisory board agenda and employer feedback questions." />
           </FieldGrid>
           <TextAreaField
             label="Recruitment angle"
@@ -786,17 +996,53 @@ function CollegeProgramBuilder({
             placeholder="Describe how the program should be positioned to students, parents, employers, and internal stakeholders."
           />
         </Panel>
-
+      ),
+    },
+    {
+      title: 'Sources',
+      description: 'Add advisory notes, employer needs, or institutional constraints.',
+      complete: true,
+      content: (
         <SourceContextPanel
           title="Source / Local Requirements"
-          hint="Use employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package."
+          hint="Optional, but powerful: add employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package."
           policyOutput={settings.policyOutput}
           onPolicyChange={(value) => updateSetting('policyOutput', value)}
           sourceNotes={sourceNotes}
           onSourceNotesChange={setSourceNotes}
           placeholder="Paste advisory board notes, local employer needs, program outcomes, TBR/institution constraints, recruitment requirements, or CQI expectations."
         />
-      </section>
+      ),
+    },
+  ];
+
+  return (
+    <BuilderFrame
+      eyebrow="College Program"
+      title="Build an AI Technology Program Package"
+      subtitle="Create certificate and pathway drafts with outcomes, course sequences, CQI evidence, advisory board materials, and recruitment assets."
+      buttonLabel="Build Program Package"
+      isLoading={isLoading}
+      onBuild={buildPrompt}
+      steps={steps}
+      activeStep={activeStep}
+      onStepChange={setActiveStep}
+      previewTitle="Live Program Preview"
+      previewItems={[
+        ['Program', settings.programName],
+        ['Credential', settings.credentialType],
+        ['Pathway', settings.pathwayModel],
+        ['Workforce focus', settings.workforceFocus],
+        ['CQI / advisory', `${settings.cqiCadence}; ${settings.advisoryFocus}`],
+      ]}
+      summary={[
+        ['Program', settings.programName],
+        ['Credential', settings.credentialType],
+        ['Pathway', settings.pathwayModel],
+        ['CQI', settings.cqiCadence],
+      ]}
+    >
+      {steps[activeStep].content}
     </BuilderFrame>
   );
 }
@@ -892,6 +1138,11 @@ function BuilderFrame({
   isLoading,
   onBuild,
   summary,
+  steps,
+  activeStep = 0,
+  onStepChange,
+  previewTitle = 'Live Package Preview',
+  previewItems,
   children,
 }: {
   eyebrow: string;
@@ -901,11 +1152,23 @@ function BuilderFrame({
   isLoading: boolean;
   onBuild: () => void;
   summary: Array<[string, string]>;
+  steps?: BuilderStep[];
+  activeStep?: number;
+  onStepChange?: (step: number) => void;
+  previewTitle?: string;
+  previewItems?: Array<[string, string]>;
   children: React.ReactNode;
 }) {
+  const canGoBack = Boolean(steps && onStepChange && activeStep > 0);
+  const canGoNext = Boolean(steps && onStepChange && activeStep < steps.length - 1);
+
   return (
     <section className="mb-6">
-      <WorkflowMap />
+      {steps ? (
+        <StepProgress steps={steps} activeStep={activeStep} onStepChange={onStepChange} />
+      ) : (
+        <WorkflowMap />
+      )}
       <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="mb-2 text-xs font-bold uppercase text-blue-800">{eyebrow}</p>
@@ -927,13 +1190,131 @@ function BuilderFrame({
         {summary.map(([label, value]) => (
           <div key={label} className="border-b border-white/10 p-4 lg:border-b-0 lg:border-r lg:last:border-r-0">
             <span className="block text-xs text-slate-300">{label}</span>
-            <strong className="mt-1 block truncate text-sm">{value}</strong>
+            <strong className="mt-1 block text-sm leading-5">{value}</strong>
           </div>
         ))}
       </div>
 
-      {children}
+      {steps && previewItems ? (
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div>
+            {children}
+            <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={() => onStepChange?.(Math.max(activeStep - 1, 0))}
+                disabled={!canGoBack}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Back
+              </button>
+              {canGoNext ? (
+                <button
+                  type="button"
+                  onClick={() => onStepChange?.(Math.min(activeStep + 1, steps.length - 1))}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onBuild}
+                  disabled={isLoading}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {isLoading ? 'Building...' : buttonLabel}
+                </button>
+              )}
+            </div>
+          </div>
+          <LivePreview title={previewTitle} items={previewItems} steps={steps} activeStep={activeStep} />
+        </div>
+      ) : (
+        children
+      )}
     </section>
+  );
+}
+
+function StepProgress({
+  steps,
+  activeStep,
+  onStepChange,
+}: {
+  steps: BuilderStep[];
+  activeStep: number;
+  onStepChange?: (step: number) => void;
+}) {
+  return (
+    <nav className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 md:grid-cols-3 xl:grid-cols-5" aria-label="Build progress">
+      {steps.map((step, index) => {
+        const isActive = index === activeStep;
+        return (
+          <button
+            key={step.title}
+            type="button"
+            onClick={() => onStepChange?.(index)}
+            className={`flex min-h-14 items-start gap-2 rounded-md px-3 py-2 text-left transition ${
+              isActive ? 'bg-blue-700 text-white' : 'bg-slate-50 hover:bg-blue-50 hover:text-blue-900'
+            }`}
+          >
+            <span className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[11px] ${
+              isActive ? 'bg-white text-blue-800' : step.complete ? 'bg-green-100 text-green-800' : 'bg-slate-200 text-slate-600'
+            }`}>
+              {step.complete ? <CheckCircle2 className="h-3.5 w-3.5" /> : index + 1}
+            </span>
+            <span>
+              <span className="block">{step.title}</span>
+              <span className={`mt-0.5 block text-[11px] font-medium leading-4 ${isActive ? 'text-blue-50' : 'text-slate-500'}`}>{step.description}</span>
+            </span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function LivePreview({
+  title,
+  items,
+  steps,
+  activeStep,
+}: {
+  title: string;
+  items: Array<[string, string]>;
+  steps: BuilderStep[];
+  activeStep: number;
+}) {
+  const completeCount = steps.filter((step) => step.complete).length;
+
+  return (
+    <aside className="h-fit rounded-lg border border-slate-200 bg-white p-4 shadow-sm xl:sticky xl:top-32">
+      <div className="mb-3 flex items-center gap-2">
+        <Eye className="h-5 w-5 text-blue-700" />
+        <div>
+          <h3 className="font-bold text-slate-950">{title}</h3>
+          <p className="text-xs text-slate-600">{completeCount} of {steps.length} decisions ready</p>
+        </div>
+      </div>
+      <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-100">
+        <div className="h-full rounded-full bg-blue-700 transition-all" style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }} />
+      </div>
+      <dl className="space-y-3">
+        {items.map(([label, value]) => (
+          <div key={label} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+            <dt className="text-xs font-bold uppercase text-slate-500">{label}</dt>
+            <dd className="mt-1 text-sm font-semibold leading-5 text-slate-900">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-4 text-xs leading-5 text-slate-600">
+        This preview updates as you choose options, so you can build confidence before generating the full package.
+      </p>
+    </aside>
   );
 }
 
@@ -946,6 +1327,54 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: React.Com
       </header>
       {children}
     </article>
+  );
+}
+
+function GuidanceNote({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
+      <HelpCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+      <p>{children}</p>
+    </div>
+  );
+}
+
+function QuickStartGrid({
+  quickStarts,
+  onApply,
+}: {
+  quickStarts: typeof curriculumQuickStarts;
+  onApply: (quickStart: (typeof curriculumQuickStarts)[number]) => void;
+}) {
+  return (
+    <div>
+      <div className="mb-2 text-xs font-bold uppercase text-slate-600">Teacher Quick Starts</div>
+      <div className="grid gap-3 lg:grid-cols-3">
+        {quickStarts.map((quickStart) => (
+          <button
+            key={quickStart.title}
+            type="button"
+            onClick={() => onApply(quickStart)}
+            className="rounded-md border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+          >
+            <strong className="block text-sm text-slate-950">{quickStart.title}</strong>
+            <span className="mt-1 block text-xs leading-5 text-slate-600">{quickStart.description}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LiteracyComponentStrip() {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-2 flex items-center gap-2">
+        <BrainCircuit className="h-4 w-4 text-blue-700" />
+        <h4 className="text-sm font-bold text-slate-950">AI literacy components included by default</h4>
+      </div>
+      <ChipList items={aiLiteracyComponents} />
+    </div>
   );
 }
 
@@ -1101,15 +1530,20 @@ function SelectField({
   value,
   onChange,
   options,
+  help,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: OptionItem[];
+  help?: string;
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-bold uppercase text-slate-600">{label}</span>
+      <span className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase text-slate-600">
+        {label}
+        {help && <HelpCircle className="h-3.5 w-3.5 text-slate-400" aria-label={help} />}
+      </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -1121,6 +1555,7 @@ function SelectField({
           </option>
         ))}
       </select>
+      {help && <span className="mt-1 block text-xs leading-5 text-slate-500">{help}</span>}
     </label>
   );
 }
