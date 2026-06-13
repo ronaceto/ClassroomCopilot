@@ -325,7 +325,7 @@ function App() {
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <ProductEdgeStrip />
-        <SampleGallery activeMode={activeMode} onLoadSample={loadSample} />
+        <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
           <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
@@ -519,7 +519,7 @@ function CurriculumPackBuilder({
         </Panel>
 
         <SourceContextPanel
-          title="Add Source and Policy Context"
+          title="Source / Local Requirements"
           hint="Use local standards, policies, or constraints to make the generated package more review-ready."
           policyOutput={settings.policyOutput}
           onPolicyChange={(value) => updateSetting('policyOutput', value)}
@@ -657,7 +657,7 @@ function CollegeCourseBuilder({
         </Panel>
 
         <SourceContextPanel
-          title="Add Program Source and Policy Context"
+          title="Source / Local Requirements"
           hint="Use institutional notes, employer skills, or policy language to make the course package review-ready."
           policyOutput={settings.policyOutput}
           onPolicyChange={(value) => updateSetting('policyOutput', value)}
@@ -788,7 +788,7 @@ function CollegeProgramBuilder({
         </Panel>
 
         <SourceContextPanel
-          title="Program Source and Policy Context"
+          title="Source / Local Requirements"
           hint="Use employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package."
           policyOutput={settings.policyOutput}
           onPolicyChange={(value) => updateSetting('policyOutput', value)}
@@ -802,24 +802,54 @@ function CollegeProgramBuilder({
 }
 
 function ProductEdgeStrip() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <section className="mb-6 border-b border-slate-200 pb-5" aria-label="Classroom Copilot product strengths">
-      <div className="grid gap-3 lg:grid-cols-4">
-        {productEdges.map((edge) => (
-          <div key={edge.title} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="mb-2 flex items-center gap-2 text-sm font-bold text-blue-800">
-              <CheckCircle2 className="h-4 w-4" />
-              {edge.title}
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Classroom Copilot product strengths">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <span>
+          <span className="block text-sm font-bold text-slate-950">Built for source-grounded curriculum work</span>
+          <span className="text-xs text-slate-600">Evidence-ready packages, AI guardrails, and exportable teaching assets.</span>
+        </span>
+        <span className="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-800">{open ? 'Hide' : 'Why it matters'}</span>
+      </button>
+      {open && (
+        <div className="mt-3 grid gap-3 lg:grid-cols-4">
+          {productEdges.map((edge) => (
+            <div key={edge.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+              <div className="mb-1 flex items-center gap-2 text-sm font-bold text-blue-800">
+                <CheckCircle2 className="h-4 w-4" />
+                {edge.title}
+              </div>
+              <p className="text-sm leading-5 text-slate-600">{edge.text}</p>
             </div>
-            <p className="text-sm leading-5 text-slate-600">{edge.text}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
-function SampleGallery({
+function WorkflowMap() {
+  const steps = ['Start from', 'Set context', 'Add sources', 'Build', 'Review / export'];
+
+  return (
+    <div className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 sm:grid-cols-5">
+      {steps.map((step, index) => (
+        <div key={step} className="flex items-center gap-2 rounded-md bg-slate-50 px-3 py-2">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-700 text-[11px] text-white">{index + 1}</span>
+          <span>{step}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StartFromGallery({
   activeMode,
   onLoadSample,
 }: {
@@ -829,12 +859,12 @@ function SampleGallery({
   const visibleSamples = samplePackages.filter((sample) => sample.mode === activeMode);
 
   return (
-    <section className="mb-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center gap-2">
         <Library className="h-5 w-5 text-blue-700" />
         <div>
-          <h3 className="font-bold text-slate-950">Sample Gallery</h3>
-          <p className="text-xs text-slate-600">Load an example package, then refine, export, or save it.</p>
+          <h3 className="font-bold text-slate-950">Start From</h3>
+          <p className="text-xs text-slate-600">Use a sample, the built-in curriculum map, an upload, or your own notes.</p>
         </div>
       </div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -875,6 +905,7 @@ function BuilderFrame({
 }) {
   return (
     <section className="mb-6">
+      <WorkflowMap />
       <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="mb-2 text-xs font-bold uppercase text-blue-800">{eyebrow}</p>
@@ -938,6 +969,7 @@ function SourceContextPanel({
   const [uploadStatus, setUploadStatus] = useState('');
   const [libraryItems, setLibraryItems] = useState<string[]>(() => loadStandardsLibrary());
   const [newLibraryItem, setNewLibraryItem] = useState('');
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   useEffect(() => {
     saveStandardsLibrary(libraryItems);
@@ -983,7 +1015,7 @@ function SourceContextPanel({
         <p>{hint}</p>
       </div>
 
-      <SelectField label="Policy output" value={policyOutput} onChange={onPolicyChange} options={toSelectOptions(policyOptions)} />
+      <SelectField label="AI Policy to Include" value={policyOutput} onChange={onPolicyChange} options={toSelectOptions(policyOptions)} />
 
       <label className="mt-4 block rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4">
         <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase text-slate-600">
@@ -1001,36 +1033,47 @@ function SourceContextPanel({
         {uploadStatus && <span className="mt-2 block text-xs font-semibold text-blue-800">{uploadStatus}</span>}
       </label>
 
-      <TextAreaField label="Source notes" value={sourceNotes} onChange={onSourceNotesChange} placeholder={placeholder} />
+      <TextAreaField label="Source / Local Requirements" value={sourceNotes} onChange={onSourceNotesChange} placeholder={placeholder} />
 
-      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <div className="mb-3 flex items-center gap-2">
-          <Library className="h-4 w-4 text-blue-700" />
-          <h4 className="font-bold text-slate-950">Standards / Outcomes Library</h4>
-        </div>
-        <div className="mb-3 flex gap-2">
-          <input
-            value={newLibraryItem}
-            onChange={(event) => setNewLibraryItem(event.target.value)}
-            placeholder="Add an outcome, standard, skill, or CQI evidence note..."
-            className="min-h-10 flex-1 rounded-md border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <button type="button" onClick={addLibraryItem} className="rounded-md bg-blue-700 px-3 text-sm font-semibold text-white hover:bg-blue-800">
-            Add
-          </button>
-        </div>
-        <div className="space-y-2">
-          {libraryItems.slice(0, 6).map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => appendSourceText('Standards / outcomes library', item)}
-              className="block w-full rounded-md border border-slate-200 bg-white p-2 text-left text-xs leading-5 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50"
-            >
-              {item}
-            </button>
-          ))}
-        </div>
+      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((current) => !current)}
+          className="flex w-full items-center justify-between text-left"
+        >
+          <span className="flex items-center gap-2 font-bold text-slate-950">
+            <Library className="h-4 w-4 text-blue-700" />
+            Advanced: Standards / Outcomes Library
+          </span>
+          <span className="text-xs font-semibold text-blue-800">{advancedOpen ? 'Hide' : 'Show'}</span>
+        </button>
+        {advancedOpen && (
+          <div className="mt-3">
+            <div className="mb-3 flex gap-2">
+              <input
+                value={newLibraryItem}
+                onChange={(event) => setNewLibraryItem(event.target.value)}
+                placeholder="Add an outcome, standard, skill, or CQI evidence note..."
+                className="min-h-10 flex-1 rounded-md border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              />
+              <button type="button" onClick={addLibraryItem} className="rounded-md bg-blue-700 px-3 text-sm font-semibold text-white hover:bg-blue-800">
+                Add
+              </button>
+            </div>
+            <div className="space-y-2">
+              {libraryItems.slice(0, 6).map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => appendSourceText('Standards / outcomes library', item)}
+                  className="block w-full rounded-md border border-slate-200 bg-white p-2 text-left text-xs leading-5 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </Panel>
   );
@@ -1246,13 +1289,13 @@ function GeneratedOutput({
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h3 className="text-lg font-bold">Generated Package</h3>
-          <p className="text-sm text-slate-600">Review the generated materials, then export them for teaching, sharing, or presentation.</p>
+          <h3 className="text-lg font-bold">Review Workspace</h3>
+          <p className="text-sm text-slate-600">Check readiness, fix missing pieces, export, and save your package.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
-          <SelectField label="Review status" value={reviewStatus} onChange={(value) => setReviewStatus(value as ReviewStatus)} options={toSelectOptions(reviewStatuses)} />
+          <SelectField label="Review stage" value={reviewStatus} onChange={(value) => setReviewStatus(value as ReviewStatus)} options={toSelectOptions(reviewStatuses)} />
           <SelectField
-            label="Export template"
+            label="Export style"
             value={copyTemplate}
             onChange={(value) => setCopyTemplate(value as CopyTemplate)}
             options={toSelectOptions([
@@ -1297,7 +1340,7 @@ function GeneratedOutput({
           />
           <ExportButton
             icon={RefreshCw}
-            label="Improve Readiness"
+            label="Fix Missing Pieces"
             disabled={!hasContent || isLoading}
             onClick={improveReadiness}
           />
@@ -1314,18 +1357,21 @@ function GeneratedOutput({
         </div>
       </div>
       {hasContent && (
-        <div className="mb-4 flex flex-wrap gap-2">
-          {refinementPresets.map((preset) => (
-            <button
-              key={preset.label}
-              type="button"
-              onClick={() => runRefinement(preset.label, preset.instruction)}
-              disabled={isLoading}
-              className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {preset.label}
-            </button>
-          ))}
+        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div className="mb-2 text-xs font-bold uppercase text-slate-600">Refine Package</div>
+          <div className="flex flex-wrap gap-2">
+            {refinementPresets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => runRefinement(preset.label, preset.instruction)}
+                disabled={isLoading}
+                className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
       {exportStatus && (
