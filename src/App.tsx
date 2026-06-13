@@ -12,8 +12,11 @@ import {
   LibraryBig,
   Presentation,
   Printer,
+  RefreshCw,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Upload,
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
 import { ClassroomConfig } from './types';
@@ -158,6 +161,14 @@ const readinessChecks = [
   },
 ];
 
+const policyOptions = [
+  'Classroom AI Use Policy',
+  'Student Responsible AI Agreement',
+  'Family / Guardian AI Notice',
+  'College Course AI Policy',
+  'Department Review Draft',
+];
+
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
@@ -166,6 +177,10 @@ function App() {
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
     clearChat();
     void sendMessage(prompt, 'teacher', config);
+  };
+
+  const handleImprove = (prompt: string) => {
+    void sendMessage(prompt, 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
@@ -218,6 +233,7 @@ function App() {
           isLoading={isLoading}
           content={latestAssistantMessage?.content ?? ''}
           emptyTitle={activeMode === 'curriculum-pack' ? 'Your curriculum pack will appear here' : 'Your course package will appear here'}
+          onImprove={handleImprove}
         />
       </main>
 
@@ -276,7 +292,9 @@ function CurriculumPackBuilder({
     classFormat: 'Whole class',
     studentAiAccessLevel: 'teacher_demo_ai',
     packPreset: 'full_lesson_pack',
+    policyOutput: 'Classroom AI Use Policy',
   });
+  const [sourceNotes, setSourceNotes] = useState('');
 
   const packOptions = getFieldOptions(curriculumWorkflow, 'deliverables', 'packPreset') as OptionItem[];
   const studentAccessOptions = getFieldOptions(curriculumWorkflow, 'student-ai-access', 'studentAiAccessLevel') as OptionItem[];
@@ -318,10 +336,13 @@ function CurriculumPackBuilder({
       `Student AI access level: ${labelFromValue(settings.studentAiAccessLevel)} - ${studentAccessNotes[settings.studentAiAccessLevel]}`,
       `Output package: ${selectedPack.label}`,
       `Included deliverables: ${(selectedPack.deliverables ?? []).map(labelFromValue).join(', ')}`,
+      `Requested policy artifact: ${settings.policyOutput}`,
+      sourceNotes.trim() ? `Additional source/context notes from educator: ${sourceNotes.trim()}` : 'Additional source/context notes from educator: none provided.',
       '',
       'Return a teacher-ready package with these headings: ## Lesson Snapshot, ## Standards / Outcomes Alignment Matrix, ## Lesson Plan, ## Student Activity, ## Worksheet, ## Quiz, ## Rubric, ## AI Use Guardrails, ## Differentiation and Accessibility, ## Slide Deck Outline, ## Family / Admin Note, ## Teacher Implementation Checklist.',
       'For the alignment matrix, map objectives to activities, assessments, and evidence of learning.',
       'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
+      `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Include a no-AI or teacher-demo alternative when appropriate, student-facing directions, differentiation, and responsible AI guardrails.',
       'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after teacher review.',
     ].join('\n');
@@ -385,6 +406,20 @@ function CurriculumPackBuilder({
           <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
           <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
         </Panel>
+
+        <Panel title="Add Source and Policy Context" icon={Upload}>
+          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
+            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
+            <p>Use local standards, policies, or constraints to make the generated package more review-ready.</p>
+          </div>
+          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
+          <TextAreaField
+            label="Source notes"
+            value={sourceNotes}
+            onChange={setSourceNotes}
+            placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
+          />
+        </Panel>
       </section>
     </BuilderFrame>
   );
@@ -411,7 +446,9 @@ function CollegeCourseBuilder({
     finalProjectType: 'AI portfolio',
     assessmentModel: 'Balanced model',
     outputPreset: 'full_course_package',
+    policyOutput: 'College Course AI Policy',
   });
+  const [sourceNotes, setSourceNotes] = useState('');
 
   const outputOptions = getFieldOptions(courseWorkflow, 'course-package-outputs', 'outputPreset') as OptionItem[];
   const selectedOutput = outputOptions.find((option) => option.value === settings.outputPreset) ?? outputOptions[1];
@@ -439,12 +476,15 @@ function CollegeCourseBuilder({
       `Assessment model: ${settings.assessmentModel}`,
       `Output package: ${selectedOutput.label}`,
       `Included outputs: ${(selectedOutput.includedOutputs ?? []).map(labelFromValue).join(', ')}`,
+      `Requested policy artifact: ${settings.policyOutput}`,
+      sourceNotes.trim() ? `Additional source/context notes from faculty or program team: ${sourceNotes.trim()}` : 'Additional source/context notes from faculty or program team: none provided.',
       '',
       'Competency focus: AI foundations, Python fundamentals, data analysis, machine learning concepts, generative AI tools, responsible/ethical AI, applied AI projects, communication of findings, career readiness.',
       '',
       'Return concise faculty-ready markdown with these headings: ## Course Snapshot, ## Course Overview, ## Program / Workforce Alignment, ## Course Learning Outcomes, ## Outcomes-to-Assessments Matrix, ## Weekly Modules, ## Labs, ## Assignments, ## Assessments, ## Rubric, ## Final Project, ## Responsible AI Policy, ## HyFlex / Online Delivery Notes, ## CQI Evidence Plan, ## Advisory Board Discussion Prompts, ## Syllabus Draft, ## Slide Deck Outline.',
       'For the outcomes matrix, map outcomes to weekly modules, labs, assessments, and portfolio evidence.',
       'For the CQI evidence plan, include assessment artifacts, review cadence, improvement triggers, and documentation notes.',
+      `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Include FERPA/privacy cautions, delivery-format notes, beginner supports, applied labs, measurable outcomes, assessment evidence, and workforce relevance. Do not claim official approval or accreditation compliance.',
       'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after faculty review.',
     ].join('\n');
@@ -507,6 +547,20 @@ function CollegeCourseBuilder({
         <Panel title="Course Package Outputs" icon={CheckCircle2}>
           <CardOptions value={settings.outputPreset} onChange={(value) => updateSetting('outputPreset', value)} options={outputOptions} detailKey="includedOutputs" />
           <ChipList items={(selectedOutput.includedOutputs ?? []).map(labelFromValue)} />
+        </Panel>
+
+        <Panel title="Add Program Source and Policy Context" icon={Upload}>
+          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
+            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
+            <p>Use institutional notes, employer skills, or policy language to make the course package review-ready.</p>
+          </div>
+          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
+          <TextAreaField
+            label="Source notes"
+            value={sourceNotes}
+            onChange={setSourceNotes}
+            placeholder="Paste program outcomes, local workforce needs, advisory board notes, syllabus constraints, institutional policy language, or accreditation/CQI expectations."
+          />
         </Panel>
       </section>
     </BuilderFrame>
@@ -641,6 +695,31 @@ function SelectField({
   );
 }
 
+function TextAreaField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <label className="mt-4 block">
+      <span className="mb-2 block text-xs font-bold uppercase text-slate-600">{label}</span>
+      <textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        rows={5}
+        className="w-full resize-y rounded-md border border-slate-300 bg-white px-3 py-3 text-sm leading-6 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+      />
+    </label>
+  );
+}
+
 function FieldGrid({ children }: { children: React.ReactNode }) {
   return <div className="grid gap-4 sm:grid-cols-2">{children}</div>;
 }
@@ -709,10 +788,22 @@ function ChipList({ items }: { items: string[] }) {
   );
 }
 
-function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolean; content: string; emptyTitle: string }) {
+function GeneratedOutput({
+  isLoading,
+  content,
+  emptyTitle,
+  onImprove,
+}: {
+  isLoading: boolean;
+  content: string;
+  emptyTitle: string;
+  onImprove: (prompt: string) => void;
+}) {
   const [exportStatus, setExportStatus] = useState('');
   const hasContent = Boolean(content.trim());
   const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
+  const checks = getReadinessResults(content);
+  const missingChecks = checks.filter((check) => !check.met);
 
   const runExport = async (label: string, action: () => void | Promise<void>) => {
     try {
@@ -726,6 +817,20 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
     }
   };
 
+  const improveReadiness = () => {
+    const missingLabels = missingChecks.map((check) => check.label).join(', ') || 'polish, specificity, and implementation quality';
+    onImprove([
+      'Improve the generated package below for product readiness.',
+      `Focus especially on: ${missingLabels}.`,
+      'Preserve useful existing content, but rewrite the package as one complete improved version.',
+      'Add any missing outcomes alignment, assessment evidence, AI-use guardrails, accessibility supports, slide/presentation path, and implementation notes.',
+      'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
+      '',
+      'Current package:',
+      content,
+    ].join('\n'));
+  };
+
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -733,7 +838,7 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
           <h3 className="text-lg font-bold">Generated Package</h3>
           <p className="text-sm text-slate-600">Review the generated materials, then export them for teaching, sharing, or presentation.</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="sticky top-[7.75rem] z-10 -mx-1 flex gap-2 overflow-x-auto bg-white/95 px-1 py-2 backdrop-blur lg:static lg:z-auto lg:flex-wrap lg:overflow-visible lg:bg-transparent lg:p-0">
           <ExportButton
             icon={FileText}
             label="Polished HTML"
@@ -764,6 +869,12 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
             disabled={!hasContent || isLoading}
             onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(content, filename))}
           />
+          <ExportButton
+            icon={RefreshCw}
+            label="Improve Readiness"
+            disabled={!hasContent || isLoading}
+            onClick={improveReadiness}
+          />
         </div>
       </div>
       {exportStatus && (
@@ -775,7 +886,7 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
       ) : hasContent ? (
         <div className="grid gap-5 xl:grid-cols-[280px_1fr]">
-          <PackageReadiness content={content} />
+          <PackageReadiness checks={checks} />
           <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-6">{content}</div>
         </div>
       ) : (
@@ -785,12 +896,7 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
   );
 }
 
-function PackageReadiness({ content }: { content: string }) {
-  const normalized = content.toLowerCase();
-  const checks = readinessChecks.map((check) => ({
-    ...check,
-    met: check.terms.some((term) => normalized.includes(term)),
-  }));
+function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {
   const score = checks.filter((check) => check.met).length;
 
   return (
@@ -817,6 +923,20 @@ function PackageReadiness({ content }: { content: string }) {
       </p>
     </aside>
   );
+}
+
+interface ReadinessResult {
+  label: string;
+  terms: string[];
+  met: boolean;
+}
+
+function getReadinessResults(content: string): ReadinessResult[] {
+  const normalized = content.toLowerCase();
+  return readinessChecks.map((check) => ({
+    ...check,
+    met: check.terms.some((term) => normalized.includes(term)),
+  }));
 }
 
 function ExportButton({
