@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, RotateCcw, Wand2, User, Bot, ChevronDown } from 'lucide-react';
+import { Send, Wand2, User, Bot, ChevronDown } from 'lucide-react';
 import { Mode, ChatMessage, ClassroomConfig } from '../types';
 import { TEACHER_STARTERS, STUDENT_STARTERS } from '../utils/constants';
 
@@ -17,8 +17,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onModeChange,
   messages,
   onSendMessage,
-  isLoading,
-  config
+  isLoading
 }) => {
   const [input, setInput] = useState('');
   const [showStarters, setShowStarters] = useState(false);

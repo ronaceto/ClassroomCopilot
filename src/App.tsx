@@ -3,15 +3,20 @@ import {
   BookOpen,
   BrainCircuit,
   CheckCircle2,
+  Clipboard,
   ClipboardList,
+  FileText,
   GraduationCap,
   Layers3,
   LibraryBig,
+  Presentation,
+  Printer,
   SlidersHorizontal,
   Sparkles,
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
 import { ClassroomConfig } from './types';
+import { copyToClipboard, exportToHtml, exportToMarkdown, exportToPptx, printFormattedDocument } from './utils/documentExport';
 import curriculumDataJson from '../curriculum-map/data/modules.json';
 import curriculumWorkflowJson from '../product-planning/data/build-workflow-config.json';
 import courseWorkflowJson from '../product-planning/data/build-college-course-config.json';
@@ -168,13 +173,13 @@ function App() {
       </main>
 
       {debugInfo && (
-        <div className="fixed bottom-20 right-4 z-40 max-w-md rounded-lg border border-slate-200 bg-white shadow-lg">
+        <div className="fixed bottom-20 right-4 z-40 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white shadow-lg sm:max-w-md">
           <button
             type="button"
             onClick={() => setDebugOpen((prev) => !prev)}
             className="w-full border-b border-slate-100 px-4 py-2 text-left text-xs font-semibold text-slate-700"
           >
-            API Debug {debugInfo.ok ? 'OK' : 'Issue'} ({debugInfo.status}) {debugOpen ? 'Hide' : 'Show'}
+            {debugInfo.ok ? 'AI build succeeded' : 'AI build issue'} ({debugInfo.status}) {debugOpen ? 'Hide details' : 'Show details'}
           </button>
           {debugOpen && (
             <div className="space-y-1 px-4 py-3 text-xs text-slate-700">
@@ -632,22 +637,99 @@ function ChipList({ items }: { items: string[] }) {
 }
 
 function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolean; content: string; emptyTitle: string }) {
+  const [exportStatus, setExportStatus] = useState('');
+  const hasContent = Boolean(content.trim());
+  const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
+
+  const runExport = async (label: string, action: () => void | Promise<void>) => {
+    try {
+      await action();
+      setExportStatus(label);
+      window.setTimeout(() => setExportStatus(''), 3000);
+    } catch (exportError) {
+      console.error('Export failed:', exportError);
+      setExportStatus('Export failed. Try copy or Markdown.');
+      window.setTimeout(() => setExportStatus(''), 4500);
+    }
+  };
+
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h3 className="text-lg font-bold">Generated Package</h3>
-          <p className="text-sm text-slate-600">Review, refine, then export from the next iteration.</p>
+          <p className="text-sm text-slate-600">Review the generated materials, then export them for teaching, sharing, or presentation.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ExportButton
+            icon={FileText}
+            label="Polished HTML"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('Polished HTML downloaded.', () => exportToHtml(content, filename))}
+          />
+          <ExportButton
+            icon={Printer}
+            label="Print / PDF"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('Print view opened.', () => printFormattedDocument(content, filename))}
+          />
+          <ExportButton
+            icon={Presentation}
+            label="PPT"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('PowerPoint downloaded.', () => exportToPptx(content, filename))}
+          />
+          <ExportButton
+            icon={Clipboard}
+            label="Copy"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('Copied to clipboard.', () => copyToClipboard(content))}
+          />
+          <ExportButton
+            icon={BookOpen}
+            label="Markdown"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(content, filename))}
+          />
         </div>
       </div>
+      {exportStatus && (
+        <div className="mb-4 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900">
+          {exportStatus}
+        </div>
+      )}
       {isLoading ? (
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
-      ) : content ? (
+      ) : hasContent ? (
         <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-6">{content}</div>
       ) : (
         <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">{emptyTitle}</div>
       )}
     </section>
+  );
+}
+
+function ExportButton({
+  icon: Icon,
+  label,
+  disabled,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      <Icon className="h-4 w-4" />
+      {label}
+    </button>
   );
 }
 

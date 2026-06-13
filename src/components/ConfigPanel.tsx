@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Save, Upload, X, ChevronDown, ChevronUp, FileText, RotateCcw, Plus, Trash2 } from 'lucide-react';
+import { Settings, Save, X, ChevronDown, ChevronUp, FileText, RotateCcw, Plus, Trash2 } from 'lucide-react';
 import { ClassroomConfig } from '../types';
 import { GRADE_OPTIONS, STANDARDS_OPTIONS } from '../utils/constants';
 import { saveConfig, savePreset, getPresets, deletePreset } from '../utils/storage';
@@ -30,9 +30,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const [showPresetModal, setShowPresetModal] = useState(false);
   const [presetName, setPresetName] = useState('');
   const [userPresets, setUserPresets] = useState(getPresets());
-  const [customSubjects, setCustomSubjects] = useState(() => {
+  const [customSubjects, setCustomSubjects] = useState<string[]>(() => {
     const saved = localStorage.getItem('classroomCopilot.customSubjects');
-    return saved ? JSON.parse(saved) : [
+    return saved ? (JSON.parse(saved) as string[]) : [
       'Business', 'Technology', 'Economics', 'ELA', 'Math', 'Science', 
       'Social Studies', 'CTE', 'Computer Science', 'Art', 'Music', 'PE'
     ];
@@ -224,7 +224,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </label>
                       <select
                         value={config.level}
-                        onChange={(e) => updateConfig({ level: e.target.value as any })}
+                        onChange={(e) => updateConfig({ level: e.target.value as ClassroomConfig['level'] })}
                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="Elementary">Elementary</option>
@@ -318,7 +318,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         value={config.standards.type || ''}
                         onChange={(e) => updateConfig({ 
                           standards: { 
-                            type: e.target.value as any || null,
+                            type: (e.target.value || null) as ClassroomConfig['standards']['type'],
                             customText: config.standards.customText 
                           } 
                         })}
@@ -351,7 +351,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </label>
                       <select
                         value={config.outputDepth}
-                        onChange={(e) => updateConfig({ outputDepth: e.target.value as any })}
+                        onChange={(e) => updateConfig({ outputDepth: e.target.value as ClassroomConfig['outputDepth'] })}
                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="Quick">Quick</option>
