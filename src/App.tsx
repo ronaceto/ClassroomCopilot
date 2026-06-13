@@ -6,6 +6,7 @@ import {
   Clipboard,
   ClipboardList,
   FileText,
+  Gauge,
   GraduationCap,
   Layers3,
   LibraryBig,
@@ -111,6 +112,52 @@ const studentAccessNotes: Record<string, string> = {
   independent_student_ai: 'Students use AI individually within teacher, family, school, and platform rules.',
 };
 
+const productEdges = [
+  {
+    title: 'Source-grounded',
+    text: 'Starts from the AI for Students curriculum map instead of a blank prompt.',
+  },
+  {
+    title: 'Evidence-ready',
+    text: 'Pushes outcomes, assessments, rubrics, and CQI artifacts into the package.',
+  },
+  {
+    title: 'AI guardrails built in',
+    text: 'Treats student AI access, privacy, and responsible-use rules as first-class settings.',
+  },
+  {
+    title: 'Export-ready',
+    text: 'Turns generated packages into HTML, print/PDF, Markdown, copy, and PPT starts.',
+  },
+];
+
+const readinessChecks = [
+  {
+    label: 'Outcomes alignment',
+    terms: ['outcome', 'objective', 'alignment', 'matrix'],
+  },
+  {
+    label: 'Assessment evidence',
+    terms: ['assessment', 'rubric', 'evidence', 'quiz'],
+  },
+  {
+    label: 'AI-use guardrails',
+    terms: ['guardrail', 'responsible ai', 'privacy', 'ferpa', 'ai use'],
+  },
+  {
+    label: 'Accessibility supports',
+    terms: ['differentiation', 'accessibility', 'ell', 'iep', 'beginner support'],
+  },
+  {
+    label: 'Presentation path',
+    terms: ['slide', 'deck', 'speaker notes', 'presentation'],
+  },
+  {
+    label: 'Implementation notes',
+    terms: ['checklist', 'implementation', 'materials', 'delivery'],
+  },
+];
+
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
@@ -159,6 +206,8 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <ProductEdgeStrip />
+
         {activeMode === 'curriculum-pack' ? (
           <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
         ) : (
@@ -270,8 +319,11 @@ function CurriculumPackBuilder({
       `Output package: ${selectedPack.label}`,
       `Included deliverables: ${(selectedPack.deliverables ?? []).map(labelFromValue).join(', ')}`,
       '',
-      'Return a teacher-ready package with these headings: ## Lesson Plan, ## Worksheet, ## Quiz, ## Rubric, ## Parent Note.',
+      'Return a teacher-ready package with these headings: ## Lesson Snapshot, ## Standards / Outcomes Alignment Matrix, ## Lesson Plan, ## Student Activity, ## Worksheet, ## Quiz, ## Rubric, ## AI Use Guardrails, ## Differentiation and Accessibility, ## Slide Deck Outline, ## Family / Admin Note, ## Teacher Implementation Checklist.',
+      'For the alignment matrix, map objectives to activities, assessments, and evidence of learning.',
+      'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
       'Include a no-AI or teacher-demo alternative when appropriate, student-facing directions, differentiation, and responsible AI guardrails.',
+      'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after teacher review.',
     ].join('\n');
 
     onBuild(prompt, config);
@@ -390,8 +442,11 @@ function CollegeCourseBuilder({
       '',
       'Competency focus: AI foundations, Python fundamentals, data analysis, machine learning concepts, generative AI tools, responsible/ethical AI, applied AI projects, communication of findings, career readiness.',
       '',
-      'Return concise faculty-ready markdown with these headings: ## Course Overview, ## Course Learning Outcomes, ## Weekly Modules, ## Labs, ## Assignments, ## Assessments, ## Rubric, ## Final Project, ## Responsible AI Policy, ## CQI / Program Notes, ## Syllabus Draft.',
+      'Return concise faculty-ready markdown with these headings: ## Course Snapshot, ## Course Overview, ## Program / Workforce Alignment, ## Course Learning Outcomes, ## Outcomes-to-Assessments Matrix, ## Weekly Modules, ## Labs, ## Assignments, ## Assessments, ## Rubric, ## Final Project, ## Responsible AI Policy, ## HyFlex / Online Delivery Notes, ## CQI Evidence Plan, ## Advisory Board Discussion Prompts, ## Syllabus Draft, ## Slide Deck Outline.',
+      'For the outcomes matrix, map outcomes to weekly modules, labs, assessments, and portfolio evidence.',
+      'For the CQI evidence plan, include assessment artifacts, review cadence, improvement triggers, and documentation notes.',
       'Include FERPA/privacy cautions, delivery-format notes, beginner supports, applied labs, measurable outcomes, assessment evidence, and workforce relevance. Do not claim official approval or accreditation compliance.',
+      'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after faculty review.',
     ].join('\n');
 
     onBuild(prompt, { ...baseConfig, subjects: 'Artificial Intelligence Technology', grades: 'College intro', standards: { type: 'ISTE' } });
@@ -455,6 +510,24 @@ function CollegeCourseBuilder({
         </Panel>
       </section>
     </BuilderFrame>
+  );
+}
+
+function ProductEdgeStrip() {
+  return (
+    <section className="mb-6 border-b border-slate-200 pb-5" aria-label="Classroom Copilot product strengths">
+      <div className="grid gap-3 lg:grid-cols-4">
+        {productEdges.map((edge) => (
+          <div key={edge.title} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="mb-2 flex items-center gap-2 text-sm font-bold text-blue-800">
+              <CheckCircle2 className="h-4 w-4" />
+              {edge.title}
+            </div>
+            <p className="text-sm leading-5 text-slate-600">{edge.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -701,11 +774,48 @@ function GeneratedOutput({ isLoading, content, emptyTitle }: { isLoading: boolea
       {isLoading ? (
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
       ) : hasContent ? (
-        <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-6">{content}</div>
+        <div className="grid gap-5 xl:grid-cols-[280px_1fr]">
+          <PackageReadiness content={content} />
+          <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-6">{content}</div>
+        </div>
       ) : (
         <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">{emptyTitle}</div>
       )}
     </section>
+  );
+}
+
+function PackageReadiness({ content }: { content: string }) {
+  const normalized = content.toLowerCase();
+  const checks = readinessChecks.map((check) => ({
+    ...check,
+    met: check.terms.some((term) => normalized.includes(term)),
+  }));
+  const score = checks.filter((check) => check.met).length;
+
+  return (
+    <aside className="h-fit rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <Gauge className="h-5 w-5 text-blue-700" />
+        <div>
+          <h4 className="font-bold text-slate-950">Package Readiness</h4>
+          <p className="text-xs text-slate-600">{score} of {checks.length} product-quality signals detected</p>
+        </div>
+      </div>
+      <div className="space-y-2">
+        {checks.map((check) => (
+          <div key={check.label} className="flex items-center justify-between gap-3 rounded-md bg-white px-3 py-2 text-sm">
+            <span className="text-slate-700">{check.label}</span>
+            <span className={`rounded-md px-2 py-1 text-xs font-bold ${check.met ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+              {check.met ? 'Detected' : 'Review'}
+            </span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-xs leading-5 text-slate-600">
+        Use this as a quick QA pass before sharing with teachers, faculty, administrators, or advisory partners.
+      </p>
+    </aside>
   );
 }
 
