@@ -9,6 +9,7 @@ import {
   FileText,
   Gauge,
   GraduationCap,
+  Library,
   Layers3,
   LibraryBig,
   Presentation,
@@ -22,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
 import { ClassroomConfig } from './types';
-import { copyToClipboard, exportToHtml, exportToMarkdown, exportToPptx, printFormattedDocument } from './utils/documentExport';
+import { CopyTemplate, copyToClipboard, exportToHtml, exportToMarkdown, exportToPptx, printFormattedDocument } from './utils/documentExport';
 import curriculumDataJson from '../curriculum-map/data/modules.json';
 import curriculumWorkflowJson from '../product-planning/data/build-workflow-config.json';
 import courseWorkflowJson from '../product-planning/data/build-college-course-config.json';
@@ -34,8 +35,11 @@ interface SavedPackage {
   title: string;
   mode: BuilderMode;
   content: string;
+  status: ReviewStatus;
   createdAt: number;
 }
+
+type ReviewStatus = 'Draft' | 'Needs Review' | 'Faculty Review' | 'Advisory Review' | 'Ready to Share';
 
 interface CurriculumModule {
   id: string;
@@ -180,6 +184,58 @@ const policyOptions = [
   'Department Review Draft',
 ];
 
+const reviewStatuses: ReviewStatus[] = ['Draft', 'Needs Review', 'Faculty Review', 'Advisory Review', 'Ready to Share'];
+
+const defaultStandardsLibrary = [
+  'ISTE AI literacy: students evaluate AI outputs, use AI responsibly, protect privacy, and explain limitations.',
+  'AI literacy competencies: define AI, identify examples, prompt effectively, verify outputs, cite AI assistance, and reflect on ethical use.',
+  'Course outcome: apply Python and data tools to analyze a small dataset and communicate findings.',
+  'Program outcome: design, evaluate, and present applied AI solutions that meet ethical, privacy, and workforce expectations.',
+  'CQI evidence: collect rubrics, lab artifacts, portfolio samples, advisory feedback, and student reflection data each term.',
+];
+
+const refinementPresets = [
+  { label: 'Make more rigorous', instruction: 'Increase cognitive rigor with higher-order objectives, more demanding assessment evidence, and stronger success criteria.' },
+  { label: 'Add hands-on labs', instruction: 'Add applied labs with materials, steps, data/tools, deliverables, troubleshooting notes, and evidence of learning.' },
+  { label: 'Add beginner supports', instruction: 'Add beginner-friendly scaffolds, vocabulary support, examples, accessibility supports, and confidence-building checks.' },
+  { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
+  { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
+  { label: 'Convert to HyFlex', instruction: 'Convert the package to HyFlex delivery with in-person, online synchronous, and asynchronous options.' },
+];
+
+const samplePackages: Array<{ title: string; mode: BuilderMode; description: string; content: string }> = [
+  {
+    title: 'AI Literacy Lesson Pack',
+    mode: 'curriculum-pack',
+    description: 'Single lesson with guardrails, activity, assessment, and slide outline.',
+    content: '## Lesson Snapshot\nGrade 10 AI literacy lesson on evaluating AI answers.\n\n## Standards / Outcomes Alignment Matrix\nOutcome alignment matrix connects objectives, activity, assessment evidence, and reflection.\n\n## AI Use Guardrails\nProtect privacy, verify outputs, cite AI help, and do not submit AI text as final work.\n\n## Slide Deck Outline\nSix slides with teacher notes and student interaction moments.\n\n## Teacher Implementation Checklist\nMaterials, timing, accessibility supports, and exit ticket are ready for review.',
+  },
+  {
+    title: '5-Day AI Mini-Unit',
+    mode: 'curriculum-pack',
+    description: 'Week-long AI literacy sequence for classroom rollout.',
+    content: '## Lesson Snapshot\nFive-day mini-unit on AI basics, prompting, verification, subject use, and responsible choices.\n\n## Assessment Evidence\nDaily exit tickets, student reflection, rubric, and final responsible-use scenario.\n\n## Differentiation and Accessibility\nBeginner vocabulary, examples, sentence frames, and extension challenges.\n\n## Slide Deck Outline\nDaily opener, guided demo, student practice, reflection, and wrap-up slides.\n\n## Teacher Implementation Checklist\nPrintables, demo prompts, no-AI alternative, and family/admin note.',
+  },
+  {
+    title: 'Intro AI Technology Course',
+    mode: 'college-course',
+    description: 'Course package with weekly modules, labs, policy, and CQI plan.',
+    content: '## Course Snapshot\nIntroduction to Artificial Intelligence Technology, 3 credits, hybrid.\n\n## Outcomes-to-Assessments Matrix\nOutcomes map to weekly modules, Python labs, portfolio evidence, and assessments.\n\n## Labs\nWeekly applied labs using Python, datasets, generative AI tools, and ethics cases.\n\n## Responsible AI Policy\nFERPA/privacy cautions, citation expectations, and allowed/prohibited uses.\n\n## CQI Evidence Plan\nRubrics, lab artifacts, student performance, and advisory feedback reviewed each term.',
+  },
+  {
+    title: 'AI Certificate Pathway',
+    mode: 'college-program',
+    description: 'Stackable certificate pathway with program outcomes and course sequence.',
+    content: '## Program Snapshot\nStackable Artificial Intelligence Technology certificate to AAS pathway.\n\n## Credential Pathways\nShort-term certificate, advanced certificate, and associate degree milestones.\n\n## Outcomes-to-Courses Curriculum Map\nProgram outcomes map to courses, labs, portfolio artifacts, and CQI evidence.\n\n## Advisory Board Agenda\nEmployer skill validation, internship targets, tool relevance, and curriculum feedback.\n\n## Recruitment Copy\nCareer-ready AI skills for local workforce needs.',
+  },
+  {
+    title: 'Advisory Board Agenda Package',
+    mode: 'college-program',
+    description: 'Employer-facing agenda, questions, and curriculum feedback plan.',
+    content: '## Program Snapshot\nAI Technology advisory board review package.\n\n## Advisory Board Agenda\nWelcome, labor market context, course sequence review, skill validation, project feedback, and next steps.\n\n## Employer / Internship Partnership Targets\nApplied data, automation, AI operations, and portfolio project partners.\n\n## Assessment and CQI Plan\nAdvisory feedback updates outcomes, labs, tools, and recruitment strategy.\n\n## Department Review Checklist\nDraft items ready for faculty, chair, and advisory review.',
+  },
+];
+
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
@@ -204,12 +260,13 @@ function App() {
     saveSavedPackages(savedPackages);
   }, [savedPackages]);
 
-  const saveCurrentPackage = (content: string) => {
+  const saveCurrentPackage = (content: string, status: ReviewStatus) => {
     const nextPackage: SavedPackage = {
       id: crypto.randomUUID(),
       title: inferPackageTitle(content, activeMode),
       mode: activeMode,
       content,
+      status,
       createdAt: Date.now(),
     };
     setSavedPackages((current) => [nextPackage, ...current].slice(0, 24));
@@ -223,6 +280,12 @@ function App() {
 
   const deletePackage = (id: string) => {
     setSavedPackages((current) => current.filter((savedPackage) => savedPackage.id !== id));
+  };
+
+  const loadSample = (sample: (typeof samplePackages)[number]) => {
+    setActiveMode(sample.mode);
+    setLoadedPackageContent(sample.content);
+    clearChat();
   };
 
   return (
@@ -262,6 +325,7 @@ function App() {
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <ProductEdgeStrip />
+        <SampleGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
           <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
@@ -454,19 +518,15 @@ function CurriculumPackBuilder({
           <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
         </Panel>
 
-        <Panel title="Add Source and Policy Context" icon={Upload}>
-          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
-            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
-            <p>Use local standards, policies, or constraints to make the generated package more review-ready.</p>
-          </div>
-          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
-          <TextAreaField
-            label="Source notes"
-            value={sourceNotes}
-            onChange={setSourceNotes}
-            placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
-          />
-        </Panel>
+        <SourceContextPanel
+          title="Add Source and Policy Context"
+          hint="Use local standards, policies, or constraints to make the generated package more review-ready."
+          policyOutput={settings.policyOutput}
+          onPolicyChange={(value) => updateSetting('policyOutput', value)}
+          sourceNotes={sourceNotes}
+          onSourceNotesChange={setSourceNotes}
+          placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
+        />
       </section>
     </BuilderFrame>
   );
@@ -596,19 +656,15 @@ function CollegeCourseBuilder({
           <ChipList items={(selectedOutput.includedOutputs ?? []).map(labelFromValue)} />
         </Panel>
 
-        <Panel title="Add Program Source and Policy Context" icon={Upload}>
-          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
-            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
-            <p>Use institutional notes, employer skills, or policy language to make the course package review-ready.</p>
-          </div>
-          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
-          <TextAreaField
-            label="Source notes"
-            value={sourceNotes}
-            onChange={setSourceNotes}
-            placeholder="Paste program outcomes, local workforce needs, advisory board notes, syllabus constraints, institutional policy language, or accreditation/CQI expectations."
-          />
-        </Panel>
+        <SourceContextPanel
+          title="Add Program Source and Policy Context"
+          hint="Use institutional notes, employer skills, or policy language to make the course package review-ready."
+          policyOutput={settings.policyOutput}
+          onPolicyChange={(value) => updateSetting('policyOutput', value)}
+          sourceNotes={sourceNotes}
+          onSourceNotesChange={setSourceNotes}
+          placeholder="Paste program outcomes, local workforce needs, advisory board notes, syllabus constraints, institutional policy language, or accreditation/CQI expectations."
+        />
       </section>
     </BuilderFrame>
   );
@@ -631,6 +687,7 @@ function CollegeProgramBuilder({
     cqiCadence: 'Semester review with annual advisory board input',
     advisoryFocus: 'Employer skill validation and internship/project feedback',
     recruitmentAngle: 'Career-ready AI skills for local workforce needs',
+    packagePreset: 'Program Proposal Package',
     policyOutput: 'Department Review Draft',
   });
   const [sourceNotes, setSourceNotes] = useState('');
@@ -653,6 +710,7 @@ function CollegeProgramBuilder({
       `CQI cadence: ${settings.cqiCadence}`,
       `Advisory board focus: ${settings.advisoryFocus}`,
       `Recruitment angle: ${settings.recruitmentAngle}`,
+      `Requested package preset: ${settings.packagePreset}`,
       `Requested policy artifact: ${settings.policyOutput}`,
       sourceNotes.trim() ? `Additional program source/context notes: ${sourceNotes.trim()}` : 'Additional program source/context notes: none provided.',
       '',
@@ -662,6 +720,9 @@ function CollegeProgramBuilder({
       'For CQI, include artifacts to collect, review cadence, improvement triggers, and documentation notes.',
       'For advisory board, include agenda items, employer feedback questions, and how feedback updates curriculum.',
       'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
+      settings.packagePreset === 'Program Proposal Package'
+        ? 'Because Program Proposal Package is selected, include a formal proposal-style packet with rationale, outcomes, course sequence, resources, staffing assumptions, lab/tool needs, assessment/CQI, advisory input, implementation timeline, and recruitment copy.'
+        : `Shape the package for this selected preset: ${settings.packagePreset}.`,
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Do not claim official approval, accreditation compliance, or labor-market guarantees.',
     ].join('\n');
@@ -699,6 +760,7 @@ function CollegeProgramBuilder({
             <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} />
             <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} />
             <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} />
+            <SelectField label="Package" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={toSelectOptions(['Program Proposal Package', 'Certificate Pathway Package', 'AAS Degree Pathway Package', 'Advisory Board Package', 'Recruitment Package'])} />
           </FieldGrid>
         </Panel>
 
@@ -725,19 +787,15 @@ function CollegeProgramBuilder({
           />
         </Panel>
 
-        <Panel title="Program Source and Policy Context" icon={Upload}>
-          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
-            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
-            <p>Use employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package.</p>
-          </div>
-          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
-          <TextAreaField
-            label="Source notes"
-            value={sourceNotes}
-            onChange={setSourceNotes}
-            placeholder="Paste advisory board notes, local employer needs, program outcomes, TBR/institution constraints, recruitment requirements, or CQI expectations."
-          />
-        </Panel>
+        <SourceContextPanel
+          title="Program Source and Policy Context"
+          hint="Use employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package."
+          policyOutput={settings.policyOutput}
+          onPolicyChange={(value) => updateSetting('policyOutput', value)}
+          sourceNotes={sourceNotes}
+          onSourceNotesChange={setSourceNotes}
+          placeholder="Paste advisory board notes, local employer needs, program outcomes, TBR/institution constraints, recruitment requirements, or CQI expectations."
+        />
       </section>
     </BuilderFrame>
   );
@@ -755,6 +813,41 @@ function ProductEdgeStrip() {
             </div>
             <p className="text-sm leading-5 text-slate-600">{edge.text}</p>
           </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SampleGallery({
+  activeMode,
+  onLoadSample,
+}: {
+  activeMode: BuilderMode;
+  onLoadSample: (sample: (typeof samplePackages)[number]) => void;
+}) {
+  const visibleSamples = samplePackages.filter((sample) => sample.mode === activeMode);
+
+  return (
+    <section className="mb-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="mb-3 flex items-center gap-2">
+        <Library className="h-5 w-5 text-blue-700" />
+        <div>
+          <h3 className="font-bold text-slate-950">Sample Gallery</h3>
+          <p className="text-xs text-slate-600">Load an example package, then refine, export, or save it.</p>
+        </div>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {visibleSamples.map((sample) => (
+          <button
+            key={sample.title}
+            type="button"
+            onClick={() => onLoadSample(sample)}
+            className="rounded-md border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+          >
+            <strong className="block text-sm text-slate-950">{sample.title}</strong>
+            <span className="mt-1 block text-xs leading-5 text-slate-600">{sample.description}</span>
+          </button>
         ))}
       </div>
     </section>
@@ -822,6 +915,124 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: React.Com
       </header>
       {children}
     </article>
+  );
+}
+
+function SourceContextPanel({
+  title,
+  hint,
+  policyOutput,
+  onPolicyChange,
+  sourceNotes,
+  onSourceNotesChange,
+  placeholder,
+}: {
+  title: string;
+  hint: string;
+  policyOutput: string;
+  onPolicyChange: (value: string) => void;
+  sourceNotes: string;
+  onSourceNotesChange: (value: string) => void;
+  placeholder: string;
+}) {
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [libraryItems, setLibraryItems] = useState<string[]>(() => loadStandardsLibrary());
+  const [newLibraryItem, setNewLibraryItem] = useState('');
+
+  useEffect(() => {
+    saveStandardsLibrary(libraryItems);
+  }, [libraryItems]);
+
+  const appendSourceText = (label: string, text: string) => {
+    const clipped = text.trim().slice(0, 12000);
+    if (!clipped) return;
+    onSourceNotesChange([sourceNotes, `\n\n[${label}]\n${clipped}`].join('').trim());
+  };
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setUploadStatus(`Reading ${files.length} file${files.length > 1 ? 's' : ''}...`);
+
+    const extracted: string[] = [];
+    for (const file of Array.from(files)) {
+      try {
+        const text = await extractTextFromFile(file);
+        extracted.push(`[Uploaded source: ${file.name}]\n${text}`);
+      } catch (error) {
+        console.error('File extraction failed:', error);
+        extracted.push(`[Uploaded source: ${file.name}]\nUnable to extract text. Add notes manually or try a text/Markdown export of this file.`);
+      }
+    }
+
+    appendSourceText('Uploaded files', extracted.join('\n\n'));
+    setUploadStatus(`Added ${files.length} source file${files.length > 1 ? 's' : ''}.`);
+    window.setTimeout(() => setUploadStatus(''), 3500);
+  };
+
+  const addLibraryItem = () => {
+    const trimmed = newLibraryItem.trim();
+    if (!trimmed) return;
+    setLibraryItems((current) => [trimmed, ...current].slice(0, 20));
+    setNewLibraryItem('');
+  };
+
+  return (
+    <Panel title={title} icon={Upload}>
+      <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
+        <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
+        <p>{hint}</p>
+      </div>
+
+      <SelectField label="Policy output" value={policyOutput} onChange={onPolicyChange} options={toSelectOptions(policyOptions)} />
+
+      <label className="mt-4 block rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4">
+        <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase text-slate-600">
+          <Upload className="h-4 w-4" />
+          Upload source files
+        </span>
+        <input
+          type="file"
+          multiple
+          accept=".pdf,.docx,.txt,.md,.csv,.rtf"
+          onChange={(event) => void handleFiles(event.target.files)}
+          className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-blue-700 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+        />
+        <span className="mt-2 block text-xs leading-5 text-slate-500">Supports PDF, DOCX, TXT, Markdown, CSV, and RTF text extraction in this browser.</span>
+        {uploadStatus && <span className="mt-2 block text-xs font-semibold text-blue-800">{uploadStatus}</span>}
+      </label>
+
+      <TextAreaField label="Source notes" value={sourceNotes} onChange={onSourceNotesChange} placeholder={placeholder} />
+
+      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-3 flex items-center gap-2">
+          <Library className="h-4 w-4 text-blue-700" />
+          <h4 className="font-bold text-slate-950">Standards / Outcomes Library</h4>
+        </div>
+        <div className="mb-3 flex gap-2">
+          <input
+            value={newLibraryItem}
+            onChange={(event) => setNewLibraryItem(event.target.value)}
+            placeholder="Add an outcome, standard, skill, or CQI evidence note..."
+            className="min-h-10 flex-1 rounded-md border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <button type="button" onClick={addLibraryItem} className="rounded-md bg-blue-700 px-3 text-sm font-semibold text-white hover:bg-blue-800">
+            Add
+          </button>
+        </div>
+        <div className="space-y-2">
+          {libraryItems.slice(0, 6).map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => appendSourceText('Standards / outcomes library', item)}
+              className="block w-full rounded-md border border-slate-200 bg-white p-2 text-left text-xs leading-5 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Panel>
   );
 }
 
@@ -980,12 +1191,14 @@ function GeneratedOutput({
   activeMode: BuilderMode;
   emptyTitle: string;
   onImprove: (prompt: string) => void;
-  onSave: (content: string) => void;
+  onSave: (content: string, status: ReviewStatus) => void;
   savedPackages: SavedPackage[];
   onLoadPackage: (savedPackage: SavedPackage) => void;
   onDeletePackage: (id: string) => void;
 }) {
   const [exportStatus, setExportStatus] = useState('');
+  const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('Draft');
+  const [copyTemplate, setCopyTemplate] = useState<CopyTemplate>('teacher_lesson_deck');
   const hasContent = Boolean(content.trim());
   const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
   const checks = getReadinessResults(content);
@@ -1017,6 +1230,18 @@ function GeneratedOutput({
     ].join('\n'));
   };
 
+  const runRefinement = (label: string, instruction: string) => {
+    onImprove([
+      `Refine the generated package using this focus: ${label}.`,
+      instruction,
+      'Preserve useful existing content, but return one complete updated package with clean markdown headings.',
+      'Keep outcomes alignment, assessment evidence, AI guardrails, accessibility, export readiness, and implementation details intact.',
+      '',
+      'Current package:',
+      content,
+    ].join('\n'));
+  };
+
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -1024,24 +1249,39 @@ function GeneratedOutput({
           <h3 className="text-lg font-bold">Generated Package</h3>
           <p className="text-sm text-slate-600">Review the generated materials, then export them for teaching, sharing, or presentation.</p>
         </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
+          <SelectField label="Review status" value={reviewStatus} onChange={(value) => setReviewStatus(value as ReviewStatus)} options={toSelectOptions(reviewStatuses)} />
+          <SelectField
+            label="Export template"
+            value={copyTemplate}
+            onChange={(value) => setCopyTemplate(value as CopyTemplate)}
+            options={toSelectOptions([
+              { value: 'teacher_lesson_deck', label: 'Teacher Lesson Deck' },
+              { value: 'student_activity_deck', label: 'Student Activity Deck' },
+              { value: 'college_syllabus_packet', label: 'College Syllabus Packet' },
+              { value: 'program_proposal_deck', label: 'Program Proposal Deck' },
+              { value: 'advisory_board_deck', label: 'Advisory Board Deck' },
+            ])}
+          />
+        </div>
         <div className="sticky top-[7.75rem] z-10 -mx-1 flex gap-2 overflow-x-auto bg-white/95 px-1 py-2 backdrop-blur lg:static lg:z-auto lg:flex-wrap lg:overflow-visible lg:bg-transparent lg:p-0">
           <ExportButton
             icon={FileText}
             label="Polished HTML"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Polished HTML downloaded.', () => exportToHtml(content, filename))}
+            onClick={() => runExport('Polished HTML downloaded.', () => exportToHtml(content, filename, copyTemplate))}
           />
           <ExportButton
             icon={Printer}
             label="Print / PDF"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Print view opened.', () => printFormattedDocument(content, filename))}
+            onClick={() => runExport('Print view opened.', () => printFormattedDocument(content, filename, copyTemplate))}
           />
           <ExportButton
             icon={Presentation}
             label="PPT"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('PowerPoint downloaded.', () => exportToPptx(content, filename))}
+            onClick={() => runExport('PowerPoint downloaded.', () => exportToPptx(content, filename, copyTemplate))}
           />
           <ExportButton
             icon={Clipboard}
@@ -1066,13 +1306,28 @@ function GeneratedOutput({
             label="Save"
             disabled={!hasContent || isLoading}
             onClick={() => {
-              onSave(content);
+              onSave(content, reviewStatus);
               setExportStatus('Package saved to history.');
               window.setTimeout(() => setExportStatus(''), 3000);
             }}
           />
         </div>
       </div>
+      {hasContent && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {refinementPresets.map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() => runRefinement(preset.label, preset.instruction)}
+              disabled={isLoading}
+              className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+      )}
       {exportStatus && (
         <div className="mb-4 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900">
           {exportStatus}
@@ -1130,7 +1385,7 @@ function SavedPackagesPanel({
             <div key={savedPackage.id} className="flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-white p-3">
               <button type="button" onClick={() => onLoadPackage(savedPackage)} className="min-w-0 flex-1 text-left">
                 <strong className="block truncate text-sm text-slate-950">{savedPackage.title}</strong>
-                <span className="text-xs text-slate-500">{new Date(savedPackage.createdAt).toLocaleString()}</span>
+                <span className="text-xs text-slate-500">{savedPackage.status} - {new Date(savedPackage.createdAt).toLocaleString()}</span>
               </button>
               <button
                 type="button"
@@ -1249,13 +1504,14 @@ function normalizeStandards(value: string): ClassroomConfig['standards']['type']
 }
 
 const savedPackagesKey = 'classroomCopilot.savedPackages.v1';
+const standardsLibraryKey = 'classroomCopilot.standardsLibrary.v1';
 
 function loadSavedPackages(): SavedPackage[] {
   try {
     const raw = localStorage.getItem(savedPackagesKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as SavedPackage[];
-    return Array.isArray(parsed) ? parsed.filter(isSavedPackage) : [];
+    return Array.isArray(parsed) ? parsed.filter(isSavedPackage).map((savedPackage) => ({ ...savedPackage, status: savedPackage.status ?? 'Draft' })) : [];
   } catch (error) {
     console.error('Failed to load saved packages:', error);
     return [];
@@ -1286,6 +1542,68 @@ function inferPackageTitle(content: string, mode: BuilderMode): string {
 
   const fallback = mode === 'curriculum-pack' ? 'Curriculum Pack' : mode === 'college-course' ? 'College Course Package' : 'College Program Package';
   return `${fallback} - ${new Date().toLocaleDateString()}`;
+}
+
+function loadStandardsLibrary(): string[] {
+  try {
+    const raw = localStorage.getItem(standardsLibraryKey);
+    if (!raw) return defaultStandardsLibrary;
+    const parsed = JSON.parse(raw) as string[];
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed.filter((item) => typeof item === 'string') : defaultStandardsLibrary;
+  } catch (error) {
+    console.error('Failed to load standards library:', error);
+    return defaultStandardsLibrary;
+  }
+}
+
+function saveStandardsLibrary(items: string[]): void {
+  try {
+    localStorage.setItem(standardsLibraryKey, JSON.stringify(items));
+  } catch (error) {
+    console.error('Failed to save standards library:', error);
+  }
+}
+
+async function extractTextFromFile(file: File): Promise<string> {
+  const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
+
+  if (extension === 'pdf') {
+    return extractPdfText(file);
+  }
+
+  if (extension === 'docx') {
+    return extractDocxText(file);
+  }
+
+  return file.text();
+}
+
+async function extractDocxText(file: File): Promise<string> {
+  const mammoth = await import('mammoth/mammoth.browser');
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  return result.value;
+}
+
+async function extractPdfText(file: File): Promise<string> {
+  const pdfjs = await import('pdfjs-dist');
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString();
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+  const pages: string[] = [];
+
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items
+      .map((item) => ('str' in item ? item.str : ''))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (pageText) pages.push(`Page ${pageNumber}: ${pageText}`);
+  }
+
+  return pages.join('\n\n');
 }
 
 export default App;

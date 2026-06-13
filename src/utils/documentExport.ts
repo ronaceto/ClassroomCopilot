@@ -1,3 +1,18 @@
+export type CopyTemplate =
+  | 'teacher_lesson_deck'
+  | 'student_activity_deck'
+  | 'college_syllabus_packet'
+  | 'program_proposal_deck'
+  | 'advisory_board_deck';
+
+const templateLabels: Record<CopyTemplate, string> = {
+  teacher_lesson_deck: 'Teacher Lesson Deck',
+  student_activity_deck: 'Student Activity Deck',
+  college_syllabus_packet: 'College Syllabus Packet',
+  program_proposal_deck: 'Program Proposal Deck',
+  advisory_board_deck: 'Advisory Board Deck',
+};
+
 export const copyToClipboard = async (content: string): Promise<void> => {
   try {
     await navigator.clipboard.writeText(content);
@@ -16,31 +31,31 @@ export const exportToMarkdown = (content: string, filename: string): void => {
   downloadTextFile(content, `${filename}.md`, 'text/markdown;charset=utf-8');
 };
 
-export const exportToHtml = (content: string, filename: string): void => {
-  downloadTextFile(buildHtmlDocument(content), `${filename}.html`, 'text/html;charset=utf-8');
+export const exportToHtml = (content: string, filename: string, template: CopyTemplate = 'teacher_lesson_deck'): void => {
+  downloadTextFile(buildHtmlDocument(content, filename, template), `${filename}.html`, 'text/html;charset=utf-8');
 };
 
-export const printFormattedDocument = (content: string, title: string): void => {
+export const printFormattedDocument = (content: string, title: string, template: CopyTemplate = 'teacher_lesson_deck'): void => {
   const printWindow = window.open('', '_blank', 'noopener,noreferrer');
 
   if (!printWindow) {
-    downloadTextFile(buildHtmlDocument(content), `${title}.html`, 'text/html;charset=utf-8');
+    downloadTextFile(buildHtmlDocument(content, title, template), `${title}.html`, 'text/html;charset=utf-8');
     return;
   }
 
-  printWindow.document.write(buildHtmlDocument(content, title));
+  printWindow.document.write(buildHtmlDocument(content, title, template));
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
 };
 
-export const exportToPptx = async (content: string, filename: string): Promise<void> => {
+export const exportToPptx = async (content: string, filename: string, template: CopyTemplate = 'teacher_lesson_deck'): Promise<void> => {
   const pptxModule = await import('pptxgenjs');
   const PptxGenJS = pptxModule.default;
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE';
   pptx.author = 'Classroom Copilot';
-  pptx.subject = 'AI curriculum generated package';
+  pptx.subject = templateLabels[template];
   pptx.title = filename;
   pptx.company = 'Classroom Copilot';
   pptx.theme = {
@@ -50,12 +65,12 @@ export const exportToPptx = async (content: string, filename: string): Promise<v
   };
 
   const sections = splitIntoSections(content);
-  addTitleSlide(pptx, filename, sections[0]?.title ?? 'Generated Package');
+  addTitleSlide(pptx, filename, sections[0]?.title ?? 'Generated Package', template);
 
   sections.slice(0, 14).forEach((section) => {
-    addContentSlide(pptx, section.title, section.lines);
+    addContentSlide(pptx, section.title, section.lines, template);
   });
-  addFacilitationSlide(pptx);
+  addFacilitationSlide(pptx, template);
 
   await pptx.writeFile({ fileName: `${filename}.pptx` });
 };
@@ -72,7 +87,7 @@ const downloadTextFile = (content: string, filename: string, type: string): void
   URL.revokeObjectURL(url);
 };
 
-const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated Package'): string => `<!doctype html>
+const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated Package', template: CopyTemplate = 'teacher_lesson_deck'): string => `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -153,6 +168,7 @@ const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated
     <section class="brand">
       <div class="eyebrow">Classroom Copilot</div>
       <h1>${escapeHtml(title)}</h1>
+      <p><strong>${escapeHtml(templateLabels[template])}</strong></p>
     </section>
     ${markdownToHtml(content)}
   </main>
@@ -269,11 +285,13 @@ const addTitleSlide = (
   pptx: import('pptxgenjs').default,
   filename: string,
   subtitle: string,
+  template: CopyTemplate,
 ): void => {
   const slide = pptx.addSlide();
   slide.background = { color: 'F8FAFC' };
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.333, h: 7.5, fill: { color: 'F8FAFC' }, line: { color: 'F8FAFC' } });
   slide.addText('Classroom Copilot', { x: 0.65, y: 0.55, w: 3.5, h: 0.35, fontFace: 'Aptos', fontSize: 13, bold: true, color: '1D4ED8', margin: 0 });
+  slide.addText(templateLabels[template], { x: 9.2, y: 0.55, w: 3.5, h: 0.35, fontFace: 'Aptos', fontSize: 12, bold: true, color: '475569', align: 'right', margin: 0 });
   slide.addText(filename, { x: 0.65, y: 1.45, w: 11.5, h: 1.2, fontFace: 'Aptos Display', fontSize: 34, bold: true, color: '0F172A', fit: 'shrink', margin: 0 });
   slide.addText(subtitle, { x: 0.67, y: 2.85, w: 10.5, h: 0.75, fontFace: 'Aptos', fontSize: 18, color: '475569', fit: 'shrink', margin: 0 });
   slide.addShape(pptx.ShapeType.line, { x: 0.65, y: 6.55, w: 12, h: 0, line: { color: '1D4ED8', width: 2 } });
@@ -283,12 +301,14 @@ const addContentSlide = (
   pptx: import('pptxgenjs').default,
   title: string,
   lines: string[],
+  template: CopyTemplate,
 ): void => {
   const slide = pptx.addSlide();
   const bullets = lines.filter(Boolean).slice(0, 7);
 
   slide.background = { color: 'FFFFFF' };
   slide.addText(title, { x: 0.6, y: 0.45, w: 12, h: 0.55, fontFace: 'Aptos Display', fontSize: 24, bold: true, color: '1E3A8A', fit: 'shrink', margin: 0 });
+  slide.addText(templateLabels[template], { x: 9.8, y: 6.95, w: 2.8, h: 0.25, fontSize: 9, color: '64748B', align: 'right', margin: 0 });
   slide.addShape(pptx.ShapeType.line, { x: 0.6, y: 1.15, w: 12.1, h: 0, line: { color: 'BFDBFE', width: 1.5 } });
 
   if (bullets.length === 0) {
@@ -314,17 +334,21 @@ const addContentSlide = (
   );
 };
 
-const addFacilitationSlide = (pptx: import('pptxgenjs').default): void => {
+const addFacilitationSlide = (pptx: import('pptxgenjs').default, template: CopyTemplate): void => {
   const slide = pptx.addSlide();
+  const title = template === 'advisory_board_deck' ? 'Advisory Facilitation Notes' : template === 'program_proposal_deck' ? 'Proposal Review Notes' : 'Teacher Facilitation Notes';
+  const notes =
+    template === 'advisory_board_deck'
+      ? ['Confirm employer skill needs.', 'Capture advisory feedback and action items.', 'Identify internship, project, and tool recommendations.', 'Document curriculum updates for CQI follow-up.']
+      : template === 'program_proposal_deck'
+        ? ['Review rationale, outcomes, staffing, resources, and lab/tool needs.', 'Check course sequence and credential milestones.', 'Validate CQI evidence and advisory input.', 'Use as a draft for department and institutional review.']
+        : ['Review AI-use guardrails before students begin.', 'Check alignment between objectives, activities, and evidence of learning.', 'Adapt examples, timing, and accessibility supports for your learners.', 'Use the exported package as a draft for teacher, faculty, or department review.'];
   slide.background = { color: 'EFF6FF' };
-  slide.addText('Teacher Facilitation Notes', { x: 0.6, y: 0.45, w: 12, h: 0.55, fontFace: 'Aptos Display', fontSize: 24, bold: true, color: '1E3A8A', fit: 'shrink', margin: 0 });
+  slide.addText(title, { x: 0.6, y: 0.45, w: 12, h: 0.55, fontFace: 'Aptos Display', fontSize: 24, bold: true, color: '1E3A8A', fit: 'shrink', margin: 0 });
   slide.addShape(pptx.ShapeType.line, { x: 0.6, y: 1.15, w: 12.1, h: 0, line: { color: '1D4ED8', width: 2 } });
   slide.addText(
     [
-      { text: 'Review AI-use guardrails before students begin.', options: { bullet: { type: 'ul' } } },
-      { text: 'Check alignment between objectives, activities, and evidence of learning.', options: { bullet: { type: 'ul' } } },
-      { text: 'Adapt examples, timing, and accessibility supports for your learners.', options: { bullet: { type: 'ul' } } },
-      { text: 'Use the exported package as a draft for teacher, faculty, or department review.', options: { bullet: { type: 'ul' } } },
+      ...notes.map((note) => ({ text: note, options: { bullet: { type: 'ul' } } })),
     ],
     {
       x: 0.85,
