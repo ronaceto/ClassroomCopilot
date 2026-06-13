@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Archive,
   BookOpen,
   BrainCircuit,
   CheckCircle2,
@@ -16,6 +17,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Trash2,
   Upload,
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
@@ -25,7 +27,15 @@ import curriculumDataJson from '../curriculum-map/data/modules.json';
 import curriculumWorkflowJson from '../product-planning/data/build-workflow-config.json';
 import courseWorkflowJson from '../product-planning/data/build-college-course-config.json';
 
-type BuilderMode = 'curriculum-pack' | 'college-course';
+type BuilderMode = 'curriculum-pack' | 'college-course' | 'college-program';
+
+interface SavedPackage {
+  id: string;
+  title: string;
+  mode: BuilderMode;
+  content: string;
+  createdAt: number;
+}
 
 interface CurriculumModule {
   id: string;
@@ -86,6 +96,7 @@ const modes: Array<{
 }> = [
   { id: 'curriculum-pack', label: 'Curriculum Pack', icon: BookOpen },
   { id: 'college-course', label: 'College Course', icon: GraduationCap },
+  { id: 'college-program', label: 'College Program', icon: Layers3 },
 ];
 
 const baseConfig: ClassroomConfig = {
@@ -172,9 +183,12 @@ const policyOptions = [
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
+  const [loadedPackageContent, setLoadedPackageContent] = useState('');
+  const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
+    setLoadedPackageContent('');
     clearChat();
     void sendMessage(prompt, 'teacher', config);
   };
@@ -184,6 +198,32 @@ function App() {
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
+  const generatedContent = latestAssistantMessage?.content ?? loadedPackageContent;
+
+  useEffect(() => {
+    saveSavedPackages(savedPackages);
+  }, [savedPackages]);
+
+  const saveCurrentPackage = (content: string) => {
+    const nextPackage: SavedPackage = {
+      id: crypto.randomUUID(),
+      title: inferPackageTitle(content, activeMode),
+      mode: activeMode,
+      content,
+      createdAt: Date.now(),
+    };
+    setSavedPackages((current) => [nextPackage, ...current].slice(0, 24));
+  };
+
+  const loadPackage = (savedPackage: SavedPackage) => {
+    setActiveMode(savedPackage.mode);
+    setLoadedPackageContent(savedPackage.content);
+    clearChat();
+  };
+
+  const deletePackage = (id: string) => {
+    setSavedPackages((current) => current.filter((savedPackage) => savedPackage.id !== id));
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -199,7 +239,7 @@ function App() {
             </div>
           </div>
 
-          <nav className="grid grid-cols-2 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1" aria-label="Builder modes">
+          <nav className="grid grid-cols-3 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1" aria-label="Builder modes">
             {modes.map((mode) => {
               const Icon = mode.icon;
               return (
@@ -225,15 +265,22 @@ function App() {
 
         {activeMode === 'curriculum-pack' ? (
           <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
-        ) : (
+        ) : activeMode === 'college-course' ? (
           <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} />
+        ) : (
+          <CollegeProgramBuilder isLoading={isLoading} onBuild={handleBuild} />
         )}
 
         <GeneratedOutput
           isLoading={isLoading}
-          content={latestAssistantMessage?.content ?? ''}
-          emptyTitle={activeMode === 'curriculum-pack' ? 'Your curriculum pack will appear here' : 'Your course package will appear here'}
+          content={generatedContent}
+          activeMode={activeMode}
+          emptyTitle={activeMode === 'curriculum-pack' ? 'Your curriculum pack will appear here' : activeMode === 'college-course' ? 'Your course package will appear here' : 'Your program package will appear here'}
           onImprove={handleImprove}
+          onSave={saveCurrentPackage}
+          savedPackages={savedPackages}
+          onLoadPackage={loadPackage}
+          onDeletePackage={deletePackage}
         />
       </main>
 
@@ -567,6 +614,135 @@ function CollegeCourseBuilder({
   );
 }
 
+function CollegeProgramBuilder({
+  isLoading,
+  onBuild,
+}: {
+  isLoading: boolean;
+  onBuild: (prompt: string, config: ClassroomConfig) => void;
+}) {
+  const [settings, setSettings] = useState({
+    programName: 'Artificial Intelligence Technology',
+    credentialType: 'Technical certificate + AAS pathway',
+    programLength: '2 semesters certificate / 4 semesters AAS',
+    targetLearners: 'Community college students and working adults',
+    workforceFocus: 'Applied AI technician, data assistant, automation support, prompt operations',
+    pathwayModel: 'Stackable certificate to associate degree',
+    cqiCadence: 'Semester review with annual advisory board input',
+    advisoryFocus: 'Employer skill validation and internship/project feedback',
+    recruitmentAngle: 'Career-ready AI skills for local workforce needs',
+    policyOutput: 'Department Review Draft',
+  });
+  const [sourceNotes, setSourceNotes] = useState('');
+
+  const updateSetting = (key: keyof typeof settings, value: string) => {
+    setSettings((current) => ({ ...current, [key]: value }));
+  };
+
+  const buildPrompt = () => {
+    const prompt = [
+      'Build a review-ready Artificial Intelligence Technology college program package for a community-college faculty member/program coordinator.',
+      'Label all materials as drafts for department, advisory board, workforce partner, and institutional review.',
+      '',
+      `Program name: ${settings.programName}`,
+      `Credential type: ${settings.credentialType}`,
+      `Program length: ${settings.programLength}`,
+      `Target learners: ${settings.targetLearners}`,
+      `Workforce focus: ${settings.workforceFocus}`,
+      `Pathway model: ${settings.pathwayModel}`,
+      `CQI cadence: ${settings.cqiCadence}`,
+      `Advisory board focus: ${settings.advisoryFocus}`,
+      `Recruitment angle: ${settings.recruitmentAngle}`,
+      `Requested policy artifact: ${settings.policyOutput}`,
+      sourceNotes.trim() ? `Additional program source/context notes: ${sourceNotes.trim()}` : 'Additional program source/context notes: none provided.',
+      '',
+      'Return a program-coordinator package with these headings: ## Program Snapshot, ## Market / Workforce Rationale, ## Credential Pathways, ## Program Learning Outcomes, ## Course Sequence, ## Course Descriptions, ## Outcomes-to-Courses Curriculum Map, ## Applied Lab and Project Spine, ## Assessment and CQI Plan, ## Advisory Board Agenda, ## Employer / Internship Partnership Targets, ## Recruitment Copy, ## Student Success Supports, ## Responsible AI Program Policy, ## Implementation Roadmap, ## Department Review Checklist.',
+      'For credential pathways, include certificate and associate-degree options with stackable milestones.',
+      'For the curriculum map, map program outcomes to courses, labs/projects, assessment evidence, and CQI review points.',
+      'For CQI, include artifacts to collect, review cadence, improvement triggers, and documentation notes.',
+      'For advisory board, include agenda items, employer feedback questions, and how feedback updates curriculum.',
+      'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
+      `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
+      'Do not claim official approval, accreditation compliance, or labor-market guarantees.',
+    ].join('\n');
+
+    onBuild(prompt, { ...baseConfig, subjects: 'Artificial Intelligence Technology Program', grades: 'College intro', standards: { type: 'ISTE' } });
+  };
+
+  return (
+    <BuilderFrame
+      eyebrow="College Program"
+      title="Build an AI Technology Program Package"
+      subtitle="Create certificate and pathway drafts with outcomes, course sequences, CQI evidence, advisory board materials, and recruitment assets."
+      buttonLabel="Build Program Package"
+      isLoading={isLoading}
+      onBuild={buildPrompt}
+      summary={[
+        ['Program', settings.programName],
+        ['Credential', settings.credentialType],
+        ['Pathway', settings.pathwayModel],
+        ['CQI', settings.cqiCadence],
+      ]}
+    >
+      <section className="grid gap-5 lg:grid-cols-2">
+        <Panel title="Program Basics" icon={GraduationCap}>
+          <label className="block">
+            <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Program name</span>
+            <input
+              value={settings.programName}
+              onChange={(event) => updateSetting('programName', event.target.value)}
+              className="h-11 w-full rounded-md border border-slate-300 px-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+          <FieldGrid>
+            <SelectField label="Credential" value={settings.credentialType} onChange={(value) => updateSetting('credentialType', value)} options={toSelectOptions(['Technical certificate', 'AAS degree', 'Technical certificate + AAS pathway', 'Noncredit workforce certificate', 'Dual enrollment pathway'])} />
+            <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} />
+            <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} />
+            <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} />
+          </FieldGrid>
+        </Panel>
+
+        <Panel title="Workforce and Applied Learning" icon={Layers3}>
+          <TextAreaField
+            label="Workforce focus"
+            value={settings.workforceFocus}
+            onChange={(value) => updateSetting('workforceFocus', value)}
+            placeholder="Describe local roles, employer needs, tools, or applied AI skills."
+          />
+          <ChipList items={['Python foundations', 'Data analysis', 'ML concepts', 'Generative AI tools', 'Ethics', 'Automation projects', 'Portfolio evidence']} />
+        </Panel>
+
+        <Panel title="CQI and Advisory Board" icon={ClipboardList}>
+          <FieldGrid>
+            <SelectField label="CQI cadence" value={settings.cqiCadence} onChange={(value) => updateSetting('cqiCadence', value)} options={toSelectOptions(['Semester review with annual advisory board input', 'Annual program review', 'Midterm and end-of-term evidence review', 'Quarterly employer feedback cycle', 'Custom'])} />
+            <SelectField label="Advisory focus" value={settings.advisoryFocus} onChange={(value) => updateSetting('advisoryFocus', value)} options={toSelectOptions(['Employer skill validation and internship/project feedback', 'Course sequence review', 'Tool/platform relevance', 'Workforce placement feedback', 'Recruitment and retention feedback'])} />
+          </FieldGrid>
+          <TextAreaField
+            label="Recruitment angle"
+            value={settings.recruitmentAngle}
+            onChange={(value) => updateSetting('recruitmentAngle', value)}
+            placeholder="Describe how the program should be positioned to students, parents, employers, and internal stakeholders."
+          />
+        </Panel>
+
+        <Panel title="Program Source and Policy Context" icon={Upload}>
+          <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">
+            <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
+            <p>Use employer input, advisory notes, pathway constraints, or institutional policy language to shape the program package.</p>
+          </div>
+          <SelectField label="Policy output" value={settings.policyOutput} onChange={(value) => updateSetting('policyOutput', value)} options={toSelectOptions(policyOptions)} />
+          <TextAreaField
+            label="Source notes"
+            value={sourceNotes}
+            onChange={setSourceNotes}
+            placeholder="Paste advisory board notes, local employer needs, program outcomes, TBR/institution constraints, recruitment requirements, or CQI expectations."
+          />
+        </Panel>
+      </section>
+    </BuilderFrame>
+  );
+}
+
 function ProductEdgeStrip() {
   return (
     <section className="mb-6 border-b border-slate-200 pb-5" aria-label="Classroom Copilot product strengths">
@@ -791,13 +967,23 @@ function ChipList({ items }: { items: string[] }) {
 function GeneratedOutput({
   isLoading,
   content,
+  activeMode,
   emptyTitle,
   onImprove,
+  onSave,
+  savedPackages,
+  onLoadPackage,
+  onDeletePackage,
 }: {
   isLoading: boolean;
   content: string;
+  activeMode: BuilderMode;
   emptyTitle: string;
   onImprove: (prompt: string) => void;
+  onSave: (content: string) => void;
+  savedPackages: SavedPackage[];
+  onLoadPackage: (savedPackage: SavedPackage) => void;
+  onDeletePackage: (id: string) => void;
 }) {
   const [exportStatus, setExportStatus] = useState('');
   const hasContent = Boolean(content.trim());
@@ -875,6 +1061,16 @@ function GeneratedOutput({
             disabled={!hasContent || isLoading}
             onClick={improveReadiness}
           />
+          <ExportButton
+            icon={Archive}
+            label="Save"
+            disabled={!hasContent || isLoading}
+            onClick={() => {
+              onSave(content);
+              setExportStatus('Package saved to history.');
+              window.setTimeout(() => setExportStatus(''), 3000);
+            }}
+          />
         </div>
       </div>
       {exportStatus && (
@@ -891,6 +1087,66 @@ function GeneratedOutput({
         </div>
       ) : (
         <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">{emptyTitle}</div>
+      )}
+
+      <SavedPackagesPanel
+        activeMode={activeMode}
+        savedPackages={savedPackages}
+        onLoadPackage={onLoadPackage}
+        onDeletePackage={onDeletePackage}
+      />
+    </section>
+  );
+}
+
+function SavedPackagesPanel({
+  activeMode,
+  savedPackages,
+  onLoadPackage,
+  onDeletePackage,
+}: {
+  activeMode: BuilderMode;
+  savedPackages: SavedPackage[];
+  onLoadPackage: (savedPackage: SavedPackage) => void;
+  onDeletePackage: (id: string) => void;
+}) {
+  const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).slice(0, 6);
+
+  return (
+    <section className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Archive className="h-5 w-5 text-blue-700" />
+          <div>
+            <h4 className="font-bold text-slate-950">Saved Package History</h4>
+            <p className="text-xs text-slate-600">Saved in this browser for quick reuse and revision.</p>
+          </div>
+        </div>
+        <span className="rounded-md bg-white px-2 py-1 text-xs font-bold text-slate-600">{visiblePackages.length}</span>
+      </div>
+      {visiblePackages.length > 0 ? (
+        <div className="grid gap-2 lg:grid-cols-2">
+          {visiblePackages.map((savedPackage) => (
+            <div key={savedPackage.id} className="flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-white p-3">
+              <button type="button" onClick={() => onLoadPackage(savedPackage)} className="min-w-0 flex-1 text-left">
+                <strong className="block truncate text-sm text-slate-950">{savedPackage.title}</strong>
+                <span className="text-xs text-slate-500">{new Date(savedPackage.createdAt).toLocaleString()}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onDeletePackage(savedPackage.id)}
+                className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+                aria-label={`Delete ${savedPackage.title}`}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-md border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
+          No saved packages for this mode yet.
+        </div>
       )}
     </section>
   );
@@ -990,6 +1246,46 @@ function normalizeStandards(value: string): ClassroomConfig['standards']['type']
   if (value === 'Common Core ELA') return 'CCSS';
   if (value === 'State standards' || value === 'Custom') return 'Custom';
   return null;
+}
+
+const savedPackagesKey = 'classroomCopilot.savedPackages.v1';
+
+function loadSavedPackages(): SavedPackage[] {
+  try {
+    const raw = localStorage.getItem(savedPackagesKey);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as SavedPackage[];
+    return Array.isArray(parsed) ? parsed.filter(isSavedPackage) : [];
+  } catch (error) {
+    console.error('Failed to load saved packages:', error);
+    return [];
+  }
+}
+
+function saveSavedPackages(savedPackages: SavedPackage[]): void {
+  try {
+    localStorage.setItem(savedPackagesKey, JSON.stringify(savedPackages));
+  } catch (error) {
+    console.error('Failed to save packages:', error);
+  }
+}
+
+function isSavedPackage(value: SavedPackage): value is SavedPackage {
+  return Boolean(value?.id && value?.title && value?.content && value?.createdAt && value?.mode);
+}
+
+function inferPackageTitle(content: string, mode: BuilderMode): string {
+  const heading = content
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => /^#{1,3}\s+/.test(line));
+
+  if (heading) {
+    return heading.replace(/^#{1,3}\s+/, '').slice(0, 80);
+  }
+
+  const fallback = mode === 'curriculum-pack' ? 'Curriculum Pack' : mode === 'college-course' ? 'College Course Package' : 'College Program Package';
+  return `${fallback} - ${new Date().toLocaleDateString()}`;
 }
 
 export default App;
