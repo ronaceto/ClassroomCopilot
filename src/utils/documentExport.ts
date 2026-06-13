@@ -55,6 +55,7 @@ export const exportToPptx = async (content: string, filename: string): Promise<v
   sections.slice(0, 14).forEach((section) => {
     addContentSlide(pptx, section.title, section.lines);
   });
+  addFacilitationSlide(pptx);
 
   await pptx.writeFile({ fileName: `${filename}.pptx` });
 };
@@ -308,6 +309,32 @@ const addContentSlide = (
       breakLine: false,
       fit: 'shrink',
       paraSpaceAfterPt: 10,
+      margin: 0.05,
+    },
+  );
+};
+
+const addFacilitationSlide = (pptx: import('pptxgenjs').default): void => {
+  const slide = pptx.addSlide();
+  slide.background = { color: 'EFF6FF' };
+  slide.addText('Teacher Facilitation Notes', { x: 0.6, y: 0.45, w: 12, h: 0.55, fontFace: 'Aptos Display', fontSize: 24, bold: true, color: '1E3A8A', fit: 'shrink', margin: 0 });
+  slide.addShape(pptx.ShapeType.line, { x: 0.6, y: 1.15, w: 12.1, h: 0, line: { color: '1D4ED8', width: 2 } });
+  slide.addText(
+    [
+      { text: 'Review AI-use guardrails before students begin.', options: { bullet: { type: 'ul' } } },
+      { text: 'Check alignment between objectives, activities, and evidence of learning.', options: { bullet: { type: 'ul' } } },
+      { text: 'Adapt examples, timing, and accessibility supports for your learners.', options: { bullet: { type: 'ul' } } },
+      { text: 'Use the exported package as a draft for teacher, faculty, or department review.', options: { bullet: { type: 'ul' } } },
+    ],
+    {
+      x: 0.85,
+      y: 1.65,
+      w: 11.5,
+      h: 4.4,
+      fontFace: 'Aptos',
+      fontSize: 18,
+      color: '0F172A',
+      paraSpaceAfterPt: 12,
       margin: 0.05,
     },
   );
