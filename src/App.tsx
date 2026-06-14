@@ -43,6 +43,13 @@ import courseWorkflowJson from '../product-planning/data/build-college-course-co
 type BuilderMode = 'curriculum-pack' | 'college-course' | 'college-program';
 type FontScale = 'standard' | 'large' | 'extra-large';
 
+interface SamplePackage {
+  title: string;
+  mode: BuilderMode;
+  description: string;
+  content: string;
+}
+
 interface SavedPackage {
   id: string;
   title: string;
@@ -1173,7 +1180,7 @@ const curriculumQuickStarts = [
   },
 ];
 
-const samplePackages: Array<{ title: string; mode: BuilderMode; description: string; content: string }> = [
+const samplePackages: SamplePackage[] = [
   {
     title: 'Platform-Ready AI Lesson System',
     mode: 'curriculum-pack',
@@ -1371,6 +1378,7 @@ function App() {
   const [betaFeedback, setBetaFeedback] = useState<BetaFeedback[]>(() => loadBetaFeedback());
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [loadedSample, setLoadedSample] = useState<SamplePackage | null>(null);
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
@@ -1417,8 +1425,16 @@ function App() {
     setHelpCenterOpen(true);
   };
 
+  const openReviewWorkspace = () => {
+    setReviewOpen(true);
+    window.setTimeout(() => {
+      document.getElementById('review-export-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
+
   const handleModeChange = (mode: BuilderMode) => {
     setActiveMode(mode);
+    setLoadedSample(null);
     trackBetaEvent('mode_changed', mode, mode);
   };
 
@@ -1437,6 +1453,7 @@ function App() {
 
   const loadPackage = (savedPackage: SavedPackage) => {
     setActiveMode(savedPackage.mode);
+    setLoadedSample(null);
     setLoadedPackageContent(savedPackage.content);
     setReviewOpen(true);
     clearChat();
@@ -1448,8 +1465,9 @@ function App() {
     trackBetaEvent('saved_package_deleted', activeMode, id);
   };
 
-  const loadSample = (sample: (typeof samplePackages)[number]) => {
+  const loadSample = (sample: SamplePackage) => {
     setActiveMode(sample.mode);
+    setLoadedSample(sample);
     setLoadedPackageContent(sample.content);
     setReviewOpen(true);
     clearChat();
@@ -1593,7 +1611,7 @@ function App() {
         />
 
         {activeMode === 'curriculum-pack' ? (
-          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
+          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} loadedSample={loadedSample} />
         ) : activeMode === 'college-course' ? (
           <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} />
         ) : (
@@ -1639,6 +1657,13 @@ function App() {
               <p><span className="font-semibold">Endpoint:</span> {debugInfo.endpoint}</p>
               <p><span className="font-semibold">Message:</span> {debugInfo.message}</p>
               {debugInfo.functionVersion && <p><span className="font-semibold">Function:</span> {debugInfo.functionVersion}</p>}
+              <button
+                type="button"
+                onClick={openReviewWorkspace}
+                className="mt-2 inline-flex min-h-9 items-center justify-center rounded-md bg-blue-700 px-3 text-xs font-bold text-white transition hover:bg-blue-800"
+              >
+                Open package details
+              </button>
             </div>
           )}
         </div>
@@ -1656,9 +1681,11 @@ function App() {
 function CurriculumPackBuilder({
   isLoading,
   onBuild,
+  loadedSample,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
+  loadedSample: SamplePackage | null;
 }) {
   const draft = useMemo(() => loadCurriculumDraft(), []);
   const [activeStep, setActiveStep] = useState(0);
@@ -1712,6 +1739,17 @@ function CurriculumPackBuilder({
   useEffect(() => {
     saveCurriculumDraft({ unitId, moduleId: selectedModule.id, settings, sourceNotes });
   }, [unitId, selectedModule.id, settings, sourceNotes]);
+
+  useEffect(() => {
+    if (!loadedSample || loadedSample.mode !== 'curriculum-pack') return;
+
+    const inferredSettings = inferCurriculumSampleSettings(loadedSample);
+    setSettings((current) => ({ ...current, ...inferredSettings }));
+    setSourceNotes(`Loaded sample template: ${loadedSample.title}. ${loadedSample.description}`);
+    setActiveStep(0);
+    setOpenSections((current) => ({ ...current, Start: 'template' }));
+    setDraftStatus(`Sample loaded: ${loadedSample.title}`);
+  }, [loadedSample?.title]);
 
   const applyQuickStart = (quickStart: (typeof curriculumQuickStarts)[number]) => {
     setSettings(quickStart.settings);
@@ -3419,6 +3457,69 @@ function TemplatePreviewModal({
   );
 }
 
+function inferCurriculumSampleSettings(sample: SamplePackage): Partial<CurriculumPackSettings> {
+  const text = `${sample.title} ${sample.description} ${sample.content}`.toLowerCase();
+  const updates: Partial<CurriculumPackSettings> = {
+    standardsTarget: text.includes('ela') ? 'Common Core ELA' : text.includes('social') ? 'State standards' : 'ISTE',
+  };
+
+  if (text.includes('5-day') || text.includes('mini')) {
+    updates.packPreset = 'mini_unit';
+    updates.timeAvailable = '5-day unit';
+  } else if (text.includes('no-student') || text.includes('no student') || text.includes('no-ai')) {
+    updates.packPreset = 'no_ai_classroom_version';
+    updates.studentAiAccessLevel = 'no_student_ai';
+    updates.promptLibraryPreset = 'no_ai_discussion';
+    updates.policyCheck = 'strict_no_student_ai';
+    updates.policyOutput = 'Family / Guardian AI Notice';
+  } else if (text.includes('lms') || text.includes('canvas') || text.includes('google classroom')) {
+    updates.packPreset = 'lms_assignment_pack';
+  } else if (text.includes('prompt')) {
+    updates.packPreset = 'prompt_experiment_activity';
+    updates.interactiveLab = 'prompt_experimenter';
+    updates.promptLibraryPreset = 'improve_prompt';
+  } else if (text.includes('evaluation') || text.includes('hallucination') || text.includes('claim')) {
+    updates.packPreset = 'ai_output_evaluation_lab';
+    updates.interactiveLab = 'ai_output_evaluation_lab';
+    updates.promptLibraryPreset = 'evaluate_ai_output';
+  } else if (text.includes('bias') || text.includes('fairness')) {
+    updates.packPreset = 'bias_fairness_scenario';
+    updates.interactiveLab = 'bias_fairness_scenario';
+    updates.rubricFocus = 'responsible_use';
+  } else {
+    updates.packPreset = 'full_lesson_pack';
+  }
+
+  if (text.includes('ela')) updates.subjectContext = 'ELA';
+  else if (text.includes('social')) updates.subjectContext = 'Social Studies';
+  else if (text.includes('art') || text.includes('media')) updates.subjectContext = 'Art / Media';
+  else if (text.includes('career')) updates.subjectContext = 'Career Readiness';
+  else updates.subjectContext = 'AI Literacy';
+
+  if (!updates.studentAiAccessLevel) {
+    updates.studentAiAccessLevel = text.includes('supervised') || text.includes('lab') || text.includes('sandbox')
+      ? 'supervised_student_ai'
+      : 'teacher_demo_ai';
+  }
+
+  if (text.includes('8')) {
+    updates.gradeLevel = '8';
+    updates.readingLevel = 'Grade 8';
+  } else if (text.includes('9')) {
+    updates.gradeLevel = '9';
+    updates.readingLevel = 'Grade 9';
+  } else {
+    updates.gradeLevel = '10';
+    updates.readingLevel = 'Grade 10';
+  }
+
+  if (text.includes('ell') || text.includes('multilingual') || text.includes('spanish')) {
+    updates.readingSupport = 'ell_friendly';
+  }
+
+  return updates;
+}
+
 function BuilderFrame({
   eyebrow,
   title,
@@ -3454,7 +3555,11 @@ function BuilderFrame({
 }) {
   const canGoBack = Boolean(steps && onStepChange && activeStep > 0);
   const canGoNext = Boolean(steps && onStepChange && activeStep < steps.length - 1);
-  const [previewOpen, setPreviewOpen] = useState(() => localStorage.getItem('classroomCopilot.previewOpen.v1') !== 'false');
+  const [previewOpen, setPreviewOpen] = useState(() => {
+    const storedPreference = localStorage.getItem('classroomCopilot.previewOpen.v1');
+    if (storedPreference !== null) return storedPreference === 'true';
+    return !window.matchMedia('(max-width: 1023px)').matches;
+  });
 
   useEffect(() => {
     localStorage.setItem('classroomCopilot.previewOpen.v1', String(previewOpen));
@@ -4401,6 +4506,7 @@ function GeneratedOutput({
   onOpenChange: (open: boolean) => void;
 }) {
   const [exportStatus, setExportStatus] = useState('');
+  const [activeRefinement, setActiveRefinement] = useState('');
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('Draft');
   const [copyTemplate, setCopyTemplate] = useState<CopyTemplate>('teacher_lesson_deck');
   const hasContent = Boolean(content.trim());
@@ -4408,6 +4514,10 @@ function GeneratedOutput({
   const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
   const checks = getReadinessResults(content);
   const missingChecks = checks.filter((check) => !check.met);
+
+  useEffect(() => {
+    if (!isLoading) setActiveRefinement('');
+  }, [isLoading, content]);
 
   const runExport = async (label: string, action: () => void | Promise<void>) => {
     try {
@@ -4425,6 +4535,8 @@ function GeneratedOutput({
   const improveReadiness = () => {
     onTrack('fix_missing_pieces_clicked', activeMode, missingChecks.map((check) => check.label).join(', '));
     const missingLabels = missingChecks.map((check) => check.label).join(', ') || 'polish, specificity, and implementation quality';
+    setActiveRefinement('Fix Missing Pieces');
+    setExportStatus(`Refining package: Fix Missing Pieces. Updated output will replace this package when ready.`);
     onImprove([
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
@@ -4442,6 +4554,8 @@ function GeneratedOutput({
 
   const runRefinement = (label: string, instruction: string) => {
     onTrack('refinement_preset_clicked', activeMode, label);
+    setActiveRefinement(label);
+    setExportStatus(`Refining package: ${label}. Updated output will replace this package when ready.`);
     onImprove([
       `Refine the generated package using this focus: ${label}.`,
       instruction,
@@ -4455,6 +4569,8 @@ function GeneratedOutput({
 
   const checkBiasAndInclusivity = () => {
     onTrack('bias_check_clicked', activeMode, 'review workspace');
+    setActiveRefinement('Bias Check');
+    setExportStatus('Running bias and inclusivity review. Updated output will replace this package when ready.');
     onImprove([
       'Review the generated package below for bias, inclusivity, representation, accessibility, and culturally narrow assumptions.',
       'Return one improved package with the same core learning goals, plus a concise ## Bias and Inclusivity Notes section.',
@@ -4467,7 +4583,7 @@ function GeneratedOutput({
   };
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section id="review-export-workspace" className="scroll-mt-28 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <button
         type="button"
         onClick={() => onOpenChange(!open)}
@@ -4490,14 +4606,23 @@ function GeneratedOutput({
 
       {!open && (
         <div className="mt-3 flex flex-col gap-2 rounded-md border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
-          <span>Review, export, and saved package history are collapsed to keep the builder short.</span>
-          <button
-            type="button"
-            onClick={() => onOpenChange(true)}
-            className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
-          >
-            Open Review
-          </button>
+          <span>Review, export, and saved package history are collapsed to keep the builder short. {visiblePackages} saved package{visiblePackages === 1 ? '' : 's'} available for this mode.</span>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onOpenChange(true)}
+              className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+            >
+              Open Review
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenChange(true)}
+              className="inline-flex min-h-9 items-center justify-center rounded-md bg-blue-700 px-3 text-xs font-bold text-white transition hover:bg-blue-800"
+            >
+              View History
+            </button>
+          </div>
         </div>
       )}
 
@@ -4543,7 +4668,7 @@ function GeneratedOutput({
             icon={Printer}
             label="Print / PDF"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Print view opened.', () => printFormattedDocument(content, filename, copyTemplate))}
+            onClick={() => runExport('Print/PDF opened in a browser tab. If the browser blocks it, an HTML file downloads instead.', () => printFormattedDocument(content, filename, copyTemplate))}
           />
           <ExportButton
             icon={Presentation}
@@ -4616,6 +4741,11 @@ function GeneratedOutput({
           {exportStatus}
         </div>
       )}
+      {isLoading && activeRefinement && (
+        <div className="mb-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">
+          Working on refinement: {activeRefinement}
+        </div>
+      )}
       {isLoading ? (
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
       ) : hasContent ? (
@@ -4667,7 +4797,8 @@ function SavedPackagesPanel({
       {visiblePackages.length > 0 ? (
         <div className="grid gap-2 lg:grid-cols-2">
           {visiblePackages.map((savedPackage) => (
-            <div key={savedPackage.id} className="flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-white p-3">
+            <div key={savedPackage.id} className="rounded-md border border-slate-200 bg-white p-3">
+              <div className="flex items-center justify-between gap-3">
               <button type="button" onClick={() => onLoadPackage(savedPackage)} className="min-w-0 flex-1 text-left">
                 <strong className="block truncate text-sm text-slate-950">{savedPackage.title}</strong>
                 <span className="text-xs text-slate-500">{savedPackage.status} - {new Date(savedPackage.createdAt).toLocaleString()}</span>
@@ -4680,6 +4811,37 @@ function SavedPackagesPanel({
               >
                 <Trash2 className="h-4 w-4" />
               </button>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => onLoadPackage(savedPackage)}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  Load
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportToHtml(savedPackage.content, packageFilename(savedPackage), exportTemplateForMode(savedPackage.mode))}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  HTML
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportToMarkdown(savedPackage.content, packageFilename(savedPackage))}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  Markdown
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(savedPackage.content)}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -4690,6 +4852,21 @@ function SavedPackagesPanel({
       )}
     </section>
   );
+}
+
+function packageFilename(savedPackage: SavedPackage): string {
+  const slug = savedPackage.title
+    .trim()
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 64) || 'Classroom-Copilot-Package';
+  return `${slug}-${new Date(savedPackage.createdAt).toISOString().slice(0, 10)}`;
+}
+
+function exportTemplateForMode(mode: BuilderMode): CopyTemplate {
+  if (mode === 'college-course') return 'college_syllabus_packet';
+  if (mode === 'college-program') return 'program_coordinator_packet';
+  return 'teacher_lesson_deck';
 }
 
 function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {

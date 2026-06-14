@@ -97,17 +97,22 @@ export const exportToHtml = (content: string, filename: string, template: CopyTe
 };
 
 export const printFormattedDocument = (content: string, title: string, template: CopyTemplate = 'teacher_lesson_deck'): void => {
-  const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+  const html = buildHtmlDocument(content, title, template).replace(
+    '</body>',
+    '<script>window.addEventListener("load", function () { window.setTimeout(function () { window.print(); }, 300); });</script></body>',
+  );
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const printWindow = window.open(url, '_blank', 'noopener,noreferrer');
 
   if (!printWindow) {
-    downloadTextFile(buildHtmlDocument(content, title, template), `${title}.html`, 'text/html;charset=utf-8');
+    downloadBlob(blob, `${title}.html`);
     return;
   }
 
-  printWindow.document.write(buildHtmlDocument(content, title, template));
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
+  window.setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 60000);
 };
 
 export const exportToPptx = async (content: string, filename: string, template: CopyTemplate = 'teacher_lesson_deck'): Promise<void> => {
@@ -133,11 +138,21 @@ export const exportToPptx = async (content: string, filename: string, template: 
   });
   addFacilitationSlide(pptx, template);
 
-  await pptx.writeFile({ fileName: `${filename}.pptx` });
+  try {
+    const blob = (await pptx.write({ outputType: 'blob' })) as Blob;
+    downloadBlob(blob, `${filename}.pptx`);
+  } catch (error) {
+    console.error('PPT blob export failed, falling back to direct writeFile:', error);
+    await pptx.writeFile({ fileName: `${filename}.pptx` });
+  }
 };
 
 const downloadTextFile = (content: string, filename: string, type: string): void => {
   const blob = new Blob([content], { type });
+  downloadBlob(blob, filename);
+};
+
+const downloadBlob = (blob: Blob, filename: string): void => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
