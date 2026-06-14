@@ -1205,10 +1205,12 @@ function App() {
   const [betaEvents, setBetaEvents] = useState<BetaEvent[]>(() => loadBetaEvents());
   const [betaFeedback, setBetaFeedback] = useState<BetaFeedback[]>(() => loadBetaFeedback());
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
     trackBetaEvent('build_started', activeMode, config.subjects);
+    setReviewOpen(true);
     setLoadedPackageContent('');
     clearChat();
     void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', config);
@@ -1271,6 +1273,7 @@ function App() {
   const loadPackage = (savedPackage: SavedPackage) => {
     setActiveMode(savedPackage.mode);
     setLoadedPackageContent(savedPackage.content);
+    setReviewOpen(true);
     clearChat();
     trackBetaEvent('saved_package_loaded', savedPackage.mode, savedPackage.title);
   };
@@ -1283,6 +1286,7 @@ function App() {
   const loadSample = (sample: (typeof samplePackages)[number]) => {
     setActiveMode(sample.mode);
     setLoadedPackageContent(sample.content);
+    setReviewOpen(true);
     clearChat();
     trackBetaEvent('sample_loaded', sample.mode, sample.title);
   };
@@ -1442,6 +1446,8 @@ function App() {
           onLoadPackage={loadPackage}
           onDeletePackage={deletePackage}
           onTrack={trackBetaEvent}
+          open={reviewOpen}
+          onOpenChange={setReviewOpen}
         />
       </main>
 
@@ -2340,16 +2346,18 @@ function WorkspaceLaunchBar({
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
           {([
-            ['samples', 'Samples'],
-            ['advanced', 'Advanced'],
-            ['display', 'Display'],
-            ['beta', 'Beta'],
-            ['positioning', 'Positioning'],
-          ] as Array<[NonNullable<typeof openPanel>, string]>).map(([panel, label]) => (
+            ['samples', 'Samples', 'Open sample packages and templates.'],
+            ['advanced', 'Advanced', 'Open language access, IEP/504, sandbox, LMS, PD, and community settings.'],
+            ['display', 'Display', 'Adjust text size and contrast.'],
+            ['beta', 'Beta', 'Open beta metrics and feedback status.'],
+            ['positioning', 'Positioning', 'Open product positioning and proof points.'],
+          ] as Array<[NonNullable<typeof openPanel>, string, string]>).map(([panel, label, help]) => (
             <button
               key={panel}
               type="button"
               onClick={() => togglePanel(panel)}
+              title={help}
+              aria-label={`${label}: ${help}`}
               className={`inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border px-3 text-sm font-bold transition ${
                 openPanel === panel ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:text-blue-800'
               }`}
@@ -2361,6 +2369,7 @@ function WorkspaceLaunchBar({
           <button
             type="button"
             onClick={onOpenHelp}
+            title="Open tutorials, PD modules, implementation checklists, and support materials."
             className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
           >
             Help
@@ -2368,6 +2377,7 @@ function WorkspaceLaunchBar({
           <button
             type="button"
             onClick={onOpenFeedback}
+            title="Send beta feedback, report a bug, or request a template."
             className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
           >
             Feedback
@@ -2377,6 +2387,9 @@ function WorkspaceLaunchBar({
 
       {openPanel && (
         <div className="mt-3 border-t border-slate-100 pt-3">
+          <p className="mb-3 rounded-md bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
+            This support panel is optional. Close it by clicking the active button again and continue building below.
+          </p>
           {openPanel === 'samples' && <StartFromGallery activeMode={activeMode} onLoadSample={onLoadSample} compact />}
           {openPanel === 'advanced' && <FinishLineToolkit settings={finishLineSettings} onChange={onFinishLineChange} initiallyOpen compact />}
           {openPanel === 'display' && (
@@ -3359,9 +3372,9 @@ function BuilderFrame({
                 <button
                   type="button"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="fixed bottom-20 right-4 z-30 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-lg transition hover:border-blue-300 hover:text-blue-800 lg:bottom-6"
+                  className="fixed bottom-20 right-4 z-30 rounded-lg border border-blue-200 bg-white px-4 py-3 text-sm font-bold text-blue-800 shadow-xl transition hover:border-blue-400 hover:bg-blue-50 lg:bottom-6"
                 >
-                  Back to top
+                  Jump to top
                 </button>
               </div>
               {previewOpen && <LivePreview title={previewTitle} items={previewItems} steps={steps} activeStep={activeStep} />}
@@ -3514,20 +3527,26 @@ function InStepSubsectionLayout({
 
   return (
     <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav className="h-fit rounded-lg border border-slate-200 bg-white p-3 shadow-sm lg:sticky lg:top-32" aria-label={`${stepTitle} sections`}>
-        <p className="mb-2 text-xs font-bold uppercase text-slate-500">Step sections</p>
+      <nav className="h-fit rounded-lg border border-blue-100 bg-blue-50 p-3 shadow-sm lg:sticky lg:top-32" aria-label={`${stepTitle} sections`}>
+        <div className="mb-3">
+          <p className="text-xs font-bold uppercase text-blue-800">Jump to section</p>
+          <p className="mt-1 text-[11px] leading-4 text-blue-950">Use these numbered links to move inside this step.</p>
+        </div>
         <div className="space-y-1">
-          {sections.map((section) => (
+          {sections.map((section, index) => (
             <button
               key={section.id}
               type="button"
               onClick={() => jumpToSection(section.id)}
-              className={`flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left text-xs font-semibold transition ${
-                openSection === section.id ? 'bg-blue-50 text-blue-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+              className={`flex w-full items-center justify-between gap-2 rounded-md px-3 py-2.5 text-left text-sm font-semibold transition ${
+                openSection === section.id ? 'bg-blue-700 text-white' : 'bg-white text-slate-700 hover:bg-blue-100 hover:text-blue-950'
               }`}
             >
-              <span>{section.title}</span>
-              {section.complete && <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-green-700" />}
+              <span className="flex min-w-0 items-center gap-2">
+                <span className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[11px] ${openSection === section.id ? 'bg-white text-blue-800' : 'bg-slate-100 text-slate-600'}`}>{index + 1}</span>
+                <span className="truncate">{section.title}</span>
+              </span>
+              {section.complete && <CheckCircle2 className={`h-4 w-4 flex-shrink-0 ${openSection === section.id ? 'text-white' : 'text-green-700'}`} />}
             </button>
           ))}
         </div>
@@ -4109,6 +4128,8 @@ function GeneratedOutput({
   onLoadPackage,
   onDeletePackage,
   onTrack,
+  open,
+  onOpenChange,
 }: {
   isLoading: boolean;
   content: string;
@@ -4120,11 +4141,14 @@ function GeneratedOutput({
   onLoadPackage: (savedPackage: SavedPackage) => void;
   onDeletePackage: (id: string) => void;
   onTrack: (event: string, mode?: BuilderMode, detail?: string) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const [exportStatus, setExportStatus] = useState('');
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('Draft');
   const [copyTemplate, setCopyTemplate] = useState<CopyTemplate>('teacher_lesson_deck');
   const hasContent = Boolean(content.trim());
+  const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).length;
   const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
   const checks = getReadinessResults(content);
   const missingChecks = checks.filter((check) => !check.met);
@@ -4188,6 +4212,41 @@ function GeneratedOutput({
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <button
+        type="button"
+        onClick={() => onOpenChange(!open)}
+        className="flex w-full items-center justify-between gap-3 text-left"
+        aria-expanded={open}
+      >
+        <span>
+          <span className="block text-lg font-bold text-slate-950">Review / Export Workspace</span>
+          <span className="mt-1 block text-sm leading-6 text-slate-600">
+            {isLoading ? 'Package is building. This workspace opens automatically when output is ready.' : hasContent ? 'Output is ready for readiness checks, refinement, export, and save history.' : `${emptyTitle}. Open this only when you need saved history or export controls.`}
+          </span>
+        </span>
+        <span className="flex flex-shrink-0 items-center gap-2">
+          <span className="hidden rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 sm:inline">
+            {hasContent ? 'Ready' : `${visiblePackages} saved`}
+          </span>
+          <ChevronDown className={`h-5 w-5 text-slate-500 transition ${open ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+
+      {!open && (
+        <div className="mt-3 flex flex-col gap-2 rounded-md border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+          <span>Review, export, and saved package history are collapsed to keep the builder short.</span>
+          <button
+            type="button"
+            onClick={() => onOpenChange(true)}
+            className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+          >
+            Open Review
+          </button>
+        </div>
+      )}
+
+      {open && (
+        <div className="mt-5">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h3 className="text-lg font-bold">Review Workspace</h3>
@@ -4310,6 +4369,8 @@ function GeneratedOutput({
         onLoadPackage={onLoadPackage}
         onDeletePackage={onDeletePackage}
       />
+        </div>
+      )}
     </section>
   );
 }
