@@ -4,7 +4,8 @@ export type CopyTemplate =
   | 'lms_assignment_pack'
   | 'college_syllabus_packet'
   | 'program_proposal_deck'
-  | 'advisory_board_deck';
+  | 'advisory_board_deck'
+  | 'program_coordinator_packet';
 
 const templateLabels: Record<CopyTemplate, string> = {
   teacher_lesson_deck: 'Teacher Lesson Deck',
@@ -13,6 +14,7 @@ const templateLabels: Record<CopyTemplate, string> = {
   college_syllabus_packet: 'College Syllabus Packet',
   program_proposal_deck: 'Program Proposal Deck',
   advisory_board_deck: 'Advisory Board Deck',
+  program_coordinator_packet: 'Program Coordinator Packet',
 };
 
 export const copyToClipboard = async (content: string): Promise<void> => {
@@ -384,6 +386,8 @@ const addFacilitationSlide = (pptx: import('pptxgenjs').default, template: CopyT
   const title =
     template === 'advisory_board_deck'
       ? 'Advisory Facilitation Notes'
+      : template === 'program_coordinator_packet'
+        ? 'Program Coordinator Launch Notes'
       : template === 'program_proposal_deck'
         ? 'Proposal Review Notes'
         : template === 'lms_assignment_pack'
@@ -392,6 +396,8 @@ const addFacilitationSlide = (pptx: import('pptxgenjs').default, template: CopyT
   const notes =
     template === 'advisory_board_deck'
       ? ['Confirm employer skill needs.', 'Capture advisory feedback and action items.', 'Identify internship, project, and tool recommendations.', 'Document curriculum updates for CQI follow-up.']
+      : template === 'program_coordinator_packet'
+        ? ['Use as a draft launch packet for chair, dean, advisory board, and workforce partner review.', 'Validate course sequence, outcome matrix, advisory structure, and CQI plan.', 'Confirm staffing, equipment, budget, and 3-year roadmap assumptions.', 'Keep evidence artifacts organized for program review and accreditation readiness.']
       : template === 'program_proposal_deck'
         ? ['Review rationale, outcomes, staffing, resources, and lab/tool needs.', 'Check course sequence and credential milestones.', 'Validate CQI evidence and advisory input.', 'Use as a draft for department and institutional review.']
         : template === 'lms_assignment_pack'

@@ -281,6 +281,50 @@ const marketingProofPoints = [
   },
 ];
 
+const programPlatformOutputOptions: OptionItem[] = [
+  {
+    value: 'program_coordinator_packet',
+    label: 'Program Coordinator Packet',
+    description: 'Executive-ready launch and operations packet for chairs, deans, coordinators, and advisory partners.',
+    includedOutputs: ['executive_summary', 'program_vision', 'workforce_justification', 'curriculum_map', 'assessment_plan', 'cqi_plan', 'advisory_board_structure', 'recruitment_plan', 'resource_requirements', 'three_year_roadmap'],
+  },
+  {
+    value: 'advisory_board_toolkit',
+    label: 'Advisory Board Toolkit',
+    description: 'Charter, agendas, employer surveys, readiness forms, curriculum gap worksheet, and recommendations report.',
+    includedOutputs: ['advisory_charter', 'annual_agenda', 'quarterly_agenda', 'skills_validation_survey', 'internship_feedback_form', 'program_review_worksheet', 'annual_recommendations_report'],
+  },
+  {
+    value: 'course_outcome_matrix',
+    label: 'Course-to-Outcome Matrix',
+    description: 'Accreditation-ready matrix connecting outcomes, courses, assessments, capstone evidence, and industry skills.',
+    includedOutputs: ['program_outcomes', 'course_mapping', 'assessment_mapping', 'capstone_mapping', 'industry_skill_mapping', 'cqi_evidence'],
+  },
+  {
+    value: 'program_pathway_map',
+    label: 'Visual Program Pathway Map',
+    description: 'Visual certificate-to-degree or course progression map for administrators, recruiters, students, and partners.',
+    includedOutputs: ['credential_pathway', 'course_sequence_visual', 'industry_certification_link', 'employment_pathway', 'presentation_ready_diagram'],
+  },
+];
+
+const programPathwayTemplates: Record<string, string[]> = {
+  'Stackable certificate to associate degree': ['Certificate 1', 'Certificate 2', 'Associate Degree', 'Industry Certification', 'Employment'],
+  'Direct AAS pathway': ['Intro AI', 'Python Foundations', 'Data Analytics', 'Machine Learning', 'Applied AI', 'Capstone'],
+  'Short-term workforce certificate': ['AI Foundations', 'Prompt Operations', 'Data Basics', 'Applied Automation Lab', 'Employer Project'],
+  'Transfer-informed pathway': ['AI Foundations', 'Programming', 'Data / ML', 'Ethics', 'Portfolio', 'Transfer / Employment'],
+  'Employer-sponsored cohort': ['Employer Needs', 'Foundational Skills', 'Applied Labs', 'Work-Based Project', 'Placement / Advancement'],
+};
+
+const advisorySectorOptions = [
+  'AI',
+  'Data Analytics',
+  'Cybersecurity',
+  'Manufacturing Automation',
+  'Healthcare AI',
+  'Logistics AI',
+];
+
 const readinessChecks = [
   {
     label: 'Standards / outcomes alignment',
@@ -1170,6 +1214,24 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     mode: 'college-program',
     description: 'Employer-facing agenda, questions, and curriculum feedback plan.',
     content: '## Program Snapshot\nAI Technology advisory board review package.\n\n## Advisory Board Agenda\nWelcome, labor market context, course sequence review, skill validation, project feedback, and next steps.\n\n## Employer / Internship Partnership Targets\nApplied data, automation, AI operations, and portfolio project partners.\n\n## Assessment and CQI Plan\nAdvisory feedback updates outcomes, labs, tools, and recruitment strategy.\n\n## Department Review Checklist\nDraft items ready for faculty, chair, and advisory review.',
+  },
+  {
+    title: 'Program Coordinator Packet',
+    mode: 'college-program',
+    description: 'Dean-ready launch and operations packet for a new AI Technology program.',
+    content: '## Executive Summary\nDraft AI Technology program launch packet for department chair, dean, advisory board, and workforce partner review.\n\n## Program Vision Statement\nBuild a practical AI workforce pathway that prepares students for applied AI, data, automation, and responsible technology roles.\n\n## Workforce Justification\nLocal employers need entry-level support for Python, data analysis, AI tool use, automation workflows, ethical AI use, and AI operations support.\n\n## Visual Program Pathway Map\nCertificate 1 -> Certificate 2 -> Associate Degree -> Industry Certification -> Employment\n\n## Curriculum Map\nProgram outcomes map to Intro AI, Python Foundations, Data Analytics, Machine Learning Foundations, Applied AI, and Capstone.\n\n## Course-to-Outcome Matrix\nOutcome 1: Explain AI concepts - Intro AI, Responsible AI, Capstone evidence.\nOutcome 2: Apply Python and data tools - Python Foundations, Data Analytics, Applied AI labs.\nOutcome 3: Evaluate ethical and privacy risks - Responsible AI, ML Foundations, Capstone reflection.\n\n## Assessment Plan\nRubrics, lab artifacts, portfolio projects, capstone presentation, advisory review feedback, and student reflection evidence.\n\n## CQI Plan\nSemester evidence review, annual advisory board validation, employer feedback, enrollment/retention/completion tracking, and documented improvement actions.\n\n## Advisory Board Structure\nRepresent AI, data analytics, cybersecurity, manufacturing automation, healthcare AI, and logistics AI.\n\n## Industry Partnership Plan\nTarget internships, guest speakers, employer challenge projects, advisory feedback, and work-based learning opportunities.\n\n## Recruitment Plan\nWebsite copy, student flyer, counselor handout, open house deck, and career pathway overview.\n\n## Faculty Resource Requirements\nAI/programming faculty, adjunct industry practitioners, lab support, PD plan, and tool governance support.\n\n## Equipment Requirements\nComputer lab access, Python/data tools, approved AI platforms, LMS setup, and privacy-safe sample datasets.\n\n## Budget Considerations\nSoftware, lab equipment, faculty release time, professional development, advisory events, and recruitment materials.\n\n## 3-Year Roadmap\nYear 1: approval, curriculum build, advisory launch, recruitment.\nYear 2: first cohort, CQI cycle, internships, employer projects.\nYear 3: program review, enrollment growth, pathway expansion, evidence repository.',
+  },
+  {
+    title: 'Course-to-Outcome Matrix',
+    mode: 'college-program',
+    description: 'Accreditation and CQI-ready mapping of outcomes, courses, assessments, and industry skills.',
+    content: '## Curriculum Alignment Matrix\n\n## Program Outcome 1\nExplain AI concepts, limitations, and responsible-use expectations.\nCourses Supporting Outcome: Intro AI, Responsible AI, Applied AI.\nAssessment Mapping: concept quiz, AI-output critique, ethics case reflection.\nIndustry Skill Mapping: AI literacy, communication, responsible AI use.\n\n## Program Outcome 2\nUse Python and data tools to complete applied AI tasks.\nCourses Supporting Outcome: Python Foundations, Data Analytics, Machine Learning Foundations.\nAssessment Mapping: coding labs, notebook checks, data analysis project.\nIndustry Skill Mapping: Python, SQL basics, data analysis, troubleshooting.\n\n## Program Outcome 3\nBuild and present an applied AI portfolio artifact.\nCourses Supporting Outcome: Applied AI, Capstone.\nAssessment Mapping: capstone proposal, project demo, portfolio presentation, employer feedback.\nIndustry Skill Mapping: prompt engineering, automation support, AI operations, project communication.\n\n## CQI Evidence\nCollect rubric trends, lab completion, capstone quality, employer feedback, student satisfaction, retention, completion, and placement indicators.',
+  },
+  {
+    title: 'Visual AI Program Pathway',
+    mode: 'college-program',
+    description: 'Slide-ready pathway map for administrators, recruiters, students, and advisory partners.',
+    content: '## Visual Program Pathway Map\n\nCertificate 1\n↓\nCertificate 2\n↓\nAssociate Degree\n↓\nIndustry Certification\n↓\nEmployment\n\n## Course Progression View\nIntro AI\n↓\nPython Foundations\n↓\nData Analytics\n↓\nMachine Learning Foundations\n↓\nApplied AI\n↓\nCapstone\n\n## Recruiting Use\nUse this pathway in student flyers, counselor handouts, open house presentations, and website copy.\n\n## Administrative Use\nUse this pathway to explain stackable credentials, course dependencies, resources, and program growth plan.\n\n## Advisory Board Use\nAsk employers to validate sequence, role alignment, internships, project expectations, and industry certification relevance.',
   },
 ];
 
@@ -2144,11 +2206,14 @@ function CollegeProgramBuilder({
     pathwayModel: 'Stackable certificate to associate degree',
     cqiCadence: 'Semester review with annual advisory board input',
     advisoryFocus: 'Employer skill validation and internship/project feedback',
+    advisorySectorFocus: 'AI, Data Analytics, Cybersecurity, Manufacturing Automation, Healthcare AI, Logistics AI',
     recruitmentAngle: 'Career-ready AI skills for local workforce needs',
-    packagePreset: 'Program Proposal Package',
+    packagePreset: 'program_coordinator_packet',
     policyOutput: 'Department Review Draft',
   });
   const [sourceNotes, setSourceNotes] = useState('');
+  const selectedProgramOutput = programPlatformOutputOptions.find((option) => option.value === settings.packagePreset) ?? programPlatformOutputOptions[0];
+  const pathwaySteps = programPathwayTemplates[settings.pathwayModel] ?? programPathwayTemplates['Stackable certificate to associate degree'];
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
@@ -2167,20 +2232,23 @@ function CollegeProgramBuilder({
       `Pathway model: ${settings.pathwayModel}`,
       `CQI cadence: ${settings.cqiCadence}`,
       `Advisory board focus: ${settings.advisoryFocus}`,
+      `Recommended advisory board sector focus: ${settings.advisorySectorFocus}`,
       `Recruitment angle: ${settings.recruitmentAngle}`,
-      `Requested package preset: ${settings.packagePreset}`,
+      `Requested Phase 3 program platform output: ${selectedProgramOutput.label}`,
+      `Included output components: ${(selectedProgramOutput.includedOutputs ?? []).map(labelFromValue).join(', ')}`,
       `Requested policy artifact: ${settings.policyOutput}`,
+      `Visual pathway map sequence: ${pathwaySteps.join(' -> ')}`,
       sourceNotes.trim() ? `Additional program source/context notes: ${sourceNotes.trim()}` : 'Additional program source/context notes: none provided.',
       '',
-      'Return a program-coordinator package with these headings: ## Program Snapshot, ## Market / Workforce Rationale, ## Credential Pathways, ## Program Learning Outcomes, ## Course Sequence, ## Course Descriptions, ## Outcomes-to-Courses Curriculum Map, ## Applied Lab and Project Spine, ## Assessment and CQI Plan, ## Advisory Board Agenda, ## Employer / Internship Partnership Targets, ## Recruitment Copy, ## Student Success Supports, ## Responsible AI Program Policy, ## Implementation Roadmap, ## Department Review Checklist.',
-      'For credential pathways, include certificate and associate-degree options with stackable milestones.',
-      'For the curriculum map, map program outcomes to courses, labs/projects, assessment evidence, and CQI review points.',
+      'Return a Phase 3 AI Program Development Platform package with these headings when relevant: ## Executive Summary, ## Program Vision Statement, ## Program Mission, ## Workforce Justification, ## Labor Market Alignment, ## Visual Program Pathway Map, ## Curriculum Map, ## Course Sequence, ## Program Learning Outcomes, ## Course-to-Outcome Matrix, ## Assessment Plan, ## CQI Plan, ## Advisory Board Toolkit, ## Industry Partnership Plan, ## Recruitment Plan, ## Enrollment Growth Plan, ## Faculty Resource Requirements, ## Equipment Requirements, ## Budget Considerations, ## 3-Year Roadmap, ## Department / Dean Review Checklist.',
+      'For Program Coordinator Packet, include all launch-and-operate deliverables: executive summary, vision, mission, workforce justification, labor market alignment, curriculum map, course sequence, learning outcomes, assessment plan, CQI plan, advisory structure, industry partnership plan, recruitment plan, enrollment growth plan, faculty resources, equipment, budget, and 3-year roadmap.',
+      'For Advisory Board Toolkit, include advisory board charter, annual meeting agenda, quarterly meeting agenda, employer skills validation survey, internship feedback form, graduate readiness survey, industry trends discussion guide, program review worksheet, curriculum gap analysis worksheet, annual recommendations report, and recommended advisory board member categories based on AI, data analytics, cybersecurity, manufacturing automation, healthcare AI, and logistics AI.',
+      'For Visual Program Pathway Map, include a clear text diagram using arrows plus a slide-ready table. Show both credential progression and course progression when useful.',
+      'For Course-to-Outcome Matrix, map program outcomes to supporting courses, course outcomes, assessments, capstone evidence, industry skills, and CQI evidence sources.',
       'For CQI, include artifacts to collect, review cadence, improvement triggers, and documentation notes.',
       'For advisory board, include agenda items, employer feedback questions, and how feedback updates curriculum.',
       'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
-      settings.packagePreset === 'Program Proposal Package'
-        ? 'Because Program Proposal Package is selected, include a formal proposal-style packet with rationale, outcomes, course sequence, resources, staffing assumptions, lab/tool needs, assessment/CQI, advisory input, implementation timeline, and recruitment copy.'
-        : `Shape the package for this selected preset: ${settings.packagePreset}.`,
+      `Prioritize the selected output type: ${selectedProgramOutput.label}.`,
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Do not claim official approval, accreditation compliance, or labor-market guarantees.',
     ].join('\n');
@@ -2211,8 +2279,22 @@ function CollegeProgramBuilder({
             <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} help="Sizes the course sequence and implementation roadmap." />
             <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} help="Shapes student success supports, recruitment copy, and prerequisite assumptions." />
             <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} help="Frames certificate milestones and degree progression." />
-            <SelectField label="Package" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={toSelectOptions(['Program Proposal Package', 'Certificate Pathway Package', 'AAS Degree Pathway Package', 'Advisory Board Package', 'Recruitment Package'])} help="Program Proposal Package is the most complete institutional-review output." />
           </FieldGrid>
+          <ProgramPathwayPreview steps={pathwaySteps} />
+        </Panel>
+      ),
+    },
+    {
+      title: 'Outputs',
+      description: 'Choose the Phase 3 program platform asset.',
+      complete: Boolean(settings.packagePreset),
+      content: (
+        <Panel title="Phase 3 Program Platform Outputs" icon={LibraryBig}>
+          <GuidanceNote>
+            These outputs move Classroom Copilot from curriculum generation into AI program development, coordination, workforce alignment, advisory board management, and CQI evidence.
+          </GuidanceNote>
+          <CardOptions value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={programPlatformOutputOptions} detailKey="includedOutputs" />
+          <ChipList items={(selectedProgramOutput.includedOutputs ?? []).map(labelFromValue)} />
         </Panel>
       ),
     },
@@ -2247,7 +2329,9 @@ function CollegeProgramBuilder({
           <FieldGrid>
             <SelectField label="CQI cadence" value={settings.cqiCadence} onChange={(value) => updateSetting('cqiCadence', value)} options={toSelectOptions(['Semester review with annual advisory board input', 'Annual program review', 'Midterm and end-of-term evidence review', 'Quarterly employer feedback cycle', 'Custom'])} help="Controls how evidence is collected, reviewed, and turned into improvements." />
             <SelectField label="Advisory focus" value={settings.advisoryFocus} onChange={(value) => updateSetting('advisoryFocus', value)} options={toSelectOptions(['Employer skill validation and internship/project feedback', 'Course sequence review', 'Tool/platform relevance', 'Workforce placement feedback', 'Recruitment and retention feedback'])} help="Shapes the advisory board agenda and employer feedback questions." />
+            <SelectField label="Advisory sectors" value={settings.advisorySectorFocus} onChange={(value) => updateSetting('advisorySectorFocus', value)} options={toSelectOptions(['AI, Data Analytics, Cybersecurity, Manufacturing Automation, Healthcare AI, Logistics AI', 'AI and Data Analytics', 'Cybersecurity and AI Operations', 'Manufacturing Automation and Logistics AI', 'Healthcare AI and Data Governance'])} help="Guides recommended advisory board member categories and employer outreach." />
           </FieldGrid>
+          <ChipList items={advisorySectorOptions} />
           <TextAreaField
             label="Recruitment angle"
             value={settings.recruitmentAngle}
@@ -2291,14 +2375,15 @@ function CollegeProgramBuilder({
         ['Program', settings.programName],
         ['Credential', settings.credentialType],
         ['Pathway', settings.pathwayModel],
+        ['Output', selectedProgramOutput.label],
         ['Workforce focus', settings.workforceFocus],
         ['CQI / advisory', `${settings.cqiCadence}; ${settings.advisoryFocus}`],
       ]}
       summary={[
         ['Program', settings.programName],
         ['Credential', settings.credentialType],
-        ['Pathway', settings.pathwayModel],
-        ['CQI', settings.cqiCadence],
+        ['Output', selectedProgramOutput.label],
+        ['Pathway', pathwaySteps.join(' -> ')],
       ]}
     >
       {steps[activeStep].content}
@@ -3545,6 +3630,31 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: React.Com
   );
 }
 
+function ProgramPathwayPreview({ steps }: { steps: string[] }) {
+  return (
+    <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <Layers3 className="h-4 w-4 text-blue-800" />
+        <h4 className="text-sm font-bold text-blue-950">Visual Program Pathway Designer</h4>
+      </div>
+      <div className="grid gap-2 md:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
+        {steps.map((step, index) => (
+          <div key={`${step}-${index}`} className="flex items-center gap-2">
+            <div className="min-h-16 flex-1 rounded-md border border-blue-200 bg-white px-3 py-2 text-center text-sm font-bold leading-5 text-slate-950">
+              <span className="mb-1 block text-[11px] uppercase text-blue-800">Step {index + 1}</span>
+              {step}
+            </div>
+            {index < steps.length - 1 && <ChevronRight className="hidden h-5 w-5 flex-shrink-0 text-blue-700 md:block" />}
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-xs leading-5 text-blue-950">
+        This visual sequence is inserted into generated pathway maps, dean presentations, and coordinator packets as a slide-ready diagram.
+      </p>
+    </div>
+  );
+}
+
 function InStepSubsectionLayout({
   stepTitle,
   sections,
@@ -4303,6 +4413,7 @@ function GeneratedOutput({
               { value: 'student_activity_deck', label: 'Student Activity Deck' },
               { value: 'lms_assignment_pack', label: 'LMS Assignment Pack' },
               { value: 'college_syllabus_packet', label: 'College Syllabus Packet' },
+              { value: 'program_coordinator_packet', label: 'Program Coordinator Packet' },
               { value: 'program_proposal_deck', label: 'Program Proposal Deck' },
               { value: 'advisory_board_deck', label: 'Advisory Board Deck' },
             ])}
