@@ -1,6 +1,7 @@
 export type CopyTemplate =
   | 'teacher_lesson_deck'
   | 'student_activity_deck'
+  | 'lms_assignment_pack'
   | 'college_syllabus_packet'
   | 'program_proposal_deck'
   | 'advisory_board_deck';
@@ -8,6 +9,7 @@ export type CopyTemplate =
 const templateLabels: Record<CopyTemplate, string> = {
   teacher_lesson_deck: 'Teacher Lesson Deck',
   student_activity_deck: 'Student Activity Deck',
+  lms_assignment_pack: 'LMS Assignment Pack',
   college_syllabus_packet: 'College Syllabus Packet',
   program_proposal_deck: 'Program Proposal Deck',
   advisory_board_deck: 'Advisory Board Deck',
@@ -29,6 +31,49 @@ export const copyToClipboard = async (content: string): Promise<void> => {
 
 export const exportToMarkdown = (content: string, filename: string): void => {
   downloadTextFile(content, `${filename}.md`, 'text/markdown;charset=utf-8');
+};
+
+export const buildLmsAssignmentCopy = (content: string): string => {
+  const sections = splitIntoSections(content);
+  const lmsSectionTitles = [
+    'Canvas Module Overview',
+    'Google Classroom Assignment Post',
+    'Moodle / Schoology Activity Instructions',
+    'Moodle/Schoology Activity Instructions',
+    'LMS Discussion Prompt',
+    'Student Checklist',
+    'Submission Evidence',
+    'Rubric Table',
+    'Teacher Announcement',
+    'AI Use Guardrails',
+  ];
+  const selectedSections = sections.filter((section) =>
+    lmsSectionTitles.some((title) => section.title.toLowerCase().includes(title.toLowerCase())),
+  );
+
+  if (selectedSections.length > 0) {
+    return [
+      '# LMS Assignment Pack',
+      '',
+      ...selectedSections.flatMap((section) => [`## ${section.title}`, '', ...section.lines, '']),
+    ].join('\n').trim();
+  }
+
+  return [
+    '# LMS Assignment Pack',
+    '',
+    '## Assignment Post',
+    'Copy the generated package below into Canvas, Google Classroom, Moodle, or Schoology. Add the due date, points, submission type, and local AI-use policy before publishing.',
+    '',
+    '## Student Checklist',
+    '- Read the directions and success criteria.',
+    '- Complete the activity and submit the required evidence.',
+    '- Follow the AI-use policy and privacy guardrails.',
+    '- Reflect on accuracy, evidence, bias, and responsible use.',
+    '',
+    '## Source Package',
+    content,
+  ].join('\n');
 };
 
 export const exportToHtml = (content: string, filename: string, template: CopyTemplate = 'teacher_lesson_deck'): void => {
@@ -336,12 +381,21 @@ const addContentSlide = (
 
 const addFacilitationSlide = (pptx: import('pptxgenjs').default, template: CopyTemplate): void => {
   const slide = pptx.addSlide();
-  const title = template === 'advisory_board_deck' ? 'Advisory Facilitation Notes' : template === 'program_proposal_deck' ? 'Proposal Review Notes' : 'Teacher Facilitation Notes';
+  const title =
+    template === 'advisory_board_deck'
+      ? 'Advisory Facilitation Notes'
+      : template === 'program_proposal_deck'
+        ? 'Proposal Review Notes'
+        : template === 'lms_assignment_pack'
+          ? 'LMS Publishing Notes'
+          : 'Teacher Facilitation Notes';
   const notes =
     template === 'advisory_board_deck'
       ? ['Confirm employer skill needs.', 'Capture advisory feedback and action items.', 'Identify internship, project, and tool recommendations.', 'Document curriculum updates for CQI follow-up.']
       : template === 'program_proposal_deck'
         ? ['Review rationale, outcomes, staffing, resources, and lab/tool needs.', 'Check course sequence and credential milestones.', 'Validate CQI evidence and advisory input.', 'Use as a draft for department and institutional review.']
+        : template === 'lms_assignment_pack'
+          ? ['Add due dates, points, and submission settings in the LMS.', 'Paste the student checklist and rubric into the assignment description.', 'Publish AI-use policy language before students begin.', 'Keep a teacher-reviewed no-AI or supervised-AI option ready when required.']
         : ['Review AI-use guardrails before students begin.', 'Check alignment between objectives, activities, and evidence of learning.', 'Adapt examples, timing, and accessibility supports for your learners.', 'Use the exported package as a draft for teacher, faculty, or department review.'];
   slide.background = { color: 'EFF6FF' };
   slide.addText(title, { x: 0.6, y: 0.45, w: 12, h: 0.55, fontFace: 'Aptos Display', fontSize: 24, bold: true, color: '1E3A8A', fit: 'shrink', margin: 0 });

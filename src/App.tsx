@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
 import { ClassroomConfig } from './types';
-import { CopyTemplate, copyToClipboard, exportToHtml, exportToMarkdown, exportToPptx, printFormattedDocument } from './utils/documentExport';
+import { CopyTemplate, buildLmsAssignmentCopy, copyToClipboard, exportToHtml, exportToMarkdown, exportToPptx, printFormattedDocument } from './utils/documentExport';
 import curriculumDataJson from '../curriculum-map/data/modules.json';
 import curriculumWorkflowJson from '../product-planning/data/build-workflow-config.json';
 import courseWorkflowJson from '../product-planning/data/build-college-course-config.json';
@@ -207,6 +207,18 @@ const readinessChecks = [
     terms: ['checklist', 'implementation', 'materials', 'delivery'],
   },
   {
+    label: 'LMS-ready instructions',
+    terms: ['lms', 'canvas', 'google classroom', 'moodle', 'schoology', 'assignment post'],
+  },
+  {
+    label: 'Student submission evidence',
+    terms: ['submission', 'student evidence', 'submit', 'deliverable', 'evidence of learning'],
+  },
+  {
+    label: 'Rubric table',
+    terms: ['rubric table', 'criteria', 'performance level', 'points', 'score'],
+  },
+  {
     label: 'Bias / inclusivity review',
     terms: ['bias', 'inclusive', 'representation', 'stereotype', 'culturally responsive'],
   },
@@ -280,6 +292,7 @@ const refinementPresets = [
   { label: 'More examples', instruction: 'Add concrete teacher and student examples, model responses, common misconceptions, and non-examples.' },
   { label: 'Extension challenge', instruction: 'Add an advanced extension task with deeper reasoning, transfer, and optional independent inquiry.' },
   { label: 'Turn into AI lab', instruction: 'Convert this package into a safe interactive AI literacy lab with teacher setup, student lab flow, sample materials, guardrails, reflection, evidence of learning, and slide outline.' },
+  { label: 'Make LMS-ready', instruction: 'Convert this into a copy-ready LMS assignment package with Canvas module overview, Google Classroom assignment post, Moodle/Schoology activity instructions, discussion prompt if useful, student checklist, submission evidence, rubric table, teacher announcement, due-date placeholder, points placeholder, and AI-use policy language.' },
   { label: 'Check Bias & Inclusivity', instruction: 'Review the package for biased, exclusionary, culturally narrow, inaccessible, or stereotype-reinforcing language. Return one improved package plus a concise ## Bias and Inclusivity Notes section that names what changed.' },
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
@@ -480,6 +493,7 @@ const deliverableDescriptions: Record<string, string> = {
   prompt_experiment_activity: 'Structured activity where students tune prompts and compare response quality.',
   ai_output_evaluation_lab: 'Hands-on lab for checking claims, evidence, bias, hallucination risk, and verification steps.',
   bias_fairness_scenario: 'Scenario discussion package for AI fairness, representation, risk, and responsible decisions.',
+  lms_assignment_pack: 'Copy-ready LMS package with module overview, assignment post, student checklist, rubric table, and announcement.',
   syllabus_draft: 'Course overview, outcomes, policies, schedule, and grading language.',
   full_course_package: 'Full syllabus-ready course with modules, labs, assignments, assessment plan, and AI policy.',
   lab_ready_course: 'Hands-on course build with lab objectives, setup notes, checkpoints, rubrics, and troubleshooting.',
@@ -502,6 +516,11 @@ const interactiveDeliverableOptions: OptionItem[] = [
     value: 'bias_fairness_scenario',
     label: 'Bias/Fairness Scenario',
     deliverables: ['scenario_cards', 'discussion_questions', 'guardrail_recommendations', 'reflection', 'rubric_checklist'],
+  },
+  {
+    value: 'lms_assignment_pack',
+    label: 'LMS Assignment Pack',
+    deliverables: ['canvas_module_overview', 'google_classroom_post', 'student_checklist', 'submission_evidence', 'rubric_table'],
   },
 ];
 
@@ -634,6 +653,24 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     mode: 'curriculum-pack',
     description: 'Scenario-based lab for fairness, representation, risk, and responsible guardrails.',
     content: '## Lab Snapshot\nStudents evaluate an AI-use scenario for fairness, bias, representation, privacy, and possible harm.\n\n## Interactive Lab Flow\n1. Read the scenario card.\n2. Identify who is affected by the AI decision or output.\n3. Name possible bias, missing perspectives, or privacy risks.\n4. Recommend guardrails or a better decision process.\n5. Reflect on how human judgment should stay involved.\n\n## Bias and Inclusivity Notes\nTeacher reviews scenarios for cultural assumptions, representation, and accessible language before use.\n\n## Rubric\nCriteria include fairness reasoning, risk identification, representation, privacy, guardrail quality, and reflection.',
+  },
+  {
+    title: 'Canvas-Ready AI Output Assignment',
+    mode: 'curriculum-pack',
+    description: 'LMS-ready assignment block for an AI output evaluation activity.',
+    content: '## LMS Assignment Pack\n\n## Canvas Module Overview\nStudents evaluate a sample AI response for accuracy, evidence, missing context, bias, and verification needs.\n\n## Google Classroom Assignment Post\nTitle: AI Output Evaluation Lab\nInstructions: Read the sample AI response, mark claims that need evidence, identify possible bias or missing context, and submit your verification plan and revised response.\n\n## Student Checklist\n- Identify at least three claims.\n- Mark what needs verification.\n- Name one possible bias or limitation.\n- Choose sources or class evidence to check.\n- Submit a revised response and reflection.\n\n## Submission Evidence\nStudents submit an annotated response, verification notes, revised response, and reflection.\n\n## Rubric Table\nCriteria: claim checking, evidence quality, bias detection, verification plan, revision quality, responsible AI use.',
+  },
+  {
+    title: 'Google Classroom Prompt Experiment Post',
+    mode: 'curriculum-pack',
+    description: 'Copy-ready assignment post for prompt tuning and reflection.',
+    content: '## LMS Assignment Pack\n\n## Google Classroom Assignment Post\nTitle: Prompt Experiment: Improve the Prompt\nInstructions: Compare a weak prompt with an improved prompt. Explain what changed, predict how the response will improve, and reflect on how prompt clarity affects AI output quality.\n\n## Student Directions\n1. Read the weak prompt.\n2. Add context, audience, constraints, and output format.\n3. Compare the two responses provided by your teacher or generated under supervision.\n4. Submit your improved prompt and reflection.\n\n## Student Checklist\nPrompt has a clear task, context, audience, format, and privacy-safe wording.\n\n## Submission Evidence\nImproved prompt, comparison notes, and reflection paragraph.\n\n## Rubric Table\nCriteria: task clarity, context, output format, comparison quality, reflection.',
+  },
+  {
+    title: 'LMS Discussion: Bias/Fairness Scenario',
+    mode: 'curriculum-pack',
+    description: 'Discussion-board ready AI fairness scenario with rubric and response checklist.',
+    content: '## LMS Assignment Pack\n\n## LMS Discussion Prompt\nRead the AI fairness scenario. Who could be affected by the AI output or decision? What bias, privacy issue, or missing perspective might appear? What guardrails would make the use safer or fairer?\n\n## Student Response Requirements\nPost one original response and one reply. Use evidence from the scenario. Recommend at least one practical guardrail.\n\n## Student Checklist\n- Names affected people or groups.\n- Identifies one fairness, bias, or privacy concern.\n- Recommends a guardrail.\n- Explains where human judgment belongs.\n\n## Submission Evidence\nDiscussion post, peer reply, and short reflection.\n\n## Rubric Table\nCriteria: fairness reasoning, risk identification, guardrail quality, peer response, reflection.',
   },
   {
     title: 'Intro AI Technology Course',
@@ -896,6 +933,9 @@ function CurriculumPackBuilder({
       `Student AI access level: ${labelFromValue(settings.studentAiAccessLevel)} - ${studentAccessNotes[settings.studentAiAccessLevel]}`,
       `Output package: ${selectedPack.label}`,
       `Included deliverables: ${(selectedPack.deliverables ?? []).map(labelFromValue).join(', ')}`,
+      selectedPack.value === 'lms_assignment_pack'
+        ? 'LMS assignment pack requested: include Canvas module overview, Google Classroom assignment post, Moodle/Schoology activity instructions, discussion prompt if relevant, student checklist, submission evidence, rubric table, teacher announcement, AI-use policy, and due-date placeholder.'
+        : 'LMS assignment pack requested: no, but include copy-ready LMS notes when useful.',
       `AI literacy components to emphasize: ${aiLiteracyComponents.join(', ')}`,
       `Reading/accessibility support: ${selectedReadingSupport.label} - ${selectedReadingSupport.description}`,
       `Prompt library focus: ${selectedPromptLibrary.label} - ${selectedPromptLibrary.description}`,
@@ -916,6 +956,7 @@ function CurriculumPackBuilder({
       'For the prompt library, include teacher-facing setup notes and student-facing prompt stems that match the selected AI access level.',
       'For the rubric, include four clear performance levels and the selected AI-output evaluation criteria.',
       'For the interactive lab, include teacher setup, student-facing directions, lab steps, reflection prompts, safety guardrails, evidence of learning, and a slide outline. Treat it as a safe simulated or teacher-controlled AI literacy experience unless student AI access explicitly allows independent use.',
+      'For LMS-ready blocks, include copy-ready headings: ## Canvas Module Overview, ## Google Classroom Assignment Post, ## Moodle / Schoology Activity Instructions, ## Student Checklist, ## Submission Evidence, ## Rubric Table, ## Teacher Announcement. Include title, student directions, estimated time, materials, submission type, due-date placeholder, and AI-use policy language.',
       'For accessibility, include the selected reading/accessibility support as concrete student-facing adjustments.',
       'For policy compliance, include a short Policy Alignment Summary covering privacy, AI disclosure, student access, teacher review, and family/admin language.',
       'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
@@ -2356,8 +2397,9 @@ function GeneratedOutput({
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
       'Preserve useful existing content, but rewrite the package as one complete improved version.',
-      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, bias/inclusivity review notes, data privacy transparency, and implementation notes.',
+      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, bias/inclusivity review notes, data privacy transparency, LMS-ready instructions, student submission evidence, rubric table, and implementation notes.',
       'Include a Policy Alignment Summary when privacy, family/admin language, or AI-use guardrails are missing.',
+      'Include copy-ready LMS sections when LMS signals are missing: ## Canvas Module Overview, ## Google Classroom Assignment Post, ## Moodle / Schoology Activity Instructions, ## Student Checklist, ## Submission Evidence, ## Rubric Table, and ## Teacher Announcement.',
       'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
       '',
       'Current package:',
@@ -2370,7 +2412,7 @@ function GeneratedOutput({
       `Refine the generated package using this focus: ${label}.`,
       instruction,
       'Preserve useful existing content, but return one complete updated package with clean markdown headings.',
-      'Keep outcomes alignment, assessment evidence, AI guardrails, accessibility, export readiness, and implementation details intact.',
+      'Keep outcomes alignment, assessment evidence, AI guardrails, accessibility, LMS-ready assignment instructions, export readiness, and implementation details intact.',
       '',
       'Current package:',
       content,
@@ -2405,6 +2447,7 @@ function GeneratedOutput({
             options={toSelectOptions([
               { value: 'teacher_lesson_deck', label: 'Teacher Lesson Deck' },
               { value: 'student_activity_deck', label: 'Student Activity Deck' },
+              { value: 'lms_assignment_pack', label: 'LMS Assignment Pack' },
               { value: 'college_syllabus_packet', label: 'College Syllabus Packet' },
               { value: 'program_proposal_deck', label: 'Program Proposal Deck' },
               { value: 'advisory_board_deck', label: 'Advisory Board Deck' },
@@ -2435,6 +2478,12 @@ function GeneratedOutput({
             label="Copy"
             disabled={!hasContent || isLoading}
             onClick={() => runExport('Copied to clipboard.', () => copyToClipboard(content))}
+          />
+          <ExportButton
+            icon={ClipboardList}
+            label="Copy LMS"
+            disabled={!hasContent || isLoading}
+            onClick={() => runExport('LMS assignment block copied.', () => copyToClipboard(buildLmsAssignmentCopy(content)))}
           />
           <ExportButton
             icon={BookOpen}
