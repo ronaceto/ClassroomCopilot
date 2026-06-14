@@ -105,6 +105,16 @@ interface BuilderStep {
   content: React.ReactNode;
 }
 
+interface FinishLineSettings {
+  languageSupport: string;
+  iepSupport: string;
+  sandboxLab: string;
+  analyticsPlan: string;
+  lmsPlugin: string;
+  professionalLearning: string;
+  communityWorkflow: string;
+}
+
 const curriculumData = curriculumDataJson as CurriculumData;
 const curriculumWorkflow = curriculumWorkflowJson as WorkflowConfig;
 const courseWorkflow = courseWorkflowJson as WorkflowConfig;
@@ -162,6 +172,10 @@ const productEdges = [
   {
     title: 'Export-ready',
     text: 'Turns generated packages into HTML, print/PDF, Markdown, copy, and PPT starts.',
+  },
+  {
+    title: 'Platform-ready',
+    text: 'Adds language access, IEP supports, sandbox labs, LMS planning, analytics, PD, and teacher community workflows.',
   },
 ];
 
@@ -225,6 +239,162 @@ const readinessChecks = [
   {
     label: 'Data privacy transparency',
     terms: ['data privacy', 'source upload', 'deleted', 'stored', 'privacy note'],
+  },
+  {
+    label: 'Multilingual supports',
+    terms: ['multilingual', 'translation', 'spanish', 'language access', 'home language'],
+  },
+  {
+    label: 'IEP / 504 accommodations',
+    terms: ['iep', '504', 'accommodation', 'assistive technology', 'extended time'],
+  },
+  {
+    label: 'Analytics / CQI plan',
+    terms: ['analytics', 'cqi', 'feedback cycle', 'completion rate', 'evidence dashboard'],
+  },
+  {
+    label: 'Professional learning',
+    terms: ['professional development', 'teacher pd', 'micro-credential', 'facilitator guide', 'training module'],
+  },
+  {
+    label: 'Community collaboration',
+    terms: ['teacher community', 'peer review', 'collaboration', 'shared package', 'community prompt'],
+  },
+];
+
+const finishLineDefaults: FinishLineSettings = {
+  languageSupport: 'spanish_family_student_support',
+  iepSupport: 'iep504_deep_supports',
+  sandboxLab: 'teacher_controlled_ai_sandbox',
+  analyticsPlan: 'classroom_cqi_dashboard',
+  lmsPlugin: 'lms_common_cartridge_plus_copy',
+  professionalLearning: 'teacher_micro_pd',
+  communityWorkflow: 'peer_review_share',
+};
+
+const languageSupportOptions: OptionItem[] = [
+  {
+    value: 'english_only',
+    label: 'English only',
+    description: 'Keep generated package in English with plain-language support.',
+  },
+  {
+    value: 'spanish_family_student_support',
+    label: 'Spanish support',
+    description: 'Add Spanish student directions, family note, vocabulary bridge, and translation review reminder.',
+  },
+  {
+    value: 'multilingual_home_language_pack',
+    label: 'Multilingual pack',
+    description: 'Add language-access blocks for home-language directions, vocabulary, family note, and translation QA.',
+  },
+];
+
+const iepSupportOptions: OptionItem[] = [
+  {
+    value: 'standard_udl',
+    label: 'Standard UDL',
+    description: 'Add representation, action/expression, engagement, and reading supports.',
+  },
+  {
+    value: 'iep504_deep_supports',
+    label: 'IEP/504 deep supports',
+    description: 'Add accommodations for extended time, chunking, assistive tech, alternative response, and reduced cognitive load.',
+  },
+  {
+    value: 'executive_function_support',
+    label: 'Executive function',
+    description: 'Add checklists, timers, worked examples, task chunks, and planning prompts.',
+  },
+];
+
+const sandboxLabOptions: OptionItem[] = [
+  {
+    value: 'simulated_ai_sandbox',
+    label: 'Simulated sandbox',
+    description: 'Use safe prewritten AI outputs for experimentation without live AI access.',
+  },
+  {
+    value: 'teacher_controlled_ai_sandbox',
+    label: 'Teacher-controlled sandbox',
+    description: 'Add prompt experiment, model output comparison, privacy gate, and teacher approval checkpoints.',
+  },
+  {
+    value: 'student_supervised_sandbox',
+    label: 'Supervised student sandbox',
+    description: 'Add student prompt trials, reflection log, data privacy warnings, and output verification steps.',
+  },
+];
+
+const analyticsPlanOptions: OptionItem[] = [
+  {
+    value: 'basic_exit_ticket',
+    label: 'Basic evidence',
+    description: 'Use exit tickets, rubric scores, and teacher notes.',
+  },
+  {
+    value: 'classroom_cqi_dashboard',
+    label: 'CQI dashboard',
+    description: 'Add completion, rubric, misconception, engagement, and next-revision metrics.',
+  },
+  {
+    value: 'program_analytics',
+    label: 'Program analytics',
+    description: 'Add course/program outcome evidence, advisory feedback, and term-over-term improvement metrics.',
+  },
+];
+
+const lmsPluginOptions: OptionItem[] = [
+  {
+    value: 'copy_ready_lms',
+    label: 'Copy-ready LMS',
+    description: 'Keep Canvas, Google Classroom, Moodle, and Schoology copy blocks.',
+  },
+  {
+    value: 'lms_common_cartridge_plus_copy',
+    label: 'LMS plugin pack',
+    description: 'Add plugin-ready fields, Common Cartridge outline, gradebook columns, rubrics, and import notes.',
+  },
+  {
+    value: 'lti_future_ready',
+    label: 'LTI future-ready',
+    description: 'Add LTI integration requirements, roster/privacy assumptions, and admin implementation notes.',
+  },
+];
+
+const professionalLearningOptions: OptionItem[] = [
+  {
+    value: 'quick_teacher_notes',
+    label: 'Quick teacher notes',
+    description: 'Add concise facilitation notes for teacher review.',
+  },
+  {
+    value: 'teacher_micro_pd',
+    label: 'Teacher micro-PD',
+    description: 'Add 15-minute PD module, facilitator guide, reflection, and micro-credential evidence.',
+  },
+  {
+    value: 'department_pd_pathway',
+    label: 'Department PD pathway',
+    description: 'Add PLC agenda, coaching cycle, implementation artifact, and department calibration activity.',
+  },
+];
+
+const communityWorkflowOptions: OptionItem[] = [
+  {
+    value: 'private_draft',
+    label: 'Private draft',
+    description: 'Keep package private for individual teacher review.',
+  },
+  {
+    value: 'peer_review_share',
+    label: 'Peer review',
+    description: 'Add teacher community share prompt, review checklist, remix notes, and attribution language.',
+  },
+  {
+    value: 'school_library_submission',
+    label: 'School library',
+    description: 'Add submission summary, approval status, tags, and community improvement prompts.',
   },
 ];
 
@@ -293,6 +463,11 @@ const refinementPresets = [
   { label: 'Extension challenge', instruction: 'Add an advanced extension task with deeper reasoning, transfer, and optional independent inquiry.' },
   { label: 'Turn into AI lab', instruction: 'Convert this package into a safe interactive AI literacy lab with teacher setup, student lab flow, sample materials, guardrails, reflection, evidence of learning, and slide outline.' },
   { label: 'Make LMS-ready', instruction: 'Convert this into a copy-ready LMS assignment package with Canvas module overview, Google Classroom assignment post, Moodle/Schoology activity instructions, discussion prompt if useful, student checklist, submission evidence, rubric table, teacher announcement, due-date placeholder, points placeholder, and AI-use policy language.' },
+  { label: 'Add multilingual supports', instruction: 'Add multilingual student directions, family communication, vocabulary bridge, home-language supports, translation review reminders, and language-access implementation notes.' },
+  { label: 'Deepen IEP/504 supports', instruction: 'Add concrete IEP/504 accommodations including extended time, chunking, assistive technology, alternative response options, reduced cognitive load, executive-function checklist, and teacher implementation notes without requesting private student data.' },
+  { label: 'Add analytics/CQI', instruction: 'Add a data-driven analytics and CQI plan with evidence sources, completion metrics, rubric trends, misconception tracking, feedback loop, revision cadence, and privacy-safe reporting.' },
+  { label: 'Add teacher PD', instruction: 'Add professional development resources including a 15-minute micro-PD module, facilitator guide, teacher practice task, implementation reflection, and micro-credential evidence.' },
+  { label: 'Add community workflow', instruction: 'Add collaborative teacher community workflow with peer review checklist, remix notes, attribution language, approval status, shared-package tags, and improvement prompts.' },
   { label: 'Check Bias & Inclusivity', instruction: 'Review the package for biased, exclusionary, culturally narrow, inaccessible, or stereotype-reinforcing language. Return one improved package plus a concise ## Bias and Inclusivity Notes section that names what changed.' },
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
@@ -418,6 +593,12 @@ const interactiveLabOptions = [
     label: 'Bias/Fairness Scenario',
     description: 'Students discuss whether an AI use is fair, risky, biased, appropriate, and how to improve it.',
     steps: ['Read scenario', 'Identify affected people', 'Name risk or bias', 'Recommend guardrails', 'Reflect'],
+  },
+  {
+    value: 'sandbox_ai_experiment',
+    label: 'Sandbox AI Experiment',
+    description: 'Students experiment with approved prompts or simulated outputs inside a privacy-safe teacher-controlled sandbox.',
+    steps: ['Privacy gate', 'Approved prompt trial', 'Compare outputs', 'Check bias and accuracy', 'Log reflection'],
   },
 ];
 
@@ -589,6 +770,12 @@ const curriculumQuickStarts = [
 
 const samplePackages: Array<{ title: string; mode: BuilderMode; description: string; content: string }> = [
   {
+    title: 'Platform-Ready AI Lesson System',
+    mode: 'curriculum-pack',
+    description: 'Finish-line sample with multilingual access, IEP supports, sandbox lab, analytics, PD, LMS, and community review.',
+    content: '## Lesson Snapshot\nAI literacy lesson package prepared for classroom use, LMS publishing, teacher collaboration, and continuous improvement.\n\n## Multilingual Supports\nStudent directions include English plus Spanish support, home-language vocabulary bridge, family note, and translation review reminder.\n\n## IEP / 504 Accommodations\nIncludes extended time, chunked directions, assistive technology option, reduced cognitive load, alternative response format, and executive-function checklist.\n\n## Sandbox AI Experimentation\nTeacher-controlled AI sandbox uses approved prompts, sample outputs, privacy gate, verification checklist, and reflection log.\n\n## Analytics / CQI Plan\nTrack completion rate, rubric evidence, misconception patterns, student confidence, accessibility support use, and next-revision notes.\n\n## LMS Plugin Pack\nCanvas, Google Classroom, Moodle, and Schoology copy blocks plus Common Cartridge outline, gradebook columns, rubric criteria, and import notes.\n\n## Professional Development Module\n15-minute teacher PD includes learning goal, demo flow, facilitation script, responsible AI checklist, and micro-credential evidence.\n\n## Teacher Community Review\nPeer review checklist, remix notes, attribution language, approval status, and community prompt for improving the package after classroom use.',
+  },
+  {
     title: 'AI Literacy Lesson Pack',
     mode: 'curriculum-pack',
     description: 'Single lesson with guardrails, activity, assessment, and slide outline.',
@@ -692,11 +879,31 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
   },
 ];
 
+const getOptionDescription = (options: OptionItem[], value: string): string => {
+  const selected = options.find((option) => option.value === value);
+  return selected ? `${selected.label} - ${selected.description ?? ''}`.trim() : labelFromValue(value);
+};
+
+const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
+  [
+    'Finish-line platform requirements to incorporate:',
+    `Language access: ${getOptionDescription(languageSupportOptions, settings.languageSupport)}`,
+    `IEP/504 and accessibility accommodations: ${getOptionDescription(iepSupportOptions, settings.iepSupport)}`,
+    `Sandbox AI experimentation: ${getOptionDescription(sandboxLabOptions, settings.sandboxLab)}`,
+    `Analytics / CQI evidence plan: ${getOptionDescription(analyticsPlanOptions, settings.analyticsPlan)}`,
+    `LMS plugin readiness: ${getOptionDescription(lmsPluginOptions, settings.lmsPlugin)}`,
+    `Professional development resources: ${getOptionDescription(professionalLearningOptions, settings.professionalLearning)}`,
+    `Teacher community workflow: ${getOptionDescription(communityWorkflowOptions, settings.communityWorkflow)}`,
+    'Include clearly labeled sections when relevant: ## Multilingual Supports, ## IEP / 504 Accommodations, ## Sandbox AI Experimentation, ## Analytics / CQI Plan, ## LMS Plugin Pack, ## Professional Development Module, and ## Teacher Community Review.',
+    'Keep all student data privacy language de-identified. Do not ask educators to upload protected student details. Use practical teacher-ready language instead of technical integration promises.',
+  ].join('\n');
+
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
   const [fontScale, setFontScale] = useState<FontScale>('standard');
   const [highContrast, setHighContrast] = useState(false);
+  const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
   const [loadedPackageContent, setLoadedPackageContent] = useState('');
   const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
@@ -704,11 +911,11 @@ function App() {
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
     setLoadedPackageContent('');
     clearChat();
-    void sendMessage(prompt, 'teacher', config);
+    void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', config);
   };
 
   const handleImprove = (prompt: string) => {
-    void sendMessage(prompt, 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
+    void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
@@ -744,6 +951,10 @@ function App() {
     setActiveMode(sample.mode);
     setLoadedPackageContent(sample.content);
     clearChat();
+  };
+
+  const updateFinishLineSetting = (key: keyof FinishLineSettings, value: string) => {
+    setFinishLineSettings((current) => ({ ...current, [key]: value }));
   };
 
   return (
@@ -789,6 +1000,7 @@ function App() {
           highContrast={highContrast}
           onHighContrastChange={setHighContrast}
         />
+        <FinishLineToolkit settings={finishLineSettings} onChange={updateFinishLineSetting} />
         <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
@@ -871,7 +1083,7 @@ function CurriculumPackBuilder({
     readingSupport: 'standard_supports',
     promptLibraryPreset: 'evaluate_ai_output',
     rubricFocus: 'balanced_ai_literacy',
-    interactiveLab: 'ai_output_evaluation_lab',
+    interactiveLab: 'sandbox_ai_experiment',
     policyCheck: 'teacher_demo_only',
     policyOutput: 'Classroom AI Use Policy',
   });
@@ -1515,7 +1727,7 @@ function ProductEdgeStrip() {
         <span className="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-800">{open ? 'Hide' : 'Why it matters'}</span>
       </button>
       {open && (
-        <div className="mt-3 grid gap-3 lg:grid-cols-4">
+        <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {productEdges.map((edge) => (
             <div key={edge.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
               <div className="mb-1 flex items-center gap-2 text-sm font-bold text-blue-800">
@@ -1580,6 +1792,54 @@ function AccessibilityControls({
             />
             High contrast
           </label>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FinishLineToolkit({
+  settings,
+  onChange,
+}: {
+  settings: FinishLineSettings;
+  onChange: (key: keyof FinishLineSettings, value: string) => void;
+}) {
+  const selectedLanguage = languageSupportOptions.find((option) => option.value === settings.languageSupport) ?? languageSupportOptions[1];
+  const selectedIep = iepSupportOptions.find((option) => option.value === settings.iepSupport) ?? iepSupportOptions[1];
+  const selectedSandbox = sandboxLabOptions.find((option) => option.value === settings.sandboxLab) ?? sandboxLabOptions[1];
+  const selectedAnalytics = analyticsPlanOptions.find((option) => option.value === settings.analyticsPlan) ?? analyticsPlanOptions[1];
+  const selectedLms = lmsPluginOptions.find((option) => option.value === settings.lmsPlugin) ?? lmsPluginOptions[1];
+  const selectedPd = professionalLearningOptions.find((option) => option.value === settings.professionalLearning) ?? professionalLearningOptions[1];
+  const selectedCommunity = communityWorkflowOptions.find((option) => option.value === settings.communityWorkflow) ?? communityWorkflowOptions[1];
+
+  return (
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Finish line platform toolkit">
+      <div className="mb-4 flex items-start gap-2">
+        <Sparkles className="mt-0.5 h-5 w-5 text-blue-700" />
+        <div>
+          <h3 className="font-bold text-slate-950">Finish Line Toolkit</h3>
+          <p className="text-xs leading-5 text-slate-600">
+            Turn each package into a platform-ready artifact with language access, accommodations, sandbox labs, analytics, LMS integration planning, PD, and teacher collaboration.
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <SelectField label="Language access" value={settings.languageSupport} onChange={(value) => onChange('languageSupport', value)} options={languageSupportOptions} help={selectedLanguage.description} />
+        <SelectField label="IEP / 504 supports" value={settings.iepSupport} onChange={(value) => onChange('iepSupport', value)} options={iepSupportOptions} help={selectedIep.description} />
+        <SelectField label="Sandbox lab" value={settings.sandboxLab} onChange={(value) => onChange('sandboxLab', value)} options={sandboxLabOptions} help={selectedSandbox.description} />
+        <SelectField label="Analytics / CQI" value={settings.analyticsPlan} onChange={(value) => onChange('analyticsPlan', value)} options={analyticsPlanOptions} help={selectedAnalytics.description} />
+        <SelectField label="LMS integration" value={settings.lmsPlugin} onChange={(value) => onChange('lmsPlugin', value)} options={lmsPluginOptions} help={selectedLms.description} />
+        <SelectField label="Teacher PD" value={settings.professionalLearning} onChange={(value) => onChange('professionalLearning', value)} options={professionalLearningOptions} help={selectedPd.description} />
+      </div>
+      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <SelectField label="Teacher community" value={settings.communityWorkflow} onChange={(value) => onChange('communityWorkflow', value)} options={communityWorkflowOptions} help={selectedCommunity.description} />
+        <div className="mt-3 grid gap-2 md:grid-cols-2">
+          {[selectedLanguage, selectedIep, selectedSandbox, selectedAnalytics, selectedLms, selectedPd, selectedCommunity].map((option) => (
+            <div key={option.value} className="rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
+              <span className="font-bold text-slate-950">{option.label}:</span> {option.description}
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -2397,9 +2657,10 @@ function GeneratedOutput({
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
       'Preserve useful existing content, but rewrite the package as one complete improved version.',
-      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, bias/inclusivity review notes, data privacy transparency, LMS-ready instructions, student submission evidence, rubric table, and implementation notes.',
+      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, multilingual supports, IEP/504 accommodations, family/admin language, bias/inclusivity review notes, data privacy transparency, LMS-ready instructions, student submission evidence, rubric table, analytics/CQI plan, professional learning resources, teacher community workflow, and implementation notes.',
       'Include a Policy Alignment Summary when privacy, family/admin language, or AI-use guardrails are missing.',
       'Include copy-ready LMS sections when LMS signals are missing: ## Canvas Module Overview, ## Google Classroom Assignment Post, ## Moodle / Schoology Activity Instructions, ## Student Checklist, ## Submission Evidence, ## Rubric Table, and ## Teacher Announcement.',
+      'Include finish-line sections when missing: ## Multilingual Supports, ## IEP / 504 Accommodations, ## Sandbox AI Experimentation, ## Analytics / CQI Plan, ## LMS Plugin Pack, ## Professional Development Module, and ## Teacher Community Review.',
       'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
       '',
       'Current package:',
