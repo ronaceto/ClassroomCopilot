@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Archive,
+  AlertTriangle,
   BookOpen,
   BrainCircuit,
   ChevronLeft,
@@ -163,8 +164,8 @@ const productEdges = [
 
 const readinessChecks = [
   {
-    label: 'Outcomes alignment',
-    terms: ['outcome', 'objective', 'alignment', 'matrix'],
+    label: 'Standards / outcomes alignment',
+    terms: ['standard', 'outcome', 'objective', 'alignment', 'matrix'],
   },
   {
     label: 'Assessment evidence',
@@ -172,15 +173,27 @@ const readinessChecks = [
   },
   {
     label: 'AI-use guardrails',
-    terms: ['guardrail', 'responsible ai', 'privacy', 'ferpa', 'ai use'],
+    terms: ['guardrail', 'responsible ai', 'ai use', 'human judgment'],
+  },
+  {
+    label: 'Privacy language',
+    terms: ['privacy', 'private', 'personally identifiable', 'ferpa', 'coppa'],
   },
   {
     label: 'Accessibility supports',
-    terms: ['differentiation', 'accessibility', 'ell', 'iep', 'beginner support'],
+    terms: ['differentiation', 'accessibility', 'ell', 'iep', '504', 'reading level', 'sentence frame'],
   },
   {
-    label: 'Presentation path',
-    terms: ['slide', 'deck', 'speaker notes', 'presentation'],
+    label: 'Prompt library',
+    terms: ['prompt library', 'prompt stem', 'prompt card', 'prompting'],
+  },
+  {
+    label: 'AI evaluation rubric',
+    terms: ['rubric', 'accuracy', 'bias', 'evidence', 'verification'],
+  },
+  {
+    label: 'Family / admin language',
+    terms: ['family', 'guardian', 'admin', 'administrator', 'policy alignment summary'],
   },
   {
     label: 'Implementation notes',
@@ -327,7 +340,69 @@ const policyCheckItems = [
   'Students cite or disclose AI assistance when allowed',
   'Teacher reviews materials before classroom use',
   'Family/admin language included when needed',
+  'Privacy language is FERPA/COPPA-aware without claiming legal compliance',
 ];
+
+const standardsSuggestionLibrary: Record<string, string[]> = {
+  'AI Literacy': [
+    'ISTE: students evaluate AI outputs, cite assistance, protect privacy, and explain limitations.',
+    'AI literacy: define AI, identify everyday uses, recognize bias, verify outputs, and reflect on responsible use.',
+    'Digital citizenship: students make ethical choices when using automated tools and online information.',
+  ],
+  'Computer Science': [
+    'CSTA: impacts of computing, data and analysis, algorithms, and responsible technology use.',
+    'AI literacy: model inputs/outputs, limitations, testing, and human oversight.',
+    'Career readiness: students document technical reasoning and communicate findings.',
+  ],
+  ELA: [
+    'Common Core ELA: evaluate claims, evidence, source credibility, audience, purpose, and reasoning.',
+    'AI literacy: compare human and AI-generated explanations for accuracy, bias, and missing context.',
+    'Writing: students revise prompts and responses with attention to clarity and evidence.',
+  ],
+  Science: [
+    'Science practice: analyze data, evaluate explanations, and distinguish evidence from unsupported claims.',
+    'AI literacy: inspect model limitations and discuss uncertainty, bias, and verification.',
+    'Responsible use: protect privacy when using datasets or examples.',
+  ],
+  'Social Studies': [
+    'Civic reasoning: evaluate information sources, bias, misinformation, and societal impacts of AI.',
+    'AI literacy: examine how automated systems may shape decisions, access, and representation.',
+    'Discussion: students support claims with evidence and consider ethical tradeoffs.',
+  ],
+  Math: [
+    'Mathematical practice: reason quantitatively, interpret data, critique conclusions, and explain methods.',
+    'AI literacy: identify patterns, limitations, and possible errors in AI-generated analysis.',
+    'Data literacy: use evidence and verification before accepting a result.',
+  ],
+  CTE: [
+    'Career readiness: use tools responsibly, document workflow, verify outputs, and communicate decisions.',
+    'AI literacy: match AI use to workplace policy, privacy expectations, and human oversight.',
+    'Applied learning: students create evidence of skill through authentic tasks.',
+  ],
+  Advisory: [
+    'Digital citizenship: privacy, identity protection, disclosure, respectful use, and human judgment.',
+    'AI literacy: recognize AI in daily life and decide when use is appropriate.',
+    'Reflection: students explain responsible choices and verification habits.',
+  ],
+  'Career Readiness': [
+    'Employability skills: communication, ethical technology use, evidence-based decisions, and self-management.',
+    'AI literacy: prompt effectively, verify results, cite assistance, and protect sensitive information.',
+    'Portfolio readiness: students document process, choices, and learning evidence.',
+  ],
+};
+
+const deliverableDescriptions: Record<string, string> = {
+  quick_class_activity: 'Fast classroom-ready activity with a student handout and exit ticket.',
+  full_lesson_pack: 'Complete teacher plan, student handout, guided AI activity, checks, rubric, and implementation notes.',
+  admin_ready_sample: 'Review-friendly sample with standards alignment, admin/family summary, and rubric evidence.',
+  no_ai_classroom_version: 'Printable lesson path using examples and discussion instead of live student AI access.',
+  mini_unit: 'Multi-day sequence with daily activities, assessments, reflection, and pacing.',
+  syllabus_draft: 'Course overview, outcomes, policies, schedule, and grading language.',
+  full_course_package: 'Full syllabus-ready course with modules, labs, assignments, assessment plan, and AI policy.',
+  lab_ready_course: 'Hands-on course build with lab objectives, setup notes, checkpoints, rubrics, and troubleshooting.',
+  online_hyflex_course: 'Course package adapted for online, asynchronous, synchronous, and HyFlex delivery.',
+  program_coordinator_packet: 'Course-to-program alignment, CQI evidence, advisory questions, and workforce narrative.',
+};
 
 const curriculumQuickStarts = [
   {
@@ -401,6 +476,24 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     mode: 'curriculum-pack',
     description: 'Week-long AI literacy sequence for classroom rollout.',
     content: '## Lesson Snapshot\nFive-day mini-unit on AI basics, prompting, verification, subject use, and responsible choices.\n\n## Assessment Evidence\nDaily exit tickets, student reflection, rubric, and final responsible-use scenario.\n\n## Differentiation and Accessibility\nBeginner vocabulary, examples, sentence frames, and extension challenges.\n\n## Slide Deck Outline\nDaily opener, guided demo, student practice, reflection, and wrap-up slides.\n\n## Teacher Implementation Checklist\nPrintables, demo prompts, no-AI alternative, and family/admin note.',
+  },
+  {
+    title: 'Responsible AI Lesson',
+    mode: 'curriculum-pack',
+    description: 'Privacy, disclosure, verification, and human judgment lesson for cautious rollouts.',
+    content: '## Lesson Snapshot\nResponsible AI lesson focused on privacy, human judgment, disclosure, and verification.\n\n## Standards / Outcomes Alignment Matrix\nAI literacy and digital citizenship outcomes map to discussion, scenario analysis, reflection, and exit-ticket evidence.\n\n## Policy Alignment Summary\nNo private student information, teacher-reviewed AI examples, student disclosure language, family/admin note, and FERPA/COPPA-aware privacy reminders without legal-compliance claims.\n\n## Prompt Library\nNo-AI discussion prompts and teacher-demo prompt stems help students critique AI use without independent access.\n\n## AI Evaluation Rubric\nCriteria include privacy protection, human verification, appropriate use, disclosure, and ethical reflection.',
+  },
+  {
+    title: 'AI-Output Evaluation Activity',
+    mode: 'curriculum-pack',
+    description: 'Student activity for checking accuracy, evidence, bias, and missing context.',
+    content: '## Lesson Snapshot\nStudents evaluate a sample AI response for accuracy, evidence, missing context, bias, and responsible revision.\n\n## Student Activity\nStudents annotate claims, mark what needs verification, identify possible bias, and rewrite the response with stronger evidence.\n\n## Prompt Library\nPrompt stems ask students what claim the AI is making, what evidence is needed, and how they would verify the result.\n\n## AI Evaluation Rubric\nFour-level rubric assesses claim checking, evidence quality, missing context, bias detection, and revision recommendations.\n\n## Differentiation and Accessibility\nIncludes sentence frames, vocabulary support, partner discussion, and extension challenge.',
+  },
+  {
+    title: 'No-Student-AI Classroom Version',
+    mode: 'curriculum-pack',
+    description: 'Printable AI literacy lesson for schools where students cannot use AI tools.',
+    content: '## Lesson Snapshot\nNo-student-AI lesson using teacher-provided examples, discussion scenarios, printable handouts, and exit-ticket reflection.\n\n## AI Use Guardrails\nStudents do not enter prompts or data into AI tools. Teacher uses prepared examples only. No private student information is used.\n\n## Policy Alignment Summary\nDesigned for restrictive policies with teacher review, family/admin language, AI disclosure notes, and privacy reminders.\n\n## Student Activity\nStudents compare possible AI uses, identify risks, and recommend responsible-use rules.\n\n## Teacher Implementation Checklist\nPrint examples, review policy language, prepare discussion norms, and collect exit-ticket evidence.',
   },
   {
     title: 'Intro AI Technology Course',
@@ -605,6 +698,7 @@ function CurriculumPackBuilder({
   const selectedReadingSupport = readingSupportOptions.find((option) => option.value === settings.readingSupport) ?? readingSupportOptions[0];
   const selectedPromptLibrary = promptLibraryOptions.find((option) => option.value === settings.promptLibraryPreset) ?? promptLibraryOptions[0];
   const selectedRubricFocus = rubricFocusOptions.find((option) => option.value === settings.rubricFocus) ?? rubricFocusOptions[0];
+  const standardsSuggestions = getStandardsSuggestions(settings.subjectContext, settings.standardsTarget, settings.gradeLevel);
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
@@ -642,6 +736,7 @@ function CurriculumPackBuilder({
       `Reading level: ${settings.readingLevel}`,
       `Subject/context: ${settings.subjectContext}`,
       `Standards target: ${settings.standardsTarget}`,
+      `Suggested standards/outcomes to align: ${standardsSuggestions.join(' | ')}`,
       `Time available: ${settings.timeAvailable}`,
       `Class format: ${settings.classFormat}`,
       `Student AI access level: ${labelFromValue(settings.studentAiAccessLevel)} - ${studentAccessNotes[settings.studentAiAccessLevel]}`,
@@ -660,6 +755,7 @@ function CurriculumPackBuilder({
       '',
       'Return a teacher-ready package with these headings: ## Lesson Snapshot, ## Standards / Outcomes Alignment Matrix, ## Lesson Plan, ## Student Activity, ## Worksheet, ## Quiz, ## Rubric, ## AI Use Guardrails, ## Differentiation and Accessibility, ## Slide Deck Outline, ## Family / Admin Note, ## Teacher Implementation Checklist.',
       'For the alignment matrix, map objectives to activities, assessments, and evidence of learning.',
+      'Use the suggested standards/outcomes where relevant, but label them as draft alignment suggestions for educator review.',
       'For the prompt library, include teacher-facing setup notes and student-facing prompt stems that match the selected AI access level.',
       'For the rubric, include four clear performance levels and the selected AI-output evaluation criteria.',
       'For accessibility, include the selected reading/accessibility support as concrete student-facing adjustments.',
@@ -729,6 +825,11 @@ function CurriculumPackBuilder({
           <div className="mt-5">
             <LiteracyComponentStrip />
           </div>
+          <StandardsAlignmentPreview
+            subject={settings.subjectContext}
+            standardsTarget={settings.standardsTarget}
+            suggestions={standardsSuggestions}
+          />
         </Panel>
       ),
     },
@@ -790,6 +891,7 @@ function CurriculumPackBuilder({
     ['Output', selectedPack?.label ?? 'Full Lesson Pack'],
     ['Prompt library', selectedPromptLibrary.label],
     ['Rubric', selectedRubricFocus.label],
+    ['Standards', `${settings.standardsTarget}: ${standardsSuggestions.length} suggestions`],
     ['AI literacy', aiLiteracyComponents.join(', ')],
   ];
 
@@ -1523,6 +1625,37 @@ function LiteracyComponentStrip() {
   );
 }
 
+function StandardsAlignmentPreview({
+  subject,
+  standardsTarget,
+  suggestions,
+}: {
+  subject: string;
+  standardsTarget: string;
+  suggestions: string[];
+}) {
+  return (
+    <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <CheckCircle2 className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">Standards / Outcomes Suggestions</h4>
+          <p className="text-xs leading-5 text-slate-600">
+            Draft suggestions for {subject} using {standardsTarget}. Final alignment should be reviewed by the educator or school.
+          </p>
+        </div>
+      </div>
+      <div className="space-y-2">
+        {suggestions.map((suggestion) => (
+          <div key={suggestion} className="rounded-md border border-slate-200 bg-white p-2 text-xs leading-5 text-slate-700">
+            {suggestion}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function PolicyCheckPanel({
   value,
   onChange,
@@ -1687,6 +1820,10 @@ function SourceContextPanel({
           <Upload className="h-4 w-4" />
           Upload source files
         </span>
+        <div className="mb-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+          <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+          <span>Privacy check: remove student names, grades, IEP/504 details, family information, and other personally identifiable information before uploading.</span>
+        </div>
         <input
           type="file"
           multiple
@@ -1721,7 +1858,7 @@ function SourceContextPanel({
                 placeholder="Add an outcome, standard, skill, or CQI evidence note..."
                 className="min-h-10 flex-1 rounded-md border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
               />
-              <button type="button" onClick={addLibraryItem} className="rounded-md bg-blue-700 px-3 text-sm font-semibold text-white hover:bg-blue-800">
+              <button type="button" onClick={addLibraryItem} className="rounded-md bg-blue-700 px-3 text-sm font-semibold text-white hover:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                 Add
               </button>
             </div>
@@ -1833,7 +1970,7 @@ function SegmentedOptions({ value, onChange, options }: { value: string; onChang
           key={option.value}
           type="button"
           onClick={() => onChange(option.value)}
-          className={`rounded-lg border p-3 text-left text-sm font-semibold transition ${
+          className={`rounded-lg border p-3 text-left text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
             value === option.value ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 text-slate-700 hover:border-slate-300'
           }`}
         >
@@ -1859,17 +1996,19 @@ function CardOptions({
     <div className="mb-4 grid gap-3 sm:grid-cols-2">
       {options.map((option) => {
         const details = detailKey === 'deliverables' ? option.deliverables : option.includedOutputs;
+        const description = option.description ?? deliverableDescriptions[option.value];
         return (
           <button
             key={option.value}
             type="button"
             onClick={() => onChange(option.value)}
-            className={`rounded-lg border p-3 text-left transition ${
+            className={`rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
               value === option.value ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 text-slate-700 hover:border-slate-300'
             }`}
           >
             <strong className="block">{option.label}</strong>
-            <span className="mt-1 block text-xs text-slate-500">{(details ?? []).slice(0, 3).map(labelFromValue).join(', ')}</span>
+            {description && <span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span>}
+            <span className="mt-2 block text-xs font-medium text-slate-500">{(details ?? []).slice(0, 4).map(labelFromValue).join(', ')}</span>
           </button>
         );
       })}
@@ -1936,7 +2075,8 @@ function GeneratedOutput({
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
       'Preserve useful existing content, but rewrite the package as one complete improved version.',
-      'Add any missing outcomes alignment, assessment evidence, AI-use guardrails, accessibility supports, slide/presentation path, and implementation notes.',
+      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, and implementation notes.',
+      'Include a Policy Alignment Summary when privacy, family/admin language, or AI-use guardrails are missing.',
       'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
       '',
       'Current package:',
@@ -2126,6 +2266,7 @@ function SavedPackagesPanel({
 
 function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {
   const score = checks.filter((check) => check.met).length;
+  const missing = checks.filter((check) => !check.met);
 
   return (
     <aside className="h-fit rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -2146,6 +2287,14 @@ function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {
           </div>
         ))}
       </div>
+      {missing.length > 0 && (
+        <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3">
+          <div className="text-xs font-bold uppercase text-amber-900">Gaps to fix</div>
+          <p className="mt-1 text-xs leading-5 text-amber-900">
+            {missing.map((check) => check.label).join(', ')}
+          </p>
+        </div>
+      )}
       <p className="mt-3 text-xs leading-5 text-slate-600">
         Use this as a quick QA pass before sharing with teachers, faculty, administrators, or advisory partners.
       </p>
@@ -2210,6 +2359,21 @@ function labelFromValue(value: string) {
     .replace(/\bCqi\b/g, 'CQI')
     .replace(/\bHyflex\b/g, 'HyFlex')
     .replace(/\bFerpa\b/g, 'FERPA');
+}
+
+function getStandardsSuggestions(subject: string, standardsTarget: string, gradeLevel: string): string[] {
+  const subjectSuggestions = standardsSuggestionLibrary[subject] ?? standardsSuggestionLibrary['AI Literacy'];
+  const gradeBand = Number(gradeLevel) <= 8 ? 'middle-grade' : Number(gradeLevel) >= 11 ? 'upper-grade' : 'high-school';
+  const targetNote =
+    standardsTarget === 'None'
+      ? 'Local alignment optional: use as draft outcomes instead of formal standards.'
+      : `${standardsTarget} alignment note: verify exact local wording before sharing externally.`;
+
+  return [
+    targetNote,
+    `${gradeBand} outcome: students explain AI limits, verify outputs, and document responsible choices.`,
+    ...subjectSuggestions,
+  ].slice(0, 5);
 }
 
 function normalizeStandards(value: string): ClassroomConfig['standards']['type'] {
