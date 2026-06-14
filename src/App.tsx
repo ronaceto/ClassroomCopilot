@@ -17,6 +17,7 @@ import {
   Eye,
   Languages,
   LockKeyhole,
+  Menu,
   Library,
   Layers3,
   LibraryBig,
@@ -30,6 +31,7 @@ import {
   Sparkles,
   Trash2,
   Upload,
+  X,
 } from 'lucide-react';
 import { useChat } from './hooks/useChat';
 import { ClassroomConfig } from './types';
@@ -1145,6 +1147,8 @@ const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [helpCenterOpen, setHelpCenterOpen] = useState(false);
   const [fontScale, setFontScale] = useState<FontScale>('standard');
   const [highContrast, setHighContrast] = useState(false);
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
@@ -1215,7 +1219,26 @@ function App() {
             </div>
           </div>
 
-          <nav className="grid grid-cols-3 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1" aria-label="Builder modes">
+          <div className="flex items-center gap-2 lg:hidden">
+            <button
+              type="button"
+              onClick={() => setHelpCenterOpen(true)}
+              className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+            >
+              Help
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((current) => !current)}
+              className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Open builder menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </div>
+
+          <nav className="hidden grid-cols-3 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1 lg:grid" aria-label="Builder modes">
             {modes.map((mode) => {
               const Icon = mode.icon;
               return (
@@ -1233,7 +1256,37 @@ function App() {
               );
             })}
           </nav>
+          <button
+            type="button"
+            onClick={() => setHelpCenterOpen(true)}
+            className="hidden min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 lg:inline-flex"
+          >
+            Help Center
+          </button>
         </div>
+        {mobileMenuOpen && (
+          <nav className="mx-auto mt-3 grid max-w-7xl gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 lg:hidden" aria-label="Mobile builder modes">
+            {modes.map((mode) => {
+              const Icon = mode.icon;
+              return (
+                <button
+                  key={mode.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveMode(mode.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
+                    activeMode === mode.id ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {mode.label}
+                </button>
+              );
+            })}
+          </nav>
+        )}
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
@@ -1245,7 +1298,6 @@ function App() {
           onHighContrastChange={setHighContrast}
         />
         <FinishLineToolkit settings={finishLineSettings} onChange={updateFinishLineSetting} />
-        <TeacherSupportCenter />
         <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
@@ -1268,6 +1320,8 @@ function App() {
           onDeletePackage={deletePackage}
         />
       </main>
+
+      <TeacherSupportCenter open={helpCenterOpen} onClose={() => setHelpCenterOpen(false)} />
 
       {debugInfo && (
         <div className="fixed bottom-20 right-4 z-40 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white shadow-lg sm:max-w-md">
@@ -2210,6 +2264,7 @@ function FinishLineToolkit({
   settings: FinishLineSettings;
   onChange: (key: keyof FinishLineSettings, value: string) => void;
 }) {
+  const [open, setOpen] = useState(false);
   const selectedLanguage = languageSupportOptions.find((option) => option.value === settings.languageSupport) ?? languageSupportOptions[1];
   const selectedIep = iepSupportOptions.find((option) => option.value === settings.iepSupport) ?? iepSupportOptions[1];
   const selectedSandbox = sandboxLabOptions.find((option) => option.value === settings.sandboxLab) ?? sandboxLabOptions[1];
@@ -2220,58 +2275,66 @@ function FinishLineToolkit({
 
   return (
     <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Finish line platform toolkit">
-      <div className="mb-4 flex items-start gap-2">
-        <Sparkles className="mt-0.5 h-5 w-5 text-blue-700" />
-        <div>
-          <h3 className="font-bold text-slate-950">Finish Line Toolkit</h3>
-          <p className="text-xs leading-5 text-slate-600">
-            Turn each package into a platform-ready artifact with language access, accommodations, sandbox labs, analytics, LMS integration planning, PD, and teacher collaboration.
-          </p>
-        </div>
-      </div>
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        <SelectField label="Language access" value={settings.languageSupport} onChange={(value) => onChange('languageSupport', value)} options={languageSupportOptions} help={selectedLanguage.description} />
-        <SelectField label="IEP / 504 supports" value={settings.iepSupport} onChange={(value) => onChange('iepSupport', value)} options={iepSupportOptions} help={selectedIep.description} />
-        <SelectField label="Sandbox lab" value={settings.sandboxLab} onChange={(value) => onChange('sandboxLab', value)} options={sandboxLabOptions} help={selectedSandbox.description} />
-        <SelectField label="Analytics / CQI" value={settings.analyticsPlan} onChange={(value) => onChange('analyticsPlan', value)} options={analyticsPlanOptions} help={selectedAnalytics.description} />
-        <SelectField label="LMS integration" value={settings.lmsPlugin} onChange={(value) => onChange('lmsPlugin', value)} options={lmsPluginOptions} help={selectedLms.description} />
-        <SelectField label="Teacher PD" value={settings.professionalLearning} onChange={(value) => onChange('professionalLearning', value)} options={professionalLearningOptions} help={selectedPd.description} />
-      </div>
-      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <SelectField label="Teacher community" value={settings.communityWorkflow} onChange={(value) => onChange('communityWorkflow', value)} options={communityWorkflowOptions} help={selectedCommunity.description} />
-        <div className="mt-3 grid gap-2 md:grid-cols-2">
-          {[selectedLanguage, selectedIep, selectedSandbox, selectedAnalytics, selectedLms, selectedPd, selectedCommunity].map((option) => (
-            <div key={option.value} className="rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
-              <span className="font-bold text-slate-950">{option.label}:</span> {option.description}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TeacherSupportCenter() {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Help center, professional development, tutorials, and community support">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
         className="flex w-full items-center justify-between gap-3 text-left"
+        aria-expanded={open}
       >
         <span className="flex items-start gap-2">
-          <HelpCircle className="mt-0.5 h-5 w-5 text-blue-700" />
+          <Sparkles className="mt-0.5 h-5 w-5 text-blue-700" />
           <span>
-            <span className="block font-bold text-slate-950">Help Center and Teacher PD</span>
-            <span className="text-xs leading-5 text-slate-600">Tutorials, short-video guides, PD modules, and peer-support prompts for teaching AI literacy with confidence.</span>
+            <span className="block font-bold text-slate-950">Advanced Options</span>
+            <span className="text-xs leading-5 text-slate-600">Language access, IEP/504 supports, sandbox settings, analytics, LMS, PD, and community workflow.</span>
           </span>
         </span>
         <span className="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-800">{open ? 'Hide' : 'Show'}</span>
       </button>
       {open && (
-        <div className="mt-4 space-y-4">
+        <div className="mt-4">
+          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            <SelectField label="Language access" value={settings.languageSupport} onChange={(value) => onChange('languageSupport', value)} options={languageSupportOptions} help={selectedLanguage.description} />
+            <SelectField label="IEP / 504 supports" value={settings.iepSupport} onChange={(value) => onChange('iepSupport', value)} options={iepSupportOptions} help={selectedIep.description} />
+            <SelectField label="Sandbox lab" value={settings.sandboxLab} onChange={(value) => onChange('sandboxLab', value)} options={sandboxLabOptions} help={selectedSandbox.description} />
+            <SelectField label="Analytics / CQI" value={settings.analyticsPlan} onChange={(value) => onChange('analyticsPlan', value)} options={analyticsPlanOptions} help={selectedAnalytics.description} />
+            <SelectField label="LMS integration" value={settings.lmsPlugin} onChange={(value) => onChange('lmsPlugin', value)} options={lmsPluginOptions} help={selectedLms.description} />
+            <SelectField label="Teacher PD" value={settings.professionalLearning} onChange={(value) => onChange('professionalLearning', value)} options={professionalLearningOptions} help={selectedPd.description} />
+          </div>
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <SelectField label="Teacher community" value={settings.communityWorkflow} onChange={(value) => onChange('communityWorkflow', value)} options={communityWorkflowOptions} help={selectedCommunity.description} />
+            <div className="mt-3 grid gap-2 md:grid-cols-2">
+              {[selectedLanguage, selectedIep, selectedSandbox, selectedAnalytics, selectedLms, selectedPd, selectedCommunity].map((option) => (
+                <div key={option.value} className="rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
+                  <span className="font-bold text-slate-950">{option.label}:</span> {option.description}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function TeacherSupportCenter({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="help-center-title">
+      <aside className="ml-auto h-full w-full max-w-3xl overflow-y-auto bg-white p-5 shadow-xl">
+        <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+          <div className="flex items-start gap-2">
+            <HelpCircle className="mt-0.5 h-5 w-5 text-blue-700" />
+            <div>
+              <h2 id="help-center-title" className="text-xl font-bold text-slate-950">Help Center and Teacher PD</h2>
+              <p className="text-xs leading-5 text-slate-600">Tutorials, short-video guides, PD modules, and peer-support prompts for teaching AI literacy with confidence.</p>
+            </div>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-200 p-2 text-slate-500 hover:text-slate-950" aria-label="Close Help Center">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="space-y-4">
           <div className="grid gap-3 xl:grid-cols-4">
             {helpCenterTutorials.map((tutorial) => (
               <div key={tutorial.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
@@ -2364,8 +2427,8 @@ function TeacherSupportCenter() {
             </div>
           </div>
         </div>
-      )}
-    </section>
+      </aside>
+    </div>
   );
 }
 
@@ -2630,101 +2693,161 @@ function BuilderFrame({
 }) {
   const canGoBack = Boolean(steps && onStepChange && activeStep > 0);
   const canGoNext = Boolean(steps && onStepChange && activeStep < steps.length - 1);
+  const [previewOpen, setPreviewOpen] = useState(() => localStorage.getItem('classroomCopilot.previewOpen.v1') !== 'false');
+
+  useEffect(() => {
+    localStorage.setItem('classroomCopilot.previewOpen.v1', String(previewOpen));
+  }, [previewOpen]);
 
   return (
     <section className="mb-6">
-      {steps ? (
-        <StepProgress steps={steps} activeStep={activeStep} onStepChange={onStepChange} />
-      ) : (
-        <WorkflowMap />
-      )}
-      <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className={steps ? 'grid gap-5 xl:grid-cols-[220px_minmax(0,1fr)]' : ''}>
+        {steps ? (
+          <StepProgress steps={steps} activeStep={activeStep} onStepChange={onStepChange} />
+        ) : (
+          <WorkflowMap />
+        )}
         <div>
-          <p className="mb-2 text-xs font-bold uppercase text-blue-800">{eyebrow}</p>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
-          <p className="mt-2 max-w-3xl text-slate-600">{subtitle}</p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          {onSaveDraft && (
-            <button
-              type="button"
-              onClick={onSaveDraft}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:text-blue-800"
-            >
-              Save Draft
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={onBuild}
-            disabled={isLoading}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <Sparkles className="h-4 w-4" />
-            {isLoading ? 'Building...' : buttonLabel}
-          </button>
-        </div>
-      </div>
-      {draftStatus && <p className="-mt-3 mb-4 text-xs font-semibold text-slate-500">{draftStatus}</p>}
-
-      <div className="mb-5 grid overflow-hidden rounded-lg bg-slate-900 text-white lg:grid-cols-4">
-        {summary.map(([label, value]) => (
-          <div key={label} className="border-b border-white/10 p-4 lg:border-b-0 lg:border-r lg:last:border-r-0">
-            <span className="block text-xs text-slate-300">{label}</span>
-            <strong className="mt-1 block text-sm leading-5">{value}</strong>
-          </div>
-        ))}
-      </div>
-
-      {steps && previewItems ? (
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-          <div>
-            <StepAssistance stepTitle={steps[activeStep]?.title ?? ''} />
-            {children}
-            <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <button
-                type="button"
-                onClick={() => onStepChange?.(Math.max(activeStep - 1, 0))}
-                disabled={!canGoBack}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Back
-              </button>
-              {canGoNext ? (
+          <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase text-blue-800">{eyebrow}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
+              <p className="mt-2 max-w-3xl text-slate-600">{subtitle}</p>
+            </div>
+            <div className="hidden flex-col gap-2 sm:flex-row sm:items-center lg:flex">
+              {onSaveDraft && (
                 <button
                   type="button"
-                  onClick={() => onStepChange?.(Math.min(activeStep + 1, steps.length - 1))}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800"
+                  onClick={onSaveDraft}
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:text-blue-800"
                 >
-                  Next
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onBuild}
-                  disabled={isLoading}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  {isLoading ? 'Building...' : buttonLabel}
+                  Save Draft
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => setPreviewOpen((current) => !current)}
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:text-blue-800"
+              >
+                {previewOpen ? 'Hide Preview' : 'Show Preview'}
+              </button>
+              <button
+                type="button"
+                onClick={onBuild}
+                disabled={isLoading}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Sparkles className="h-4 w-4" />
+                {isLoading ? 'Building...' : buttonLabel}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="fixed bottom-6 right-4 z-30 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-lg transition hover:border-blue-300 hover:text-blue-800"
-            >
-              Back to top
-            </button>
           </div>
-          <LivePreview title={previewTitle} items={previewItems} steps={steps} activeStep={activeStep} />
+          {draftStatus && <p className="-mt-3 mb-4 text-xs font-semibold text-slate-500">{draftStatus}</p>}
+
+          <div className="mb-5 grid overflow-hidden rounded-lg bg-slate-900 text-white lg:grid-cols-4">
+            {summary.map(([label, value]) => (
+              <div key={label} className="border-b border-white/10 p-4 lg:border-b-0 lg:border-r lg:last:border-r-0">
+                <span className="block text-xs text-slate-300">{label}</span>
+                <strong className="mt-1 block text-sm leading-5">{value}</strong>
+              </div>
+            ))}
+          </div>
+
+          {steps && previewItems ? (
+            <div className={`grid gap-5 ${previewOpen ? 'xl:grid-cols-[minmax(0,1fr)_320px]' : ''}`}>
+              <div>
+                <StepAssistance stepTitle={steps[activeStep]?.title ?? ''} />
+                {children}
+                <div className="mt-4 flex flex-col-reverse gap-3 pb-20 sm:flex-row sm:items-center sm:justify-between lg:pb-0">
+                  <button
+                    type="button"
+                    onClick={() => onStepChange?.(Math.max(activeStep - 1, 0))}
+                    disabled={!canGoBack}
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back
+                  </button>
+                  {canGoNext ? (
+                    <button
+                      type="button"
+                      onClick={() => onStepChange?.(Math.min(activeStep + 1, steps.length - 1))}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onBuild}
+                      disabled={isLoading}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-blue-700 px-4 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {isLoading ? 'Building...' : buttonLabel}
+                    </button>
+                  )}
+                </div>
+                <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 gap-2 border-t border-slate-200 bg-white p-3 shadow-lg lg:hidden">
+                  <button
+                    type="button"
+                    onClick={() => onStepChange?.(Math.max(activeStep - 1, 0))}
+                    disabled={!canGoBack}
+                    className="min-h-10 rounded-md border border-slate-300 text-sm font-semibold text-slate-700 disabled:opacity-40"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewOpen((current) => !current)}
+                    className="min-h-10 rounded-md border border-slate-300 text-sm font-semibold text-slate-700"
+                  >
+                    Preview
+                  </button>
+                  {onSaveDraft && (
+                    <button
+                      type="button"
+                      onClick={onSaveDraft}
+                      className="min-h-10 rounded-md border border-slate-300 text-sm font-semibold text-slate-700"
+                    >
+                      Save
+                    </button>
+                  )}
+                  {canGoNext ? (
+                    <button
+                      type="button"
+                      onClick={() => onStepChange?.(Math.min(activeStep + 1, steps.length - 1))}
+                      className="min-h-10 rounded-md bg-blue-700 text-sm font-semibold text-white"
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onBuild}
+                      disabled={isLoading}
+                      className="min-h-10 rounded-md bg-blue-700 text-sm font-semibold text-white disabled:opacity-60"
+                    >
+                      Build
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="fixed bottom-20 right-4 z-30 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-lg transition hover:border-blue-300 hover:text-blue-800 lg:bottom-6"
+                >
+                  Back to top
+                </button>
+              </div>
+              {previewOpen && <LivePreview title={previewTitle} items={previewItems} steps={steps} activeStep={activeStep} />}
+            </div>
+          ) : (
+            children
+          )}
         </div>
-      ) : (
-        children
-      )}
+      </div>
     </section>
   );
 }
@@ -2739,7 +2862,7 @@ function StepProgress({
   onStepChange?: (step: number) => void;
 }) {
   return (
-    <nav className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 md:grid-cols-3 xl:grid-cols-6" aria-label="Build progress">
+    <nav className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 md:grid-cols-3 xl:sticky xl:top-32 xl:mb-0 xl:h-fit xl:grid-cols-1" aria-label="Build progress">
       {steps.map((step, index) => {
         const isActive = index === activeStep;
         return (
@@ -2756,9 +2879,9 @@ function StepProgress({
             }`}>
               {step.complete ? <CheckCircle2 className="h-3.5 w-3.5" /> : index + 1}
             </span>
-            <span>
+            <span className="min-w-0">
               <span className="block">{step.title}</span>
-              <span className={`mt-0.5 block text-[11px] font-medium leading-4 ${isActive ? 'text-blue-50' : 'text-slate-500'}`}>{step.description}</span>
+              <span className={`mt-0.5 hidden text-[11px] font-medium leading-4 sm:block ${isActive ? 'text-blue-50' : 'text-slate-500'}`}>{step.description}</span>
             </span>
           </button>
         );
