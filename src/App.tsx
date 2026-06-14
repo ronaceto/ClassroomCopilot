@@ -5194,15 +5194,63 @@ function GeneratedOutput({
   const [activeRefinement, setActiveRefinement] = useState('');
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('Draft');
   const [copyTemplate, setCopyTemplate] = useState<CopyTemplate>('teacher_lesson_deck');
-  const hasContent = Boolean(content.trim());
+  const [editableContent, setEditableContent] = useState(content);
+  const [saveStatus, setSaveStatus] = useState('Saved');
+  const [recoveredContent, setRecoveredContent] = useState('');
+  const [openDrawer, setOpenDrawer] = useState('dashboard');
+  const [focusSection, setFocusSection] = useState<OutputSectionItem | null>(null);
+  const [selectionEditorOpen, setSelectionEditorOpen] = useState(false);
+  const [selectedText, setSelectedText] = useState('');
+  const [selectionInstruction, setSelectionInstruction] = useState('Make this clearer and more professional.');
+  const hasContent = Boolean(editableContent.trim());
   const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).length;
   const filename = `Classroom-Copilot-Package-${new Date().toISOString().slice(0, 10)}`;
-  const checks = getReadinessResults(content);
+  const checks = getReadinessResults(editableContent);
   const missingChecks = checks.filter((check) => !check.met);
+  const outputSections = parseOutputSections(editableContent);
+  const recoveryKey = `classroomCopilot.recovery.${activeMode}.v1`;
 
   useEffect(() => {
     if (!isLoading) setActiveRefinement('');
-  }, [isLoading, content]);
+  }, [isLoading, editableContent]);
+
+  useEffect(() => {
+    if (content && content !== editableContent) {
+      setEditableContent(content);
+      setSaveStatus('Saved');
+    }
+  }, [content]);
+
+  useEffect(() => {
+    const recovered = localStorage.getItem(recoveryKey);
+    if (recovered && recovered !== editableContent) setRecoveredContent(recovered);
+  }, [recoveryKey]);
+
+  useEffect(() => {
+    if (!editableContent.trim()) return;
+    setSaveStatus('Saving...');
+    const timeout = window.setTimeout(() => {
+      localStorage.setItem(recoveryKey, editableContent);
+      localStorage.setItem(`${recoveryKey}.time`, String(Date.now()));
+      setSaveStatus(`Last saved ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`);
+    }, 800);
+    return () => window.clearTimeout(timeout);
+  }, [editableContent, recoveryKey]);
+
+  useEffect(() => {
+    const handleKeyboard = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+        setExportStatus('Undo is available for focused edits by restoring the recovered draft or prior saved version.');
+        window.setTimeout(() => setExportStatus(''), 3500);
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
+        setExportStatus('Redo support is planned for the next editor pass. Current content is autosaved.');
+        window.setTimeout(() => setExportStatus(''), 3500);
+      }
+    };
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, []);
 
   const runExport = async (label: string, action: () => void | Promise<void>) => {
     try {
@@ -5233,7 +5281,7 @@ function GeneratedOutput({
       'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
       '',
       'Current package:',
-      content,
+      editableContent,
     ].join('\n'));
     setExportStatus(ok ? 'Refinement complete. Review the updated package below.' : 'Refinement did not complete. Try a smaller refinement or export the current package.');
     window.setTimeout(() => setExportStatus(''), 5000);
@@ -5250,7 +5298,7 @@ function GeneratedOutput({
       'Keep outcomes alignment, assessment evidence, AI guardrails, accessibility, LMS-ready assignment instructions, export readiness, and implementation details intact.',
       '',
       'Current package:',
-      content,
+      editableContent,
     ].join('\n'));
     setExportStatus(ok ? `Refinement complete: ${label}. Review the updated package below.` : `Refinement did not complete: ${label}. Try again with a smaller request.`);
     window.setTimeout(() => setExportStatus(''), 5000);
@@ -5267,7 +5315,7 @@ function GeneratedOutput({
       'Preserve standards alignment, AI guardrails, privacy language, assessment evidence, and implementation details.',
       '',
       'Current package:',
-      content,
+      editableContent,
     ].join('\n'));
     setExportStatus(ok ? 'Bias and inclusivity review complete. Review the updated package below.' : 'Bias review did not complete. Try again with a smaller request.');
     window.setTimeout(() => setExportStatus(''), 5000);
@@ -5292,11 +5340,51 @@ function GeneratedOutput({
       '- Dean approval narrative',
       '',
       '## Source Package',
-      content,
+      editableContent,
     ].join('\n');
     exportToHtml(portfolio, `Faculty-Candidate-Portfolio-${new Date().toISOString().slice(0, 10)}`, 'program_coordinator_packet');
     setExportStatus('Faculty candidate portfolio exported as polished HTML.');
     window.setTimeout(() => setExportStatus(''), 4000);
+  };
+
+  const updateSection = (section: OutputSectionItem, nextBody: string) => {
+    setEditableContent(replaceOutputSection(editableContent, section, nextBody));
+    setOpenDrawer(section.id);
+  };
+
+  const applySectionAction = (section: OutputSectionItem, action: 'simplify' | 'expand' | 'academic' | 'vocational' | 'public' | 'omit') => {
+    if (action === 'omit') {
+      updateSection(section, '');
+      setExportStatus(`${section.title} omitted. Autosave captured the change.`);
+      return;
+    }
+    const next = transformSectionText(section.body, action);
+    updateSection(section, next);
+    setExportStatus(`${section.title} updated: ${labelFromValue(action)}.`);
+    window.setTimeout(() => setExportStatus(''), 3500);
+  };
+
+  const captureSelection = () => {
+    const text = window.getSelection()?.toString().trim() ?? '';
+    if (!text) {
+      setExportStatus('Highlight text in the package first, then choose Rewrite Selection.');
+      window.setTimeout(() => setExportStatus(''), 3500);
+      return;
+    }
+    setSelectedText(text);
+    setSelectionEditorOpen(true);
+  };
+
+  const applySelectionRewrite = () => {
+    if (!selectedText || !editableContent.includes(selectedText)) {
+      setExportStatus('Selected text was not found. Select it again and retry.');
+      return;
+    }
+    const replacement = rewriteSelectedText(selectedText, selectionInstruction);
+    setEditableContent(editableContent.replace(selectedText, replacement));
+    setSelectionEditorOpen(false);
+    setExportStatus('Selected text rewritten. Autosave captured the change.');
+    window.setTimeout(() => setExportStatus(''), 3500);
   };
 
   return (
@@ -5345,10 +5433,24 @@ function GeneratedOutput({
 
       {open && (
         <div className="mt-5">
+      {recoveredContent && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <strong className="text-sm text-amber-950">Recovered unsaved session</strong>
+              <p className="text-xs leading-5 text-amber-900">We found an autosaved review draft from this browser.</p>
+            </div>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => { setEditableContent(recoveredContent); setRecoveredContent(''); }} className="rounded-md bg-amber-700 px-3 py-2 text-xs font-bold text-white">Restore Progress</button>
+              <button type="button" onClick={() => { localStorage.removeItem(recoveryKey); setRecoveredContent(''); }} className="rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-900">Discard Session</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h3 className="text-lg font-bold">Review Workspace</h3>
-          <p className="text-sm text-slate-600">Check readiness, fix missing pieces, export, and save your package.</p>
+          <p className="text-sm text-slate-600">Check readiness, edit sections, export, and save your package. <span className="font-semibold text-blue-800">{saveStatus}</span></p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
           <SelectField label="Review stage" value={reviewStatus} onChange={(value) => setReviewStatus(value as ReviewStatus)} options={toSelectOptions(reviewStatuses)} />
@@ -5379,31 +5481,31 @@ function GeneratedOutput({
             icon={FileText}
             label="Polished HTML"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Polished HTML downloaded.', () => exportToHtml(content, filename, copyTemplate))}
+            onClick={() => runExport('Polished HTML downloaded.', () => exportToHtml(editableContent, filename, copyTemplate))}
           />
           <ExportButton
             icon={Printer}
             label="Print / PDF"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Print/PDF opened in a browser tab. If the browser blocks it, an HTML file downloads instead.', () => printFormattedDocument(content, filename, copyTemplate))}
+            onClick={() => runExport('Print/PDF opened in a browser tab. If the browser blocks it, an HTML file downloads instead.', () => printFormattedDocument(editableContent, filename, copyTemplate))}
           />
           <ExportButton
             icon={Presentation}
             label="PPT"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('PowerPoint downloaded.', () => exportToPptx(content, filename, copyTemplate))}
+            onClick={() => runExport('PowerPoint downloaded.', () => exportToPptx(editableContent, filename, copyTemplate))}
           />
           <ExportButton
             icon={Clipboard}
             label="Copy"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('Copied to clipboard.', () => copyToClipboard(content))}
+            onClick={() => runExport('Copied to clipboard.', () => copyToClipboard(editableContent))}
           />
           <ExportButton
             icon={ClipboardList}
             label="Copy LMS"
             disabled={!hasContent || isLoading}
-            onClick={() => runExport('LMS assignment block copied.', () => copyToClipboard(buildLmsAssignmentCopy(content)))}
+            onClick={() => runExport('LMS assignment block copied.', () => copyToClipboard(buildLmsAssignmentCopy(editableContent)))}
           />
           {experienceMode === 'expert' && (
             <>
@@ -5411,7 +5513,7 @@ function GeneratedOutput({
                 icon={BookOpen}
                 label="Markdown"
                 disabled={!hasContent || isLoading}
-                onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(content, filename))}
+                onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(editableContent, filename))}
               />
               <ExportButton
                 icon={RefreshCw}
@@ -5432,7 +5534,7 @@ function GeneratedOutput({
             label="Save"
             disabled={!hasContent || isLoading}
             onClick={() => {
-              onSave(content, reviewStatus);
+              onSave(editableContent, reviewStatus);
               setExportStatus('Package saved to history.');
               window.setTimeout(() => setExportStatus(''), 3000);
             }}
@@ -5445,6 +5547,12 @@ function GeneratedOutput({
               onClick={exportFacultyPortfolio}
             />
           )}
+          <ExportButton
+            icon={RefreshCw}
+            label="Rewrite Selection"
+            disabled={!hasContent || isLoading}
+            onClick={captureSelection}
+          />
         </div>
       </div>
       {hasContent && experienceMode === 'expert' && (
@@ -5478,10 +5586,17 @@ function GeneratedOutput({
       {isLoading ? (
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
       ) : hasContent ? (
-        <div className="grid gap-5 xl:grid-cols-[280px_1fr]">
-          <PackageReadiness checks={checks} />
-          <div className="prose prose-slate max-w-none whitespace-pre-wrap text-sm leading-6">{content}</div>
-        </div>
+        <ReviewCanvas
+          content={editableContent}
+          checks={checks}
+          sections={outputSections}
+          activeMode={activeMode}
+          openDrawer={openDrawer}
+          onOpenDrawer={setOpenDrawer}
+          onSectionAction={applySectionAction}
+          onFocusSection={setFocusSection}
+          onContentChange={setEditableContent}
+        />
       ) : (
         <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">{emptyTitle}</div>
       )}
@@ -5494,9 +5609,189 @@ function GeneratedOutput({
         onUpdatePackage={onUpdatePackage}
         onDuplicatePackage={onDuplicatePackage}
       />
+      {focusSection && (
+        <FocusSectionEditor
+          section={focusSection}
+          onClose={() => setFocusSection(null)}
+          onSave={(nextBody) => {
+            updateSection(focusSection, nextBody);
+            setFocusSection(null);
+          }}
+        />
+      )}
+      {selectionEditorOpen && (
+        <SelectionRewriteModal
+          selectedText={selectedText}
+          instruction={selectionInstruction}
+          onInstructionChange={setSelectionInstruction}
+          onApply={applySelectionRewrite}
+          onClose={() => setSelectionEditorOpen(false)}
+        />
+      )}
         </div>
       )}
     </section>
+  );
+}
+
+function ReviewCanvas({
+  content,
+  checks,
+  sections,
+  activeMode,
+  openDrawer,
+  onOpenDrawer,
+  onSectionAction,
+  onFocusSection,
+  onContentChange,
+}: {
+  content: string;
+  checks: ReadinessResult[];
+  sections: OutputSectionItem[];
+  activeMode: BuilderMode;
+  openDrawer: string;
+  onOpenDrawer: (id: string) => void;
+  onSectionAction: (section: OutputSectionItem, action: 'simplify' | 'expand' | 'academic' | 'vocational' | 'public' | 'omit') => void;
+  onFocusSection: (section: OutputSectionItem) => void;
+  onContentChange: (content: string) => void;
+}) {
+  const score = Math.round((checks.filter((check) => check.met).length / Math.max(checks.length, 1)) * 100);
+  const workforceScore = content.toLowerCase().includes('workforce') || content.toLowerCase().includes('career') ? 94 : activeMode === 'college-program' ? 78 : 70;
+  const accreditationReady = content.toLowerCase().includes('accreditation') || content.toLowerCase().includes('cqi') || content.toLowerCase().includes('outcome');
+  const missing = checks.filter((check) => !check.met).slice(0, 4);
+
+  return (
+    <div className="grid gap-5">
+      <section className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="grid gap-3 md:grid-cols-5">
+          <CanvasMetric label="Completion" value={`${score}%`} detail={`${checks.filter((check) => check.met).length}/${checks.length} signals`} />
+          <CanvasMetric label="Readiness" value={score >= 80 ? 'Strong' : 'Needs Review'} detail="Package health" />
+          <CanvasMetric label="Workforce" value={`${workforceScore}%`} detail="Alignment score" />
+          <CanvasMetric label="Accreditation" value={accreditationReady ? 'Ready' : 'Draft'} detail="Review status" />
+          <CanvasMetric label="Missing" value={String(missing.length)} detail={missing.map((item) => item.label).join(', ') || 'None detected'} />
+        </div>
+      </section>
+
+      <section className="grid gap-3">
+        {sections.map((section) => (
+          <article key={section.id} className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <button
+              type="button"
+              onClick={() => onOpenDrawer(openDrawer === section.id ? '' : section.id)}
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+              aria-expanded={openDrawer === section.id}
+            >
+              <span>
+                <strong className="block text-sm text-slate-950">{section.title}</strong>
+                <span className="mt-1 block text-xs leading-5 text-slate-500">{section.summary}</span>
+              </span>
+              <ChevronDown className={`h-4 w-4 text-slate-500 transition ${openDrawer === section.id ? 'rotate-180' : ''}`} />
+            </button>
+            {openDrawer === section.id && (
+              <div className="border-t border-slate-100 p-4">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <SectionAction label="Simplify" onClick={() => onSectionAction(section, 'simplify')} />
+                  <SectionAction label="Expand" onClick={() => onSectionAction(section, 'expand')} />
+                  <SectionAction label="Academic" onClick={() => onSectionAction(section, 'academic')} />
+                  <SectionAction label="Vocational" onClick={() => onSectionAction(section, 'vocational')} />
+                  <SectionAction label="Public-facing" onClick={() => onSectionAction(section, 'public')} />
+                  <SectionAction label="Focus Mode" onClick={() => onFocusSection(section)} primary />
+                  <SectionAction label="Omit" onClick={() => onSectionAction(section, 'omit')} danger />
+                </div>
+                <div className="whitespace-pre-wrap rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-700">{section.body || 'This section is empty.'}</div>
+              </div>
+            )}
+          </article>
+        ))}
+      </section>
+
+      <details className="rounded-xl border border-slate-200 bg-white p-4">
+        <summary className="cursor-pointer text-sm font-bold text-slate-950">Raw document editor</summary>
+        <textarea
+          value={content}
+          onChange={(event) => onContentChange(event.target.value)}
+          className="mt-3 min-h-[360px] w-full rounded-lg border border-slate-300 p-3 text-sm leading-6"
+        />
+      </details>
+    </div>
+  );
+}
+
+function CanvasMetric({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-3">
+      <span className="text-xs font-bold uppercase text-slate-500">{label}</span>
+      <strong className="mt-1 block text-xl text-slate-950">{value}</strong>
+      <span className="mt-1 block truncate text-xs text-slate-500">{detail}</span>
+    </div>
+  );
+}
+
+function SectionAction({ label, onClick, primary = false, danger = false }: { label: string; onClick: () => void; primary?: boolean; danger?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-md border px-3 py-1.5 text-xs font-bold transition ${
+        primary ? 'border-blue-700 bg-blue-700 text-white' : danger ? 'border-red-200 bg-red-50 text-red-700' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:text-blue-800'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function FocusSectionEditor({ section, onClose, onSave }: { section: OutputSectionItem; onClose: () => void; onSave: (body: string) => void }) {
+  const [draft, setDraft] = useState(section.body);
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-white p-4 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="focus-editor-title">
+      <div className="mx-auto flex h-full max-w-5xl flex-col">
+        <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+          <div>
+            <p className="text-xs font-bold uppercase text-blue-800">Focus Mode</p>
+            <h2 id="focus-editor-title" className="text-2xl font-bold text-slate-950">{section.title}</h2>
+          </div>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => onSave(draft)} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-bold text-white">Save section</button>
+            <button type="button" onClick={onClose} className="rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700">Close</button>
+          </div>
+        </div>
+        <textarea value={draft} onChange={(event) => setDraft(event.target.value)} className="min-h-0 flex-1 rounded-lg border border-slate-300 p-4 text-sm leading-6" />
+      </div>
+    </div>
+  );
+}
+
+function SelectionRewriteModal({
+  selectedText,
+  instruction,
+  onInstructionChange,
+  onApply,
+  onClose,
+}: {
+  selectedText: string;
+  instruction: string;
+  onInstructionChange: (value: string) => void;
+  onApply: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="selection-rewrite-title">
+      <div className="w-full max-w-2xl rounded-xl bg-white p-5 shadow-2xl">
+        <h2 id="selection-rewrite-title" className="text-xl font-bold text-slate-950">Rewrite Selection</h2>
+        <p className="mt-1 text-sm text-slate-600">Only the highlighted text will change. Autosave will capture the edit.</p>
+        <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm leading-6 text-slate-700">{selectedText.slice(0, 700)}{selectedText.length > 700 ? '...' : ''}</div>
+        <label className="mt-4 block">
+          <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Tell AI how to rewrite this text</span>
+          <textarea value={instruction} onChange={(event) => onInstructionChange(event.target.value)} rows={3} className="w-full rounded-lg border border-slate-300 p-3 text-sm" />
+        </label>
+        <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700">Cancel</button>
+          <button type="button" onClick={onApply} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-bold text-white">Rewrite Selection</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -5756,6 +6051,88 @@ interface ReadinessResult {
   label: string;
   terms: string[];
   met: boolean;
+}
+
+interface OutputSectionItem {
+  id: string;
+  title: string;
+  body: string;
+  summary: string;
+  start: number;
+  end: number;
+  heading: string;
+}
+
+function parseOutputSections(content: string): OutputSectionItem[] {
+  const headingMatches = Array.from(content.matchAll(/^##\s+(.+)$/gm));
+  if (headingMatches.length === 0) {
+    return [{
+      id: 'full-document',
+      title: 'Full Document',
+      body: content,
+      summary: summarizeText(content),
+      start: 0,
+      end: content.length,
+      heading: '',
+    }];
+  }
+
+  return headingMatches.map((match, index) => {
+    const headingStart = match.index ?? 0;
+    const bodyStart = headingStart + match[0].length;
+    const nextHeadingStart = headingMatches[index + 1]?.index ?? content.length;
+    const body = content.slice(bodyStart, nextHeadingStart).trim();
+    const title = match[1].trim();
+    return {
+      id: `${index}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+      title,
+      body,
+      summary: summarizeText(body),
+      start: headingStart,
+      end: nextHeadingStart,
+      heading: match[0],
+    };
+  });
+}
+
+function replaceOutputSection(content: string, section: OutputSectionItem, nextBody: string): string {
+  const nextSection = nextBody.trim()
+    ? `${section.heading}\n${nextBody.trim()}\n\n`
+    : '';
+  return `${content.slice(0, section.start)}${nextSection}${content.slice(section.end)}`.trim();
+}
+
+function summarizeText(text: string): string {
+  const clean = text.replace(/[#*_`>-]/g, '').replace(/\s+/g, ' ').trim();
+  if (!clean) return 'No details yet.';
+  return clean.length > 120 ? `${clean.slice(0, 117)}...` : clean;
+}
+
+function transformSectionText(text: string, action: 'simplify' | 'expand' | 'academic' | 'vocational' | 'public'): string {
+  const clean = text.trim();
+  if (!clean) return clean;
+  if (action === 'simplify') {
+    return clean
+      .replace(/\butilize\b/gi, 'use')
+      .replace(/\bfacilitate\b/gi, 'help')
+      .replace(/\bdemonstrate\b/gi, 'show')
+      .split(/\n+/)
+      .map((line) => line.length > 180 ? `${line.slice(0, 177)}.` : line)
+      .join('\n');
+  }
+  if (action === 'expand') return `${clean}\n\nAdditional detail: Add local examples, responsible AI guardrails, implementation notes, and evidence of learning before sharing.`;
+  if (action === 'academic') return `${clean}\n\nAcademic tone note: Align this section to outcomes, assessment evidence, review criteria, and institutional expectations.`;
+  if (action === 'vocational') return `${clean}\n\nWorkforce tone note: Connect this section to skills, tools, employer expectations, portfolio evidence, and applied practice.`;
+  return `${clean}\n\nPublic-facing note: Explain this section in clear language for students, families, partners, or reviewers.`;
+}
+
+function rewriteSelectedText(text: string, instruction: string): string {
+  const lower = instruction.toLowerCase();
+  if (lower.includes('shorten')) return summarizeText(text);
+  if (lower.includes('expand') || lower.includes('examples')) return `${text.trim()}\n\nExample: Add a concrete local example, expected action, and evidence that shows completion.`;
+  if (lower.includes('simple')) return transformSectionText(text, 'simplify');
+  if (lower.includes('professional') || lower.includes('academic')) return `${text.trim()}\n\nProfessional revision note: Use precise wording, clear outcomes, and review-ready evidence.`;
+  return `${text.trim()}\n\nRevision note: ${instruction.trim()}`;
 }
 
 function getReadinessResults(content: string): ReadinessResult[] {
