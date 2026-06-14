@@ -306,6 +306,48 @@ const programPlatformOutputOptions: OptionItem[] = [
     description: 'Visual certificate-to-degree or course progression map for administrators, recruiters, students, and partners.',
     includedOutputs: ['credential_pathway', 'course_sequence_visual', 'industry_certification_link', 'employment_pathway', 'presentation_ready_diagram'],
   },
+  {
+    value: 'accreditation_readiness_package',
+    label: 'Accreditation Readiness Package',
+    description: 'Program-review package for outcomes, assessments, rubrics, CQI, metrics, evidence, and annual review cadence.',
+    includedOutputs: ['program_outcomes', 'course_outcomes', 'assessment_strategy', 'rubric_alignment', 'cqi_process', 'evidence_collection_plan', 'student_success_metrics', 'graduate_placement_metrics'],
+  },
+  {
+    value: 'workforce_alignment_report',
+    label: 'Workforce Alignment Engine',
+    description: 'Career alignment report connecting target roles, required skills, courses, outcomes, and employability evidence.',
+    includedOutputs: ['target_careers', 'required_skills', 'curriculum_match', 'career_to_skills_map', 'skills_to_courses_map', 'outcomes_alignment'],
+  },
+  {
+    value: 'dean_approval_presentation',
+    label: 'Dean Approval Presentation',
+    description: '10-15 slide approval deck for dean, board, or administrative review.',
+    includedOutputs: ['executive_summary', 'labor_market_demand', 'student_demand', 'program_pathway', 'resources', 'budget', 'risks', 'approval_request'],
+  },
+  {
+    value: 'recruitment_toolkit',
+    label: 'Recruitment Toolkit',
+    description: 'Student-facing and stakeholder-facing materials for enrollment growth.',
+    includedOutputs: ['student_flyer', 'parent_flyer', 'website_copy', 'social_posts', 'email_campaign', 'open_house_presentation', 'counselor_handout', 'career_pathway_overview'],
+  },
+  {
+    value: 'cqi_management_center',
+    label: 'CQI Management Center',
+    description: 'Continuous improvement system with schedules, forms, action plans, metrics, and dashboard structure.',
+    includedOutputs: ['annual_review_schedule', 'course_review_forms', 'faculty_review_forms', 'student_feedback_forms', 'employer_feedback_forms', 'action_plan_templates', 'improvement_dashboard'],
+  },
+  {
+    value: 'industry_partnership_center',
+    label: 'Industry Partnership Center',
+    description: 'Partnership builder for employer outreach, internships, advisory invitations, work-based learning, and engagement calendar.',
+    includedOutputs: ['partnership_prospect_list', 'internship_strategy', 'employer_outreach_plan', 'advisory_invitations', 'work_based_learning_plan', 'guest_speaker_plan', 'engagement_calendar'],
+  },
+  {
+    value: 'evidence_repository',
+    label: 'Evidence Repository',
+    description: 'Single-source-of-truth structure for course maps, outcome maps, assessments, advisory minutes, surveys, CQI, accreditation, and recruitment evidence.',
+    includedOutputs: ['course_maps', 'outcome_maps', 'assessment_results', 'advisory_minutes', 'employer_surveys', 'cqi_reports', 'accreditation_evidence', 'recruitment_materials'],
+  },
 ];
 
 const programPathwayTemplates: Record<string, string[]> = {
@@ -1232,6 +1274,42 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     mode: 'college-program',
     description: 'Slide-ready pathway map for administrators, recruiters, students, and advisory partners.',
     content: '## Visual Program Pathway Map\n\nCertificate 1\n↓\nCertificate 2\n↓\nAssociate Degree\n↓\nIndustry Certification\n↓\nEmployment\n\n## Course Progression View\nIntro AI\n↓\nPython Foundations\n↓\nData Analytics\n↓\nMachine Learning Foundations\n↓\nApplied AI\n↓\nCapstone\n\n## Recruiting Use\nUse this pathway in student flyers, counselor handouts, open house presentations, and website copy.\n\n## Administrative Use\nUse this pathway to explain stackable credentials, course dependencies, resources, and program growth plan.\n\n## Advisory Board Use\nAsk employers to validate sequence, role alignment, internships, project expectations, and industry certification relevance.',
+  },
+  {
+    title: 'Accreditation Readiness Package',
+    mode: 'college-program',
+    description: 'Institutional review package for outcomes, assessment, CQI, evidence, and annual review.',
+    content: '## Accreditation Readiness Package\n\n## Program Outcomes\nDraft outcomes address AI concepts, Python/data skills, responsible AI, applied projects, and professional communication.\n\n## Course Outcomes\nEach course includes measurable outcomes tied to program outcomes and student evidence.\n\n## Assessment Strategy\nUse labs, rubrics, portfolios, capstone presentation, ethics cases, and employer feedback.\n\n## Rubric Alignment\nRubrics align to accuracy, technical execution, evidence, ethics, communication, and reflection.\n\n## CQI Process\nReview evidence each semester, summarize findings annually, document action plans, and track follow-up.\n\n## Evidence Collection Plan\nStore course maps, outcome maps, assessment results, advisory minutes, employer surveys, CQI reports, recruitment materials, and review notes.\n\n## Student Success Metrics\nEnrollment, retention, completion, course success, capstone completion, student satisfaction, and support usage.\n\n## Graduate Placement Metrics\nEmployment, internship participation, transfer, certifications, employer feedback, and alumni follow-up where available.\n\n## Annual Review Schedule\nFall evidence collection, spring advisory validation, summer improvement planning, and annual report draft.',
+  },
+  {
+    title: 'Dean Approval Presentation',
+    mode: 'college-program',
+    description: 'Approval-request deck outline for dean, board, or administrative review.',
+    content: '## Program Approval Presentation\n\n## Slide 1: Executive Summary\nProposed AI Technology pathway prepares students for applied AI, data, automation, and responsible technology roles.\n\n## Slide 2: Why This Program\nAI skills are becoming baseline workforce skills across industries.\n\n## Slide 3: Labor Market Demand\nInsert local labor market and employer validation data before formal review.\n\n## Slide 4: Student Demand\nUse inquiry, enrollment, dual enrollment, CTE, and workforce interest signals.\n\n## Slide 5: Curriculum Overview\nIntro AI, Python, data analytics, ML foundations, applied AI, responsible AI, capstone.\n\n## Slide 6: Program Pathway\nCertificate 1 -> Certificate 2 -> Associate Degree -> Industry Certification -> Employment.\n\n## Slide 7: Required Resources\nFaculty, lab access, approved AI platforms, datasets, LMS setup, advisory support.\n\n## Slide 8: Budget Considerations\nSoftware, hardware, PD, adjunct support, recruitment, advisory events.\n\n## Slide 9: Faculty Requirements\nAI/programming faculty, industry adjuncts, lab support, PD plan.\n\n## Slide 10: Industry Alignment\nAdvisory board, internships, guest speakers, employer projects, skills validation.\n\n## Slide 11: Student Outcomes\nPortfolio evidence, capstone, responsible AI policy, career pathway awareness.\n\n## Slide 12: Enrollment Forecast\nPlaceholder model by cohort, retention, completion, and growth assumptions.\n\n## Slide 13: Risks\nTool access, faculty capacity, policy constraints, budget, enrollment uncertainty.\n\n## Slide 14: Success Measures\nEnrollment, retention, completion, placement, advisory feedback, student satisfaction.\n\n## Slide 15: Approval Request\nRequest approval to continue program planning, advisory validation, and launch preparation.',
+  },
+  {
+    title: 'Recruitment Toolkit',
+    mode: 'college-program',
+    description: 'Enrollment-growth materials for students, parents, counselors, web, email, and open house use.',
+    content: '## Recruitment Toolkit\n\n## Student Flyer\nBuild practical AI skills for data, automation, prompting, ethical AI use, and applied technology careers.\n\n## Parent Flyer\nThis pathway helps students build durable technical skills while learning responsible and ethical AI use.\n\n## Website Copy\nThe AI Technology program prepares learners for applied AI support, data analysis, automation, AI operations, and continued study.\n\n## Social Media Posts\nLaunch your AI career pathway. Learn Python, data, AI tools, ethics, and applied projects.\n\n## Email Campaign\nInvite prospective students to explore the AI Technology pathway, open house, career options, and stackable credentials.\n\n## Open House Presentation\nExplain pathway, courses, hands-on labs, capstone, career alignment, supports, and next steps.\n\n## Guidance Counselor Handout\nShow credential stack, course sequence, student fit, career examples, and application steps.\n\n## Career Pathway Overview\nAI Technician, Data Analyst, Prompt Engineer, Automation Specialist, AI Operations Specialist, AI Support Specialist.\n\n## Industry Salary Overview\nUse verified local salary and labor market data before publishing.',
+  },
+  {
+    title: 'CQI Management Center',
+    mode: 'college-program',
+    description: 'Continuous improvement operating system with schedules, forms, action plans, and dashboard metrics.',
+    content: '## CQI Management Center\n\n## Annual Review Schedule\nCollect evidence each term, review annually with faculty and advisory board, document improvements before the next cycle.\n\n## Course Review Forms\nCapture outcome performance, assessment quality, student struggles, tool issues, and recommended changes.\n\n## Faculty Review Forms\nCollect teaching observations, lab readiness, pacing issues, and support needs.\n\n## Student Feedback Forms\nMeasure clarity, confidence, workload, tool access, support, and perceived career relevance.\n\n## Employer Feedback Forms\nValidate skills, tools, professionalism, internships, and graduate readiness.\n\n## Advisory Board Review Forms\nCapture recommendations, action items, owners, due dates, and curriculum implications.\n\n## Action Plan Templates\nDocument issue, evidence, action, owner, due date, status, and follow-up result.\n\n## Improvement Tracking Dashboard\nEnrollment, retention, completion, graduate placement, industry feedback, student satisfaction, program satisfaction.',
+  },
+  {
+    title: 'Industry Partnership Center',
+    mode: 'college-program',
+    description: 'Employer engagement package for internships, advisory invitations, outreach, and work-based learning.',
+    content: '## Industry Partnership Center\n\n## Partnership Prospect List\nOrganize employers by AI, data analytics, cybersecurity, manufacturing automation, healthcare AI, and logistics AI.\n\n## Internship Strategy\nDefine target roles, student readiness checkpoints, employer expectations, supervision, and feedback forms.\n\n## Employer Outreach Plan\nSend program summary, advisory invitation, skill validation request, and partnership options.\n\n## Industry Advisory Invitations\nInvite employers to validate skills, review curriculum, host speakers, offer projects, and support internships.\n\n## Work-Based Learning Plan\nConnect labs, capstone, internships, employer challenges, and portfolio artifacts.\n\n## Guest Speaker Plan\nSchedule speakers by topic: AI operations, data analysis, automation, ethics, cybersecurity, healthcare AI, logistics AI.\n\n## Employer Engagement Calendar\nQuarterly outreach, advisory meeting, internship check-in, capstone review, annual recommendations report.',
+  },
+  {
+    title: 'Program Evidence Repository',
+    mode: 'college-program',
+    description: 'Single source of truth for program review, CQI, advisory, accreditation, and recruitment evidence.',
+    content: '## Program Evidence Repository\n\n## Folder Structure\n01 Course Maps\n02 Outcome Maps\n03 Assessment Results\n04 Advisory Minutes\n05 Employer Surveys\n06 CQI Reports\n07 Accreditation Evidence\n08 Recruitment Materials\n09 Dean Review Materials\n10 Annual Reports\n\n## Metadata Fields\nArtifact name, owner, course/program link, evidence type, review date, status, next action, and notes.\n\n## Evidence Intake Rules\nStore de-identified evidence. Remove private student information before upload or sharing.\n\n## Program Review Use\nUse the repository to prepare annual review, advisory updates, CQI action plans, accreditation readiness materials, and dean briefings.\n\n## Status Labels\nDraft, Needs Review, Faculty Review, Advisory Review, Ready to Share, Archived.',
   },
 ];
 
@@ -2245,6 +2323,13 @@ function CollegeProgramBuilder({
       'For Advisory Board Toolkit, include advisory board charter, annual meeting agenda, quarterly meeting agenda, employer skills validation survey, internship feedback form, graduate readiness survey, industry trends discussion guide, program review worksheet, curriculum gap analysis worksheet, annual recommendations report, and recommended advisory board member categories based on AI, data analytics, cybersecurity, manufacturing automation, healthcare AI, and logistics AI.',
       'For Visual Program Pathway Map, include a clear text diagram using arrows plus a slide-ready table. Show both credential progression and course progression when useful.',
       'For Course-to-Outcome Matrix, map program outcomes to supporting courses, course outcomes, assessments, capstone evidence, industry skills, and CQI evidence sources.',
+      'For Accreditation Readiness Package, include program outcomes, course outcomes, assessment strategy, rubric alignment, CQI process, evidence collection plan, student success metrics, graduate placement metrics, industry alignment evidence, and annual review schedule for institutional review.',
+      'For Workforce Alignment Engine, generate a career alignment report that maps target careers such as AI Technician, Data Analyst, Prompt Engineer, Automation Specialist, AI Operations Specialist, and AI Support Specialist to skills, courses, outcomes, and curriculum gaps.',
+      'For Dean Approval Presentation, generate a 10-15 slide outline covering executive summary, why this program, labor market demand, student demand, curriculum overview, pathway, resources, budget, faculty, industry alignment, outcomes, enrollment forecast, risks, success measures, and approval request.',
+      'For Recruitment Toolkit, generate student flyer copy, parent flyer copy, website copy, social media posts, email campaign, open house presentation outline, guidance counselor handout, career pathway overview, and industry salary overview placeholders that require local verification.',
+      'For CQI Management Center, generate annual review schedule, course review forms, faculty review forms, student feedback forms, employer feedback forms, advisory review forms, action plan templates, and dashboard metrics for enrollment, retention, completion, placement, feedback, and satisfaction.',
+      'For Industry Partnership Center, generate partnership prospect list structure, internship strategy, employer outreach plan, advisory invitations, work-based learning plan, guest speaker plan, and employer engagement calendar.',
+      'For Evidence Repository, generate a repository structure for course maps, outcome maps, assessment results, advisory minutes, employer surveys, CQI reports, accreditation evidence, recruitment materials, owners, review dates, and status labels.',
       'For CQI, include artifacts to collect, review cadence, improvement triggers, and documentation notes.',
       'For advisory board, include agenda items, employer feedback questions, and how feedback updates curriculum.',
       'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
@@ -2312,6 +2397,7 @@ function CollegeProgramBuilder({
             value={settings.workforceFocus}
             onChange={(value) => updateSetting('workforceFocus', value)}
             placeholder="Describe local roles, employer needs, tools, or applied AI skills."
+            rows={3}
           />
           <ChipList items={['Python foundations', 'Data analysis', 'ML concepts', 'Generative AI tools', 'Ethics', 'Automation projects', 'Portfolio evidence']} />
         </Panel>
@@ -2337,6 +2423,7 @@ function CollegeProgramBuilder({
             value={settings.recruitmentAngle}
             onChange={(value) => updateSetting('recruitmentAngle', value)}
             placeholder="Describe how the program should be positioned to students, parents, employers, and internal stakeholders."
+            rows={3}
           />
         </Panel>
       ),
@@ -3231,6 +3318,7 @@ function StartFromGallery({
 function getSampleTags(sample: (typeof samplePackages)[number]): string[] {
   const text = `${sample.title} ${sample.description}`.toLowerCase();
   const tags = new Set<string>();
+  if (sample.mode === 'college-course' || sample.mode === 'college-program') tags.add('College');
   if (text.includes('ela')) tags.add('ELA');
   if (text.includes('social')) tags.add('Social Studies');
   if (text.includes('art')) tags.add('Art');
@@ -4176,11 +4264,13 @@ function TextAreaField({
   value,
   onChange,
   placeholder,
+  rows = 4,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  rows?: number;
 }) {
   return (
     <label className="mt-4 block">
@@ -4189,7 +4279,7 @@ function TextAreaField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        rows={5}
+        rows={rows}
         className="w-full resize-y rounded-md border border-slate-300 bg-white px-3 py-3 text-sm leading-6 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
       />
     </label>
@@ -4416,6 +4506,13 @@ function GeneratedOutput({
               { value: 'program_coordinator_packet', label: 'Program Coordinator Packet' },
               { value: 'program_proposal_deck', label: 'Program Proposal Deck' },
               { value: 'advisory_board_deck', label: 'Advisory Board Deck' },
+              { value: 'accreditation_readiness_package', label: 'Accreditation Readiness Package' },
+              { value: 'dean_approval_presentation', label: 'Dean Approval Presentation' },
+              { value: 'recruitment_toolkit', label: 'Recruitment Toolkit' },
+              { value: 'workforce_alignment_report', label: 'Workforce Alignment Report' },
+              { value: 'cqi_management_center', label: 'CQI Management Center' },
+              { value: 'industry_partnership_center', label: 'Industry Partnership Center' },
+              { value: 'evidence_repository', label: 'Evidence Repository' },
             ])}
           />
         </div>

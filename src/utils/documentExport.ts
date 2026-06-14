@@ -5,7 +5,14 @@ export type CopyTemplate =
   | 'college_syllabus_packet'
   | 'program_proposal_deck'
   | 'advisory_board_deck'
-  | 'program_coordinator_packet';
+  | 'program_coordinator_packet'
+  | 'accreditation_readiness_package'
+  | 'dean_approval_presentation'
+  | 'recruitment_toolkit'
+  | 'workforce_alignment_report'
+  | 'cqi_management_center'
+  | 'industry_partnership_center'
+  | 'evidence_repository';
 
 const templateLabels: Record<CopyTemplate, string> = {
   teacher_lesson_deck: 'Teacher Lesson Deck',
@@ -15,6 +22,13 @@ const templateLabels: Record<CopyTemplate, string> = {
   program_proposal_deck: 'Program Proposal Deck',
   advisory_board_deck: 'Advisory Board Deck',
   program_coordinator_packet: 'Program Coordinator Packet',
+  accreditation_readiness_package: 'Accreditation Readiness Package',
+  dean_approval_presentation: 'Dean Approval Presentation',
+  recruitment_toolkit: 'Recruitment Toolkit',
+  workforce_alignment_report: 'Workforce Alignment Report',
+  cqi_management_center: 'CQI Management Center',
+  industry_partnership_center: 'Industry Partnership Center',
+  evidence_repository: 'Evidence Repository',
 };
 
 export const copyToClipboard = async (content: string): Promise<void> => {
@@ -383,21 +397,56 @@ const addContentSlide = (
 
 const addFacilitationSlide = (pptx: import('pptxgenjs').default, template: CopyTemplate): void => {
   const slide = pptx.addSlide();
+  const platformNotes: Partial<Record<CopyTemplate, { title: string; notes: string[] }>> = {
+    program_coordinator_packet: {
+      title: 'Program Coordinator Launch Notes',
+      notes: ['Use as a draft launch packet for chair, dean, advisory board, and workforce partner review.', 'Validate course sequence, outcome matrix, advisory structure, and CQI plan.', 'Confirm staffing, equipment, budget, and 3-year roadmap assumptions.', 'Keep evidence artifacts organized for program review and accreditation readiness.'],
+    },
+    accreditation_readiness_package: {
+      title: 'Accreditation Review Notes',
+      notes: ['Validate outcomes, assessment methods, rubric alignment, CQI cadence, and evidence collection.', 'Label every item as draft institutional-review material.', 'Attach artifacts that support annual review and program improvement.'],
+    },
+    dean_approval_presentation: {
+      title: 'Dean Approval Notes',
+      notes: ['Review labor market rationale, pathway, resources, budget assumptions, risks, and approval request.', 'Use this deck to align chair, dean, advisory board, and workforce stakeholders.', 'Replace placeholders with local enrollment and budget data before formal use.'],
+    },
+    recruitment_toolkit: {
+      title: 'Recruitment Use Notes',
+      notes: ['Adapt copy for students, parents, counselors, website pages, open house events, and social media.', 'Verify salary and career claims with local data before publishing.', 'Connect every message to pathway, employment, and student support.'],
+    },
+    workforce_alignment_report: {
+      title: 'Workforce Alignment Notes',
+      notes: ['Validate target careers, required skills, curriculum match, and employer feedback.', 'Use advisory board input to close gaps between courses and roles.', 'Keep career outcomes framed as opportunities, not guarantees.'],
+    },
+    cqi_management_center: {
+      title: 'CQI Management Notes',
+      notes: ['Track enrollment, retention, completion, placement, feedback, satisfaction, and action plans.', 'Use the dashboard to document evidence, decisions, owners, and follow-up dates.', 'Review each term and summarize annually.'],
+    },
+    industry_partnership_center: {
+      title: 'Industry Partnership Notes',
+      notes: ['Use prospect lists, invitations, guest speaker plans, internship strategy, and employer calendar together.', 'Document every partner touchpoint and resulting curriculum recommendation.', 'Prioritize partners that validate skills and provide applied learning opportunities.'],
+    },
+    evidence_repository: {
+      title: 'Evidence Repository Notes',
+      notes: ['Store course maps, outcome maps, assessment results, advisory minutes, surveys, CQI reports, accreditation evidence, and recruitment materials.', 'Use consistent naming, review dates, owners, and status labels.', 'Treat the repository as the program single source of truth.'],
+    },
+  };
+  const platformNote = platformNotes[template];
   const title =
-    template === 'advisory_board_deck'
+    platformNote
+      ? platformNote.title
+      : template === 'advisory_board_deck'
       ? 'Advisory Facilitation Notes'
-      : template === 'program_coordinator_packet'
-        ? 'Program Coordinator Launch Notes'
       : template === 'program_proposal_deck'
         ? 'Proposal Review Notes'
         : template === 'lms_assignment_pack'
           ? 'LMS Publishing Notes'
           : 'Teacher Facilitation Notes';
   const notes =
-    template === 'advisory_board_deck'
+    platformNote
+      ? platformNote.notes
+      : template === 'advisory_board_deck'
       ? ['Confirm employer skill needs.', 'Capture advisory feedback and action items.', 'Identify internship, project, and tool recommendations.', 'Document curriculum updates for CQI follow-up.']
-      : template === 'program_coordinator_packet'
-        ? ['Use as a draft launch packet for chair, dean, advisory board, and workforce partner review.', 'Validate course sequence, outcome matrix, advisory structure, and CQI plan.', 'Confirm staffing, equipment, budget, and 3-year roadmap assumptions.', 'Keep evidence artifacts organized for program review and accreditation readiness.']
       : template === 'program_proposal_deck'
         ? ['Review rationale, outcomes, staffing, resources, and lab/tool needs.', 'Check course sequence and credential milestones.', 'Validate CQI evidence and advisory input.', 'Use as a draft for department and institutional review.']
         : template === 'lms_assignment_pack'
