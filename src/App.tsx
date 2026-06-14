@@ -467,9 +467,9 @@ const stepAssistance: Record<string, { title: string; items: string[] }> = {
 
 const teacherSupportResources = [
   {
-    title: '15-minute AI literacy PD',
+    title: 'AI literacy PD starter',
     focus: 'Teacher confidence',
-    items: ['Explain AI limits', 'Model verification', 'Practice a prompt critique', 'Name classroom guardrails'],
+    items: ['15-minute facilitator plan', 'Explain AI limits', 'Model verification', 'Practice a prompt critique'],
   },
   {
     title: 'Responsible AI facilitation guide',
@@ -495,6 +495,98 @@ const teacherSupportResources = [
     title: 'Peer review protocol',
     focus: 'Teacher community',
     items: ['Review status', 'Remix notes', 'Attribution language', 'Improvement prompt'],
+  },
+];
+
+const helpCenterTutorials = [
+  {
+    title: 'Build your first curriculum pack',
+    time: '6 min',
+    outcome: 'Generate a teacher-ready AI literacy lesson from the book map.',
+    steps: ['Choose a quick start or chapter', 'Set grade, time, and AI access', 'Pick deliverables', 'Review readiness signals', 'Export or copy to LMS'],
+  },
+  {
+    title: 'Choose the right AI access level',
+    time: '5 min',
+    outcome: 'Match classroom AI use to school policy and student readiness.',
+    steps: ['Compare no-AI, demo, supervised, and independent access', 'Check privacy language', 'Add disclosure rules', 'Include a no-AI fallback'],
+  },
+  {
+    title: 'Turn a lesson into an LMS package',
+    time: '4 min',
+    outcome: 'Prepare Canvas, Google Classroom, Moodle, or Schoology-ready assignment text.',
+    steps: ['Choose LMS Assignment Pack', 'Confirm submission evidence', 'Check rubric table', 'Use Copy LMS', 'Add due dates and points in the LMS'],
+  },
+  {
+    title: 'Use the finish-line toolkit',
+    time: '7 min',
+    outcome: 'Add language access, IEP/504 supports, sandbox labs, analytics, PD, and community workflow.',
+    steps: ['Select support presets', 'Generate package', 'Review finish-line readiness', 'Use one-click refinements', 'Save the final package'],
+  },
+];
+
+const shortVideoGuides = [
+  {
+    title: 'What is Classroom Copilot?',
+    length: '2:00',
+    script: 'Show the three modes, explain source-grounded generation, and demonstrate the review workspace.',
+    useWhen: 'Teacher onboarding or department demo',
+  },
+  {
+    title: 'Teaching students to verify AI outputs',
+    length: '3:30',
+    script: 'Model claim checking, source comparison, bias detection, and human judgment using a sample AI answer.',
+    useWhen: 'AI literacy mini-lesson or PD warmup',
+  },
+  {
+    title: 'Running a safe sandbox AI lab',
+    length: '4:00',
+    script: 'Walk through privacy gate, approved prompt trial, output comparison, reflection log, and teacher review.',
+    useWhen: 'Hands-on AI activity preparation',
+  },
+  {
+    title: 'Publishing to an LMS',
+    length: '2:45',
+    script: 'Show export style, Copy LMS, assignment post, rubric table, submission evidence, and policy language.',
+    useWhen: 'Implementation support after lesson generation',
+  },
+];
+
+const pdModules = [
+  {
+    title: 'AI Literacy Foundations',
+    duration: '20 min',
+    evidence: 'Teacher explains AI limits and identifies classroom-safe use cases.',
+  },
+  {
+    title: 'Responsible Prompting and Verification',
+    duration: '25 min',
+    evidence: 'Teacher creates a prompt activity and AI-output evaluation rubric.',
+  },
+  {
+    title: 'Accessibility, IEP/504, and Language Access',
+    duration: '20 min',
+    evidence: 'Teacher adapts one package with accommodations and multilingual supports.',
+  },
+  {
+    title: 'LMS and CQI Implementation',
+    duration: '30 min',
+    evidence: 'Teacher publishes a package and defines feedback metrics for revision.',
+  },
+];
+
+const communityForumPrompts = [
+  {
+    title: 'Share a classroom-tested package',
+    details: 'Post the grade, subject, AI access level, what worked, what changed, and a remix note.',
+  },
+  {
+    title: 'Ask for peer review',
+    details: 'Request feedback on standards alignment, accessibility, guardrails, assessment evidence, or LMS readiness.',
+  },
+  {
+    title: 'Report an implementation barrier',
+    details: 'Name policy, device, LMS, timing, or student-readiness constraints so peers can suggest practical workarounds.',
   },
 ];
 
@@ -1951,7 +2043,7 @@ function TeacherSupportCenter() {
   const [open, setOpen] = useState(true);
 
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Teacher support and professional development resources">
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Help center, professional development, tutorials, and community support">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
@@ -1960,30 +2052,105 @@ function TeacherSupportCenter() {
         <span className="flex items-start gap-2">
           <HelpCircle className="mt-0.5 h-5 w-5 text-blue-700" />
           <span>
-            <span className="block font-bold text-slate-950">Teacher Support Center</span>
-            <span className="text-xs leading-5 text-slate-600">Guided PD and implementation resources for teachers who are new to AI-integrated curriculum.</span>
+            <span className="block font-bold text-slate-950">Help Center and Teacher PD</span>
+            <span className="text-xs leading-5 text-slate-600">Tutorials, short-video guides, PD modules, and peer-support prompts for teaching AI literacy with confidence.</span>
           </span>
         </span>
         <span className="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-800">{open ? 'Hide' : 'Show'}</span>
       </button>
       {open && (
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {teacherSupportResources.map((resource) => (
-            <div key={resource.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
-              <div className="mb-2">
-                <span className="rounded-md bg-blue-100 px-2 py-1 text-[11px] font-bold uppercase text-blue-800">{resource.focus}</span>
-                <h4 className="mt-2 text-sm font-bold text-slate-950">{resource.title}</h4>
+        <div className="mt-4 space-y-4">
+          <div className="grid gap-3 xl:grid-cols-4">
+            {helpCenterTutorials.map((tutorial) => (
+              <div key={tutorial.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <h4 className="text-sm font-bold text-slate-950">{tutorial.title}</h4>
+                  <span className="rounded-md bg-white px-2 py-1 text-[11px] font-bold text-slate-600">{tutorial.time}</span>
+                </div>
+                <p className="mb-2 text-xs leading-5 text-slate-600">{tutorial.outcome}</p>
+                <ol className="space-y-1 text-xs leading-5 text-slate-700">
+                  {tutorial.steps.map((step, index) => (
+                    <li key={step} className="flex gap-2">
+                      <span className="font-bold text-blue-800">{index + 1}.</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
               </div>
-              <ul className="space-y-1 text-xs leading-5 text-slate-700">
-                {resource.items.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-green-700" />
-                    <span>{item}</span>
-                  </li>
+            ))}
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <h4 className="mb-3 text-sm font-bold text-slate-950">Short Video Guides</h4>
+              <div className="grid gap-2">
+                {shortVideoGuides.map((video) => (
+                  <div key={video.title} className="rounded-md bg-white p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h5 className="text-sm font-bold text-slate-950">{video.title}</h5>
+                        <p className="mt-1 text-xs leading-5 text-slate-600">{video.script}</p>
+                      </div>
+                      <span className="rounded-md bg-blue-100 px-2 py-1 text-[11px] font-bold text-blue-800">{video.length}</span>
+                    </div>
+                    <p className="mt-2 text-xs font-semibold text-slate-500">Use: {video.useWhen}</p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-          ))}
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <h4 className="mb-3 text-sm font-bold text-slate-950">Professional Development Modules</h4>
+              <div className="grid gap-2">
+                {pdModules.map((module) => (
+                  <div key={module.title} className="rounded-md bg-white p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <h5 className="text-sm font-bold text-slate-950">{module.title}</h5>
+                      <span className="rounded-md bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-600">{module.duration}</span>
+                    </div>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">Evidence: {module.evidence}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <h4 className="mb-3 text-sm font-bold text-slate-950">Implementation Support Materials</h4>
+              <div className="grid gap-2 md:grid-cols-2">
+                {teacherSupportResources.map((resource) => (
+                  <div key={resource.title} className="rounded-md bg-white p-3">
+                    <span className="rounded-md bg-blue-100 px-2 py-1 text-[11px] font-bold uppercase text-blue-800">{resource.focus}</span>
+                    <h5 className="mt-2 text-sm font-bold text-slate-950">{resource.title}</h5>
+                    <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-700">
+                      {resource.items.map((item) => (
+                        <li key={item} className="flex gap-2">
+                          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-green-700" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <h4 className="mb-3 text-sm font-bold text-slate-950">Community Forum Model</h4>
+              <p className="mb-3 text-xs leading-5 text-slate-600">
+                Proposed peer-support area for shared packages, implementation questions, and review requests. Until account/community infrastructure exists, use these prompts in PLCs, department meetings, or a shared school workspace.
+              </p>
+              <div className="grid gap-2">
+                {communityForumPrompts.map((prompt) => (
+                  <div key={prompt.title} className="rounded-md bg-white p-3">
+                    <h5 className="text-sm font-bold text-slate-950">{prompt.title}</h5>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">{prompt.details}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </section>
