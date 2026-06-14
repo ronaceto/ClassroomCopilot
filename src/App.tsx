@@ -13,6 +13,7 @@ import {
   GraduationCap,
   HelpCircle,
   Eye,
+  LockKeyhole,
   Library,
   Layers3,
   LibraryBig,
@@ -209,6 +210,10 @@ const refinementPresets = [
   { label: 'Make more rigorous', instruction: 'Increase cognitive rigor with higher-order objectives, more demanding assessment evidence, and stronger success criteria.' },
   { label: 'Add hands-on labs', instruction: 'Add applied labs with materials, steps, data/tools, deliverables, troubleshooting notes, and evidence of learning.' },
   { label: 'Add beginner supports', instruction: 'Add beginner-friendly scaffolds, vocabulary support, examples, accessibility supports, and confidence-building checks.' },
+  { label: 'Simplify for students', instruction: 'Rewrite student-facing directions and handouts at a simpler reading level while preserving the learning goals.' },
+  { label: 'ELL-friendly', instruction: 'Add vocabulary previews, sentence frames, visual cues, partner talk, and language-accessible directions for multilingual learners.' },
+  { label: 'More examples', instruction: 'Add concrete teacher and student examples, model responses, common misconceptions, and non-examples.' },
+  { label: 'Extension challenge', instruction: 'Add an advanced extension task with deeper reasoning, transfer, and optional independent inquiry.' },
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
   { label: 'Convert to HyFlex', instruction: 'Convert the package to HyFlex delivery with in-person, online synchronous, and asynchronous options.' },
@@ -220,6 +225,108 @@ const aiLiteracyComponents = [
   'Evaluate AI outputs',
   'Prompt effectively',
   'Recognize bias',
+];
+
+const readingSupportOptions = [
+  {
+    value: 'standard_supports',
+    label: 'Standard supports',
+    description: 'Clear directions, checks for understanding, and teacher facilitation notes.',
+  },
+  {
+    value: 'simplified_student_version',
+    label: 'Simplified student version',
+    description: 'Shorter student-facing directions, plain language, and more modeled examples.',
+  },
+  {
+    value: 'ell_friendly',
+    label: 'ELL-friendly',
+    description: 'Vocabulary preview, sentence frames, partner talk, and language-accessible directions.',
+  },
+  {
+    value: 'extension_ready',
+    label: 'Extension ready',
+    description: 'Adds deeper challenge tasks for students ready for independent transfer.',
+  },
+];
+
+const promptLibraryOptions = [
+  {
+    value: 'evaluate_ai_output',
+    label: 'Evaluate an AI output',
+    description: 'Students critique accuracy, missing context, bias, and verification needs.',
+    prompts: [
+      'What claim is the AI making, and what evidence would we need to trust it?',
+      'What might be missing, oversimplified, or biased in this AI answer?',
+      'How would you verify this answer without using AI as the final authority?',
+    ],
+  },
+  {
+    value: 'improve_prompt',
+    label: 'Improve a prompt',
+    description: 'Students compare weak and stronger prompts and explain the difference.',
+    prompts: [
+      'What is unclear about this prompt?',
+      'What context, role, audience, or format should we add?',
+      'How did the improved prompt change the usefulness of the response?',
+    ],
+  },
+  {
+    value: 'subject_connection',
+    label: 'Connect AI to subject learning',
+    description: 'Students use AI literacy in ELA, science, social studies, math, CTE, or advisory.',
+    prompts: [
+      'How could AI help us explore this topic while still requiring human judgment?',
+      'What should we ask AI, and what should we answer ourselves?',
+      'What source or class evidence would strengthen or challenge the AI response?',
+    ],
+  },
+  {
+    value: 'no_ai_discussion',
+    label: 'No-AI discussion prompts',
+    description: 'Printable prompts for classes that cannot use live AI tools.',
+    prompts: [
+      'Where might a person encounter AI in this situation?',
+      'What could go wrong if someone trusted an AI system too quickly?',
+      'What responsible-use rule would you recommend for this scenario?',
+    ],
+  },
+];
+
+const rubricFocusOptions = [
+  {
+    value: 'balanced_ai_literacy',
+    label: 'Balanced AI literacy rubric',
+    description: 'Accuracy, evidence, bias, privacy, prompt quality, and reflection.',
+    criteria: ['Accuracy', 'Evidence and verification', 'Bias and limitations', 'Privacy and ethical use', 'Prompt quality', 'Reflection'],
+  },
+  {
+    value: 'ai_output_evaluation',
+    label: 'AI-output evaluation rubric',
+    description: 'Focuses on whether students can critique AI responses responsibly.',
+    criteria: ['Claim checking', 'Evidence quality', 'Missing context', 'Bias detection', 'Revision recommendations'],
+  },
+  {
+    value: 'responsible_use',
+    label: 'Responsible-use rubric',
+    description: 'Focuses on privacy, citation, human judgment, and appropriate use.',
+    criteria: ['Privacy protection', 'AI disclosure', 'Human verification', 'Appropriate use', 'Ethical reflection'],
+  },
+  {
+    value: 'prompt_design',
+    label: 'Prompt-design rubric',
+    description: 'Focuses on clear task, context, audience, format, and iteration.',
+    criteria: ['Task clarity', 'Context', 'Audience', 'Output format', 'Iteration and improvement'],
+  },
+];
+
+const policyCheckItems = [
+  'No private student information in uploads or prompts',
+  'Student AI access matches school or district policy',
+  'AI outputs must be verified before use',
+  'Students cite or disclose AI assistance when allowed',
+  'Teacher reviews materials before classroom use',
+  'Family/admin language included when needed',
 ];
 
 const curriculumQuickStarts = [
@@ -235,6 +342,10 @@ const curriculumQuickStarts = [
       classFormat: 'Whole class',
       studentAiAccessLevel: 'teacher_demo_ai',
       packPreset: 'mini_unit',
+      readingSupport: 'standard_supports',
+      promptLibraryPreset: 'evaluate_ai_output',
+      rubricFocus: 'balanced_ai_literacy',
+      policyCheck: 'teacher_review',
       policyOutput: 'Classroom AI Use Policy',
     },
   },
@@ -250,6 +361,10 @@ const curriculumQuickStarts = [
       classFormat: 'Whole class',
       studentAiAccessLevel: 'teacher_demo_ai',
       packPreset: 'full_lesson_pack',
+      readingSupport: 'ell_friendly',
+      promptLibraryPreset: 'no_ai_discussion',
+      rubricFocus: 'responsible_use',
+      policyCheck: 'teacher_review',
       policyOutput: 'Student Responsible AI Agreement',
     },
   },
@@ -265,6 +380,10 @@ const curriculumQuickStarts = [
       classFormat: 'Small group',
       studentAiAccessLevel: 'no_student_ai',
       packPreset: 'no_ai_classroom_version',
+      readingSupport: 'simplified_student_version',
+      promptLibraryPreset: 'no_ai_discussion',
+      rubricFocus: 'responsible_use',
+      policyCheck: 'restrictive_policy',
       policyOutput: 'Family / Guardian AI Notice',
     },
   },
@@ -471,6 +590,10 @@ function CurriculumPackBuilder({
     classFormat: 'Whole class',
     studentAiAccessLevel: 'teacher_demo_ai',
     packPreset: 'full_lesson_pack',
+    readingSupport: 'standard_supports',
+    promptLibraryPreset: 'evaluate_ai_output',
+    rubricFocus: 'balanced_ai_literacy',
+    policyCheck: 'teacher_review',
     policyOutput: 'Classroom AI Use Policy',
   });
   const [sourceNotes, setSourceNotes] = useState('');
@@ -479,6 +602,9 @@ function CurriculumPackBuilder({
   const studentAccessOptions = getFieldOptions(curriculumWorkflow, 'student-ai-access', 'studentAiAccessLevel') as OptionItem[];
   const selectedPack = packOptions.find((option) => option.value === settings.packPreset) ?? packOptions[1];
   const selectedAccess = studentAccessOptions.find((option) => option.value === settings.studentAiAccessLevel);
+  const selectedReadingSupport = readingSupportOptions.find((option) => option.value === settings.readingSupport) ?? readingSupportOptions[0];
+  const selectedPromptLibrary = promptLibraryOptions.find((option) => option.value === settings.promptLibraryPreset) ?? promptLibraryOptions[0];
+  const selectedRubricFocus = rubricFocusOptions.find((option) => option.value === settings.rubricFocus) ?? rubricFocusOptions[0];
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
@@ -522,11 +648,22 @@ function CurriculumPackBuilder({
       `Output package: ${selectedPack.label}`,
       `Included deliverables: ${(selectedPack.deliverables ?? []).map(labelFromValue).join(', ')}`,
       `AI literacy components to emphasize: ${aiLiteracyComponents.join(', ')}`,
+      `Reading/accessibility support: ${selectedReadingSupport.label} - ${selectedReadingSupport.description}`,
+      `Prompt library focus: ${selectedPromptLibrary.label} - ${selectedPromptLibrary.description}`,
+      `Prompt examples to include or adapt: ${selectedPromptLibrary.prompts.join(' | ')}`,
+      `Rubric focus: ${selectedRubricFocus.label} - ${selectedRubricFocus.description}`,
+      `Rubric criteria to include: ${selectedRubricFocus.criteria.join(', ')}`,
+      `Policy check status: ${labelFromValue(settings.policyCheck)}`,
+      `Policy/privacy checklist to include: ${policyCheckItems.join('; ')}`,
       `Requested policy artifact: ${settings.policyOutput}`,
       sourceNotes.trim() ? `Additional source/context notes from educator: ${sourceNotes.trim()}` : 'Additional source/context notes from educator: none provided.',
       '',
       'Return a teacher-ready package with these headings: ## Lesson Snapshot, ## Standards / Outcomes Alignment Matrix, ## Lesson Plan, ## Student Activity, ## Worksheet, ## Quiz, ## Rubric, ## AI Use Guardrails, ## Differentiation and Accessibility, ## Slide Deck Outline, ## Family / Admin Note, ## Teacher Implementation Checklist.',
       'For the alignment matrix, map objectives to activities, assessments, and evidence of learning.',
+      'For the prompt library, include teacher-facing setup notes and student-facing prompt stems that match the selected AI access level.',
+      'For the rubric, include four clear performance levels and the selected AI-output evaluation criteria.',
+      'For accessibility, include the selected reading/accessibility support as concrete student-facing adjustments.',
+      'For policy compliance, include a short Policy Alignment Summary covering privacy, AI disclosure, student access, teacher review, and family/admin language.',
       'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Include a no-AI or teacher-demo alternative when appropriate, student-facing directions, differentiation, and responsible AI guardrails.',
@@ -583,6 +720,7 @@ function CurriculumPackBuilder({
           <FieldGrid>
             <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} help="Used to tune examples, independence, guardrails, and reading level." />
             <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} help="Student-facing instructions and handouts should match this level." />
+            <SelectField label="Reading support" value={settings.readingSupport} onChange={(value) => updateSetting('readingSupport', value)} options={readingSupportOptions} help="Adds a simplified, ELL-friendly, standard, or extension-ready student version." />
             <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
             <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
             <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} help="Controls pacing, activity depth, and assessment scope." />
@@ -605,6 +743,7 @@ function CurriculumPackBuilder({
           </GuidanceNote>
           <SegmentedOptions value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
           <p className="mt-3 text-sm text-slate-600">{studentAccessNotes[settings.studentAiAccessLevel]}</p>
+          <PolicyCheckPanel value={settings.policyCheck} onChange={(value) => updateSetting('policyCheck', value)} />
         </Panel>
       ),
     },
@@ -619,6 +758,10 @@ function CurriculumPackBuilder({
           </GuidanceNote>
           <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
           <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <PromptLibraryChooser value={settings.promptLibraryPreset} onChange={(value) => updateSetting('promptLibraryPreset', value)} />
+            <RubricFocusChooser value={settings.rubricFocus} onChange={(value) => updateSetting('rubricFocus', value)} />
+          </div>
         </Panel>
       ),
     },
@@ -645,6 +788,8 @@ function CurriculumPackBuilder({
     ['Classroom', `Grade ${settings.gradeLevel}, ${settings.timeAvailable}, ${settings.classFormat}`],
     ['AI access', selectedAccess?.label ?? labelFromValue(settings.studentAiAccessLevel)],
     ['Output', selectedPack?.label ?? 'Full Lesson Pack'],
+    ['Prompt library', selectedPromptLibrary.label],
+    ['Rubric', selectedRubricFocus.label],
     ['AI literacy', aiLiteracyComponents.join(', ')],
   ];
 
@@ -1374,6 +1519,97 @@ function LiteracyComponentStrip() {
         <h4 className="text-sm font-bold text-slate-950">AI literacy components included by default</h4>
       </div>
       <ChipList items={aiLiteracyComponents} />
+    </div>
+  );
+}
+
+function PolicyCheckPanel({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const options = [
+    { value: 'teacher_review', label: 'Teacher review ready', description: 'Builds standard privacy, verification, citation, and teacher-review language.' },
+    { value: 'restrictive_policy', label: 'Restrictive policy', description: 'Adds no-student-AI alternatives and family/admin language for cautious schools.' },
+    { value: 'student_ai_allowed', label: 'Student AI allowed', description: 'Adds student disclosure, verification, and responsible-use checkpoints.' },
+  ];
+
+  return (
+    <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <LockKeyhole className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">Policy Check</h4>
+          <p className="text-xs leading-5 text-slate-600">Adds a policy alignment summary and privacy checklist to the generated package.</p>
+        </div>
+      </div>
+      <SegmentedOptions value={value} onChange={onChange} options={options} />
+      <div className="mt-3 grid gap-2 md:grid-cols-2">
+        {policyCheckItems.map((item) => (
+          <div key={item} className="flex items-start gap-2 rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-green-700" />
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PromptLibraryChooser({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = promptLibraryOptions.find((option) => option.value === value) ?? promptLibraryOptions[0];
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <Clipboard className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">Prompt Library</h4>
+          <p className="text-xs leading-5 text-slate-600">Adds scaffolded teacher and student prompt stems.</p>
+        </div>
+      </div>
+      <SelectField label="Prompt focus" value={value} onChange={onChange} options={promptLibraryOptions} help="Choose the prompt skill students should practice in this package." />
+      <div className="mt-3 space-y-2">
+        {selected.prompts.map((prompt) => (
+          <div key={prompt} className="rounded-md border border-slate-200 bg-white p-2 text-xs leading-5 text-slate-700">
+            {prompt}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RubricFocusChooser({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = rubricFocusOptions.find((option) => option.value === value) ?? rubricFocusOptions[0];
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <Gauge className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">AI Evaluation Rubric</h4>
+          <p className="text-xs leading-5 text-slate-600">Adds criteria for judging AI use and AI outputs.</p>
+        </div>
+      </div>
+      <SelectField label="Rubric focus" value={value} onChange={onChange} options={rubricFocusOptions} help="Choose how students should be assessed when working with AI or AI examples." />
+      <div className="mt-3">
+        <ChipList items={selected.criteria} />
+      </div>
     </div>
   );
 }
