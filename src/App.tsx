@@ -398,6 +398,106 @@ const communityWorkflowOptions: OptionItem[] = [
   },
 ];
 
+const stepAssistance: Record<string, { title: string; items: string[] }> = {
+  Start: {
+    title: 'Start help',
+    items: [
+      'Use a quick start when you need a strong default lesson immediately.',
+      'Use the curriculum map when you want the package tied to a specific book chapter.',
+      'Use a sample when you want to review an example before generating a new package.',
+    ],
+  },
+  Context: {
+    title: 'Decision help',
+    items: [
+      'Use the default reading level unless students need a simplified or extension version.',
+      'Choose the subject where the lesson will actually be taught, not only AI Literacy.',
+      'If standards are uncertain, keep a broad target and review the alignment after generation.',
+    ],
+  },
+  'AI Access': {
+    title: 'Policy decision help',
+    items: [
+      'Choose No student AI when school policy is restrictive or unclear.',
+      'Choose Teacher-demo AI when students should critique outputs without entering prompts.',
+      'Choose supervised access only when privacy, disclosure, and verification routines are ready.',
+    ],
+  },
+  Deliverables: {
+    title: 'Output decision help',
+    items: [
+      'Use Full Lesson Pack for a normal classroom-ready package.',
+      'Use LMS Assignment Pack when the next step is publishing in Canvas, Google Classroom, Moodle, or Schoology.',
+      'Use Sandbox AI Experiment when students need hands-on AI literacy practice with guardrails.',
+    ],
+  },
+  Sources: {
+    title: 'Source safety help',
+    items: [
+      'Paste only de-identified policies, standards, outcomes, or planning notes.',
+      'Remove student names, grades, IEP details, and family information before upload.',
+      'Use local requirements to make the output easier for administrators or departments to review.',
+    ],
+  },
+  Competencies: {
+    title: 'Course design help',
+    items: [
+      'Keep prerequisites realistic for the target learner group.',
+      'Select focus areas that match the course outcomes, not every possible AI topic.',
+      'Use career readiness when the course supports workforce or certificate goals.',
+    ],
+  },
+  'Applied Work': {
+    title: 'Applied learning help',
+    items: [
+      'Tie every lab to evidence students can submit or discuss.',
+      'Use portfolio projects when students need durable proof of skill.',
+      'Include troubleshooting notes for tools, datasets, and access constraints.',
+    ],
+  },
+  CQI: {
+    title: 'Program review help',
+    items: [
+      'Capture advisory feedback as evidence, not just meeting notes.',
+      'Track course artifacts, rubric results, enrollment signals, and employer skill needs.',
+      'Use CQI notes to identify what should change next term.',
+    ],
+  },
+};
+
+const teacherSupportResources = [
+  {
+    title: '15-minute AI literacy PD',
+    focus: 'Teacher confidence',
+    items: ['Explain AI limits', 'Model verification', 'Practice a prompt critique', 'Name classroom guardrails'],
+  },
+  {
+    title: 'Responsible AI facilitation guide',
+    focus: 'Safe implementation',
+    items: ['Privacy script', 'Disclosure norms', 'Human review routine', 'No-student-AI fallback'],
+  },
+  {
+    title: 'IEP/504 planning checklist',
+    focus: 'Accessibility',
+    items: ['Chunked tasks', 'Assistive technology option', 'Alternative response', 'Reduced cognitive load'],
+  },
+  {
+    title: 'LMS publishing checklist',
+    focus: 'Implementation',
+    items: ['Assignment post', 'Rubric table', 'Submission evidence', 'Due-date and points placeholders'],
+  },
+  {
+    title: 'Sandbox lab setup guide',
+    focus: 'Hands-on learning',
+    items: ['Privacy gate', 'Approved prompts', 'Sample outputs', 'Reflection log'],
+  },
+  {
+    title: 'Peer review protocol',
+    focus: 'Teacher community',
+    items: ['Review status', 'Remix notes', 'Attribution language', 'Improvement prompt'],
+  },
+];
+
 const policyOptions = [
   'Classroom AI Use Policy',
   'Student Responsible AI Agreement',
@@ -1001,6 +1101,7 @@ function App() {
           onHighContrastChange={setHighContrast}
         />
         <FinishLineToolkit settings={finishLineSettings} onChange={updateFinishLineSetting} />
+        <TeacherSupportCenter />
         <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
@@ -1846,6 +1947,70 @@ function FinishLineToolkit({
   );
 }
 
+function TeacherSupportCenter() {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Teacher support and professional development resources">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <span className="flex items-start gap-2">
+          <HelpCircle className="mt-0.5 h-5 w-5 text-blue-700" />
+          <span>
+            <span className="block font-bold text-slate-950">Teacher Support Center</span>
+            <span className="text-xs leading-5 text-slate-600">Guided PD and implementation resources for teachers who are new to AI-integrated curriculum.</span>
+          </span>
+        </span>
+        <span className="rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-800">{open ? 'Hide' : 'Show'}</span>
+      </button>
+      {open && (
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {teacherSupportResources.map((resource) => (
+            <div key={resource.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+              <div className="mb-2">
+                <span className="rounded-md bg-blue-100 px-2 py-1 text-[11px] font-bold uppercase text-blue-800">{resource.focus}</span>
+                <h4 className="mt-2 text-sm font-bold text-slate-950">{resource.title}</h4>
+              </div>
+              <ul className="space-y-1 text-xs leading-5 text-slate-700">
+                {resource.items.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-green-700" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function StepAssistance({ stepTitle }: { stepTitle: string }) {
+  const assistance = stepAssistance[stepTitle];
+  if (!assistance) return null;
+
+  return (
+    <aside className="mb-4 rounded-lg border border-blue-100 bg-blue-50 p-4" aria-label={`${stepTitle} guided assistance`}>
+      <div className="mb-2 flex items-center gap-2">
+        <HelpCircle className="h-4 w-4 text-blue-800" />
+        <h4 className="text-sm font-bold text-blue-950">{assistance.title}</h4>
+      </div>
+      <div className="grid gap-2 md:grid-cols-3">
+        {assistance.items.map((item) => (
+          <div key={item} className="rounded-md bg-white/80 px-3 py-2 text-xs leading-5 text-blue-950">
+            {item}
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 function WorkflowMap() {
   const steps = ['Start from', 'Set context', 'Add sources', 'Build', 'Review / export'];
 
@@ -1964,6 +2129,7 @@ function BuilderFrame({
       {steps && previewItems ? (
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div>
+            <StepAssistance stepTitle={steps[activeStep]?.title ?? ''} />
             {children}
             <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
