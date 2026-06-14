@@ -1405,31 +1405,23 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        <ProductEdgeStrip />
-        <BetaCommandCenter
+        <WorkspaceLaunchBar
+          activeMode={activeMode}
           events={betaEvents}
           feedback={betaFeedback}
-          onOpenFeedback={() => {
-            trackBetaEvent('feedback_drawer_opened', activeMode, 'beta command center');
-            setFeedbackOpen(true);
-          }}
-          onOpenHelp={() => openHelpCenter('beta command center')}
-        />
-        <MarketingProofPanel
-          onViewSamples={() => document.getElementById('sample-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          onOpenFeedback={() => {
-            trackBetaEvent('feedback_drawer_opened', activeMode, 'marketing proof');
-            setFeedbackOpen(true);
-          }}
-        />
-        <AccessibilityControls
           fontScale={fontScale}
           onFontScaleChange={setFontScale}
           highContrast={highContrast}
           onHighContrastChange={setHighContrast}
+          finishLineSettings={finishLineSettings}
+          onFinishLineChange={updateFinishLineSetting}
+          onLoadSample={loadSample}
+          onOpenFeedback={() => {
+            trackBetaEvent('feedback_drawer_opened', activeMode, 'workspace launch bar');
+            setFeedbackOpen(true);
+          }}
+          onOpenHelp={() => openHelpCenter('workspace launch bar')}
         />
-        <FinishLineToolkit settings={finishLineSettings} onChange={updateFinishLineSetting} />
-        <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
           <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} />
@@ -2308,11 +2300,124 @@ function CollegeProgramBuilder({
   );
 }
 
-function ProductEdgeStrip() {
+function WorkspaceLaunchBar({
+  activeMode,
+  events,
+  feedback,
+  fontScale,
+  onFontScaleChange,
+  highContrast,
+  onHighContrastChange,
+  finishLineSettings,
+  onFinishLineChange,
+  onLoadSample,
+  onOpenFeedback,
+  onOpenHelp,
+}: {
+  activeMode: BuilderMode;
+  events: BetaEvent[];
+  feedback: BetaFeedback[];
+  fontScale: FontScale;
+  onFontScaleChange: (value: FontScale) => void;
+  highContrast: boolean;
+  onHighContrastChange: (value: boolean) => void;
+  finishLineSettings: FinishLineSettings;
+  onFinishLineChange: (key: keyof FinishLineSettings, value: string) => void;
+  onLoadSample: (sample: (typeof samplePackages)[number]) => void;
+  onOpenFeedback: () => void;
+  onOpenHelp: () => void;
+}) {
+  const [openPanel, setOpenPanel] = useState<'samples' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
+  const togglePanel = (panel: NonNullable<typeof openPanel>) => setOpenPanel((current) => (current === panel ? null : panel));
+
+  return (
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Workspace tools">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase text-blue-800">Build workspace</p>
+          <h2 className="truncate text-lg font-bold text-slate-950">Start building, open support only when needed</h2>
+          <p className="text-xs leading-5 text-slate-600">Samples, accessibility, advanced options, beta feedback, and positioning are available without pushing the builder down the page.</p>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+          {([
+            ['samples', 'Samples'],
+            ['advanced', 'Advanced'],
+            ['display', 'Display'],
+            ['beta', 'Beta'],
+            ['positioning', 'Positioning'],
+          ] as Array<[NonNullable<typeof openPanel>, string]>).map(([panel, label]) => (
+            <button
+              key={panel}
+              type="button"
+              onClick={() => togglePanel(panel)}
+              className={`inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border px-3 text-sm font-bold transition ${
+                openPanel === panel ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:text-blue-800'
+              }`}
+              aria-expanded={openPanel === panel}
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={onOpenHelp}
+            className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+          >
+            Help
+          </button>
+          <button
+            type="button"
+            onClick={onOpenFeedback}
+            className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
+          >
+            Feedback
+          </button>
+        </div>
+      </div>
+
+      {openPanel && (
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          {openPanel === 'samples' && <StartFromGallery activeMode={activeMode} onLoadSample={onLoadSample} compact />}
+          {openPanel === 'advanced' && <FinishLineToolkit settings={finishLineSettings} onChange={onFinishLineChange} initiallyOpen compact />}
+          {openPanel === 'display' && (
+            <AccessibilityControls
+              fontScale={fontScale}
+              onFontScaleChange={onFontScaleChange}
+              highContrast={highContrast}
+              onHighContrastChange={onHighContrastChange}
+              compact
+            />
+          )}
+          {openPanel === 'beta' && (
+            <BetaCommandCenter
+              events={events}
+              feedback={feedback}
+              onOpenFeedback={onOpenFeedback}
+              onOpenHelp={onOpenHelp}
+              compact
+            />
+          )}
+          {openPanel === 'positioning' && (
+            <>
+              <ProductEdgeStrip compact />
+              <MarketingProofPanel
+                compact
+                onViewSamples={() => setOpenPanel('samples')}
+                onOpenFeedback={onOpenFeedback}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ProductEdgeStrip({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Classroom Copilot product strengths">
+    <section className={`${compact ? 'mb-3' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-3 shadow-sm`} aria-label="Classroom Copilot product strengths">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
@@ -2346,11 +2451,13 @@ function BetaCommandCenter({
   feedback,
   onOpenFeedback,
   onOpenHelp,
+  compact = false,
 }: {
   events: BetaEvent[];
   feedback: BetaFeedback[];
   onOpenFeedback: () => void;
   onOpenHelp: () => void;
+  compact?: boolean;
 }) {
   const eventCounts = events.reduce<Record<string, number>>((counts, event) => {
     counts[event.event] = (counts[event.event] ?? 0) + 1;
@@ -2365,7 +2472,7 @@ function BetaCommandCenter({
     : 'N/A';
 
   return (
-    <section className="mb-5 rounded-lg border border-blue-100 bg-blue-50 p-4 shadow-sm" aria-label="Beta readiness dashboard">
+    <section className={`${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-blue-100 bg-blue-50 p-4 shadow-sm`} aria-label="Beta readiness dashboard">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-xs font-bold uppercase text-blue-800">Teacher beta command center</p>
@@ -2422,12 +2529,14 @@ function MetricTile({ label, value, detail }: { label: string; value: string; de
 function MarketingProofPanel({
   onViewSamples,
   onOpenFeedback,
+  compact = false,
 }: {
   onViewSamples: () => void;
   onOpenFeedback: () => void;
+  compact?: boolean;
 }) {
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Classroom Copilot market proof">
+    <section className={`${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-4 shadow-sm`} aria-label="Classroom Copilot market proof">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
         <div>
           <p className="text-xs font-bold uppercase text-blue-800">Positioning</p>
@@ -2481,14 +2590,16 @@ function AccessibilityControls({
   onFontScaleChange,
   highContrast,
   onHighContrastChange,
+  compact = false,
 }: {
   fontScale: FontScale;
   onFontScaleChange: (value: FontScale) => void;
   highContrast: boolean;
   onHighContrastChange: (value: boolean) => void;
+  compact?: boolean;
 }) {
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Accessibility display controls">
+    <section className={`${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-3 shadow-sm`} aria-label="Accessibility display controls">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-2">
           <Languages className="mt-0.5 h-5 w-5 text-blue-700" />
@@ -2534,11 +2645,15 @@ function AccessibilityControls({
 function FinishLineToolkit({
   settings,
   onChange,
+  initiallyOpen = false,
+  compact = false,
 }: {
   settings: FinishLineSettings;
   onChange: (key: keyof FinishLineSettings, value: string) => void;
+  initiallyOpen?: boolean;
+  compact?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initiallyOpen);
   const selectedLanguage = languageSupportOptions.find((option) => option.value === settings.languageSupport) ?? languageSupportOptions[1];
   const selectedIep = iepSupportOptions.find((option) => option.value === settings.iepSupport) ?? iepSupportOptions[1];
   const selectedSandbox = sandboxLabOptions.find((option) => option.value === settings.sandboxLab) ?? sandboxLabOptions[1];
@@ -2548,7 +2663,7 @@ function FinishLineToolkit({
   const selectedCommunity = communityWorkflowOptions.find((option) => option.value === settings.communityWorkflow) ?? communityWorkflowOptions[1];
 
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Finish line platform toolkit">
+    <section className={`${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-4 shadow-sm`} aria-label="Finish line platform toolkit">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
@@ -2877,9 +2992,11 @@ function WorkflowMap() {
 function StartFromGallery({
   activeMode,
   onLoadSample,
+  compact = false,
 }: {
   activeMode: BuilderMode;
   onLoadSample: (sample: (typeof samplePackages)[number]) => void;
+  compact?: boolean;
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTag, setActiveTag] = useState('All');
@@ -2899,7 +3016,7 @@ function StartFromGallery({
   }, {});
 
   return (
-    <section id="sample-gallery" className="scroll-mt-28 mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <section id="sample-gallery" className={`scroll-mt-28 ${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-4 shadow-sm`}>
       <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <Library className="h-5 w-5 text-blue-700" />
         <div className="min-w-0 flex-1">
