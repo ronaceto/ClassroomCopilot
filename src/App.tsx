@@ -2334,7 +2334,12 @@ function WorkspaceLaunchBar({
   onOpenHelp: () => void;
 }) {
   const [openPanel, setOpenPanel] = useState<'samples' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
+  const [showStartTip, setShowStartTip] = useState(() => localStorage.getItem('classroomCopilot.workspaceTip.dismissed.v1') !== 'true');
   const togglePanel = (panel: NonNullable<typeof openPanel>) => setOpenPanel((current) => (current === panel ? null : panel));
+  const dismissStartTip = () => {
+    setShowStartTip(false);
+    localStorage.setItem('classroomCopilot.workspaceTip.dismissed.v1', 'true');
+  };
 
   return (
     <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Workspace tools">
@@ -2344,7 +2349,7 @@ function WorkspaceLaunchBar({
           <h2 className="truncate text-lg font-bold text-slate-950">Start building, open support only when needed</h2>
           <p className="text-xs leading-5 text-slate-600">Samples, accessibility, advanced options, beta feedback, and positioning are available without pushing the builder down the page.</p>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+        <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-end">
           {([
             ['samples', 'Samples', 'Open sample packages and templates.'],
             ['advanced', 'Advanced', 'Open language access, IEP/504, sandbox, LMS, PD, and community settings.'],
@@ -2358,7 +2363,7 @@ function WorkspaceLaunchBar({
               onClick={() => togglePanel(panel)}
               title={help}
               aria-label={`${label}: ${help}`}
-              className={`inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border px-3 text-sm font-bold transition ${
+              className={`inline-flex min-h-10 items-center justify-center rounded-md border px-3 text-sm font-bold transition ${
                 openPanel === panel ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:text-blue-800'
               }`}
               aria-expanded={openPanel === panel}
@@ -2370,7 +2375,7 @@ function WorkspaceLaunchBar({
             type="button"
             onClick={onOpenHelp}
             title="Open tutorials, PD modules, implementation checklists, and support materials."
-            className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+            className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
           >
             Help
           </button>
@@ -2378,12 +2383,21 @@ function WorkspaceLaunchBar({
             type="button"
             onClick={onOpenFeedback}
             title="Send beta feedback, report a bug, or request a template."
-            className="inline-flex min-h-10 flex-shrink-0 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
+            className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
           >
             Feedback
           </button>
         </div>
       </div>
+
+      {showStartTip && (
+        <div className="mt-3 flex flex-col gap-2 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs leading-5 text-blue-950 sm:flex-row sm:items-center sm:justify-between">
+          <span><strong>Start here:</strong> use Samples for examples, Advanced for optional supports, and Help for short tutorials. The builder stays below this bar.</span>
+          <button type="button" onClick={dismissStartTip} className="inline-flex min-h-8 items-center justify-center rounded-md border border-blue-200 bg-white px-3 font-bold text-blue-800">
+            Got it
+          </button>
+        </div>
+      )}
 
       {openPanel && (
         <div className="mt-3 border-t border-slate-100 pt-3">
@@ -3014,6 +3028,7 @@ function StartFromGallery({
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTag, setActiveTag] = useState('All');
   const [previewSample, setPreviewSample] = useState<(typeof samplePackages)[number] | null>(null);
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const modeSamples = samplePackages.filter((sample) => sample.mode === activeMode);
   const tags = ['All', ...Array.from(new Set(modeSamples.flatMap(getSampleTags)))].slice(0, 9);
   const visibleSamples = modeSamples.filter((sample) => {
@@ -3027,6 +3042,11 @@ function StartFromGallery({
     groups[category] = [...(groups[category] ?? []), sample];
     return groups;
   }, {});
+  const groupedEntries = Object.entries(groupedSamples);
+  const isCategoryOpen = (category: string, index: number) => openCategories[category] ?? index === 0;
+  const toggleCategory = (category: string, index: number) => {
+    setOpenCategories((current) => ({ ...current, [category]: !isCategoryOpen(category, index) }));
+  };
 
   return (
     <section id="sample-gallery" className={`scroll-mt-28 ${compact ? 'mb-0' : 'mb-5'} rounded-lg border border-slate-200 bg-white p-4 shadow-sm`}>
@@ -3062,33 +3082,49 @@ function StartFromGallery({
         ))}
       </div>
       <div className="space-y-4">
-        {Object.entries(groupedSamples).map(([category, samples]) => (
-          <div key={category}>
-            <h4 className="mb-2 text-xs font-bold uppercase text-slate-500">{category}</h4>
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {samples.map((sample) => (
-                <div key={sample.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
-                  <strong className="block text-sm text-slate-950">{sample.title}</strong>
-                  <span className="mt-1 block text-xs leading-5 text-slate-600">{sample.description}</span>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onLoadSample(sample)}
-                      className="rounded-md bg-blue-700 px-3 py-2 text-xs font-bold text-white transition hover:bg-blue-800"
-                    >
-                      Use
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPreviewSample(sample)}
-                      className="rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
-                    >
-                      Preview
-                    </button>
+        {groupedEntries.map(([category, samples], index) => (
+          <div key={category} className="rounded-lg border border-slate-200 bg-slate-50">
+            <button
+              type="button"
+              onClick={() => toggleCategory(category, index)}
+              className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left transition hover:bg-blue-50"
+              aria-expanded={isCategoryOpen(category, index)}
+            >
+              <span>
+                <span className="block text-xs font-bold uppercase text-slate-600">{category}</span>
+                <span className="mt-1 block text-xs text-slate-500">{samples.length} template{samples.length === 1 ? '' : 's'} available</span>
+              </span>
+              <span className="flex items-center gap-2 text-xs font-bold text-blue-800">
+                {isCategoryOpen(category, index) ? 'Hide' : 'Show'}
+                <ChevronDown className={`h-4 w-4 transition ${isCategoryOpen(category, index) ? 'rotate-180' : ''}`} />
+              </span>
+            </button>
+            {isCategoryOpen(category, index) && (
+              <div className="grid gap-3 border-t border-slate-200 p-3 md:grid-cols-2 xl:grid-cols-3">
+                {samples.map((sample) => (
+                  <div key={sample.title} className="rounded-md border border-slate-200 bg-white p-3">
+                    <strong className="block text-sm text-slate-950">{sample.title}</strong>
+                    <span className="mt-1 block text-xs leading-5 text-slate-600">{sample.description}</span>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onLoadSample(sample)}
+                        className="rounded-md bg-blue-700 px-3 py-2 text-xs font-bold text-white transition hover:bg-blue-800"
+                      >
+                        Use
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewSample(sample)}
+                        className="rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                      >
+                        Preview
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
         {visibleSamples.length === 0 && <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">No templates match that search.</div>}
@@ -3583,7 +3619,7 @@ function CollapsibleSubsection({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
       >
         <span>
           <span className="flex items-center gap-2 font-bold text-slate-950">
@@ -3591,8 +3627,12 @@ function CollapsibleSubsection({
             {section.title}
           </span>
           <span className="mt-1 block text-xs leading-5 text-slate-600">{section.description}</span>
+          <span className="mt-1 block text-[11px] font-bold uppercase text-blue-800">{isOpen ? 'Click to collapse' : 'Click to expand'}</span>
         </span>
-        <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="flex flex-shrink-0 items-center gap-2 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-bold text-slate-600">
+          {isOpen ? 'Open' : 'Closed'}
+          <ChevronDown className={`h-4 w-4 text-slate-500 transition ${isOpen ? 'rotate-180' : ''}`} />
+        </span>
       </button>
       {isOpen && <div className="border-t border-slate-100 p-4">{section.content}</div>}
     </section>
