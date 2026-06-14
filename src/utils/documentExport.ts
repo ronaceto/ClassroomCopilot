@@ -97,22 +97,49 @@ export const exportToHtml = (content: string, filename: string, template: CopyTe
 };
 
 export const printFormattedDocument = (content: string, title: string, template: CopyTemplate = 'teacher_lesson_deck'): void => {
-  const html = buildHtmlDocument(content, title, template).replace(
-    '</body>',
-    '<script>window.addEventListener("load", function () { window.setTimeout(function () { window.print(); }, 300); });</script></body>',
-  );
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const printWindow = window.open(url, '_blank', 'noopener,noreferrer');
+  const html = buildHtmlDocument(content, title, template);
+  const iframe = document.createElement('iframe');
+  iframe.title = `${title} print preview`;
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '1px';
+  iframe.style.height = '1px';
+  iframe.style.border = '0';
+  iframe.style.opacity = '0';
+  iframe.setAttribute('aria-hidden', 'true');
 
-  if (!printWindow) {
-    downloadBlob(blob, `${title}.html`);
-    return;
+  const cleanup = () => {
+    window.setTimeout(() => {
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    }, 1000);
+  };
+
+  iframe.onload = () => {
+    try {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      cleanup();
+    } catch (error) {
+      console.error('Print frame failed, falling back to HTML download:', error);
+      cleanup();
+      downloadTextFile(html, `${title}.html`, 'text/html;charset=utf-8');
+    }
+  };
+
+  document.body.appendChild(iframe);
+
+  try {
+    const doc = iframe.contentDocument;
+    if (!doc) throw new Error('Print frame document was unavailable.');
+    doc.open();
+    doc.write(html);
+    doc.close();
+  } catch (error) {
+    console.error('Print frame write failed, falling back to HTML download:', error);
+    cleanup();
+    downloadTextFile(html, `${title}.html`, 'text/html;charset=utf-8');
   }
-
-  window.setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 60000);
 };
 
 export const exportToPptx = async (content: string, filename: string, template: CopyTemplate = 'teacher_lesson_deck'): Promise<void> => {

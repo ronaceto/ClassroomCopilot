@@ -20,7 +20,36 @@ const parseApiError = async (response: Response): Promise<string> => {
     return `${message || 'Generation timed out'} Try one focused package type at a time, or open Samples and load a starter package before refining it.`;
   }
 
+  if (response.status === 502 || response.status === 503) {
+    return 'The AI service was temporarily unavailable. Your work is still on the page. Wait a moment, then retry or choose a smaller package.';
+  }
+
   return message;
+};
+
+const REQUEST_TIMEOUT_MS = 70000;
+
+const fetchWithTimeout = async (url: string, init: RequestInit): Promise<Response> => {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeout);
+  }
+};
+
+const friendlyClientError = (err: unknown): string => {
+  if (err instanceof DOMException && err.name === 'AbortError') {
+    return 'The build took too long and was stopped by the browser. Your selections are still saved. Try again with one focused package or use a sample as the starting point.';
+  }
+
+  if (err instanceof TypeError) {
+    return 'The request could not reach the AI service. Check the connection and try again.';
+  }
+
+  return err instanceof Error ? err.message : 'The build could not complete. Please retry with a smaller package.';
 };
 
 export const useChat = () => {
@@ -42,8 +71,8 @@ export const useChat = () => {
     content: string,
     mode: Mode,
     config: ClassroomConfig
-  ): Promise<void> => {
-    if (!content.trim()) return;
+  ): Promise<boolean> => {
+    if (!content.trim()) return false;
 
     const userMessage: ChatMessage = {
       role: 'user',
@@ -62,23 +91,19 @@ export const useChat = () => {
         config
       });
 
-      const response = await fetch('/api/chat', {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: requestBody,
-      });
+      };
+
+      const response = await fetchWithTimeout('/api/chat', requestInit);
 
       // Fallback to Netlify function if /api/chat fails
       if (!response.ok && response.status === 404) {
-        const netlifyResponse = await fetch('/.netlify/functions/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: requestBody,
-        });
+        const netlifyResponse = await fetchWithTimeout('/.netlify/functions/chat', requestInit);
 
         if (!netlifyResponse.ok) {
           const errorMessage = await parseApiError(netlifyResponse);
@@ -113,7 +138,7 @@ export const useChat = () => {
           }));
         }
 
-        return;
+        return true;
       }
 
       if (!response.ok) {
@@ -149,9 +174,19 @@ export const useChat = () => {
         }));
       }
 
+      return true;
+
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      const errorMessage = friendlyClientError(err);
       setError(errorMessage);
+      setDebugInfo({
+        endpoint: '/api/chat',
+        timestamp: Date.now(),
+        status: 0,
+        ok: false,
+        message: errorMessage,
+        functionVersion: null
+      });
       console.error('Chat error:', err);
 
       // Add error message to chat
@@ -161,6 +196,7 @@ export const useChat = () => {
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, errorChatMessage]);
+      return false;
     } finally {
       setIsLoading(false);
     }

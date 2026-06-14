@@ -1379,6 +1379,7 @@ function App() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loadedSample, setLoadedSample] = useState<SamplePackage | null>(null);
+  const [lastAutoSavedMessage, setLastAutoSavedMessage] = useState<number | null>(null);
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
@@ -1389,13 +1390,33 @@ function App() {
     void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', config);
   };
 
-  const handleImprove = (prompt: string) => {
+  const handleImprove = async (prompt: string) => {
     trackBetaEvent('refinement_requested', activeMode, prompt.slice(0, 72));
-    void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
+    return sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
   const generatedContent = latestAssistantMessage?.content ?? loadedPackageContent;
+
+  useEffect(() => {
+    if (!latestAssistantMessage || isLoading || latestAssistantMessage.timestamp === lastAutoSavedMessage) return;
+    if (!latestAssistantMessage.content.trim() || latestAssistantMessage.content.startsWith('I apologize, but I encountered an error')) return;
+
+    const nextPackage: SavedPackage = {
+      id: crypto.randomUUID(),
+      title: inferPackageTitle(latestAssistantMessage.content, activeMode),
+      mode: activeMode,
+      content: latestAssistantMessage.content,
+      status: 'Draft',
+      createdAt: latestAssistantMessage.timestamp,
+    };
+    setSavedPackages((current) => {
+      const alreadySaved = current.some((savedPackage) => savedPackage.createdAt === nextPackage.createdAt);
+      return alreadySaved ? current : [nextPackage, ...current].slice(0, 24);
+    });
+    setLastAutoSavedMessage(latestAssistantMessage.timestamp);
+    trackBetaEvent('package_auto_saved', activeMode, nextPackage.title);
+  }, [activeMode, isLoading, lastAutoSavedMessage, latestAssistantMessage]);
 
   useEffect(() => {
     saveSavedPackages(savedPackages);
@@ -4496,7 +4517,7 @@ function GeneratedOutput({
   content: string;
   activeMode: BuilderMode;
   emptyTitle: string;
-  onImprove: (prompt: string) => void;
+  onImprove: (prompt: string) => Promise<boolean>;
   onSave: (content: string, status: ReviewStatus) => void;
   savedPackages: SavedPackage[];
   onLoadPackage: (savedPackage: SavedPackage) => void;
@@ -4532,12 +4553,12 @@ function GeneratedOutput({
     }
   };
 
-  const improveReadiness = () => {
+  const improveReadiness = async () => {
     onTrack('fix_missing_pieces_clicked', activeMode, missingChecks.map((check) => check.label).join(', '));
     const missingLabels = missingChecks.map((check) => check.label).join(', ') || 'polish, specificity, and implementation quality';
     setActiveRefinement('Fix Missing Pieces');
     setExportStatus(`Refining package: Fix Missing Pieces. Updated output will replace this package when ready.`);
-    onImprove([
+    const ok = await onImprove([
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
       'Preserve useful existing content, but rewrite the package as one complete improved version.',
@@ -4550,13 +4571,15 @@ function GeneratedOutput({
       'Current package:',
       content,
     ].join('\n'));
+    setExportStatus(ok ? 'Refinement complete. Review the updated package below.' : 'Refinement did not complete. Try a smaller refinement or export the current package.');
+    window.setTimeout(() => setExportStatus(''), 5000);
   };
 
-  const runRefinement = (label: string, instruction: string) => {
+  const runRefinement = async (label: string, instruction: string) => {
     onTrack('refinement_preset_clicked', activeMode, label);
     setActiveRefinement(label);
     setExportStatus(`Refining package: ${label}. Updated output will replace this package when ready.`);
-    onImprove([
+    const ok = await onImprove([
       `Refine the generated package using this focus: ${label}.`,
       instruction,
       'Preserve useful existing content, but return one complete updated package with clean markdown headings.',
@@ -4565,13 +4588,15 @@ function GeneratedOutput({
       'Current package:',
       content,
     ].join('\n'));
+    setExportStatus(ok ? `Refinement complete: ${label}. Review the updated package below.` : `Refinement did not complete: ${label}. Try again with a smaller request.`);
+    window.setTimeout(() => setExportStatus(''), 5000);
   };
 
-  const checkBiasAndInclusivity = () => {
+  const checkBiasAndInclusivity = async () => {
     onTrack('bias_check_clicked', activeMode, 'review workspace');
     setActiveRefinement('Bias Check');
     setExportStatus('Running bias and inclusivity review. Updated output will replace this package when ready.');
-    onImprove([
+    const ok = await onImprove([
       'Review the generated package below for bias, inclusivity, representation, accessibility, and culturally narrow assumptions.',
       'Return one improved package with the same core learning goals, plus a concise ## Bias and Inclusivity Notes section.',
       'Look for stereotype-reinforcing examples, exclusionary language, inaccessible assumptions, narrow cultural references, unsupported claims about groups, and missing representation.',
@@ -4580,6 +4605,8 @@ function GeneratedOutput({
       'Current package:',
       content,
     ].join('\n'));
+    setExportStatus(ok ? 'Bias and inclusivity review complete. Review the updated package below.' : 'Bias review did not complete. Try again with a smaller request.');
+    window.setTimeout(() => setExportStatus(''), 5000);
   };
 
   return (
@@ -4781,6 +4808,7 @@ function SavedPackagesPanel({
   onDeletePackage: (id: string) => void;
 }) {
   const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).slice(0, 6);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   return (
     <section className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -4805,13 +4833,39 @@ function SavedPackagesPanel({
               </button>
               <button
                 type="button"
-                onClick={() => onDeletePackage(savedPackage.id)}
+                onClick={() => setPendingDeleteId(savedPackage.id)}
                 className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
                 aria-label={`Delete ${savedPackage.title}`}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
               </div>
+              {pendingDeleteId === savedPackage.id && (
+                <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-3">
+                  <p className="text-xs font-semibold leading-5 text-red-900">
+                    Delete this saved package? This only removes the local browser copy.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onDeletePackage(savedPackage.id);
+                        setPendingDeleteId(null);
+                      }}
+                      className="rounded-md bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-red-800"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDeleteId(null)}
+                      className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
