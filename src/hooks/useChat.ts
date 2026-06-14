@@ -16,6 +16,10 @@ const parseApiError = async (response: Response): Promise<string> => {
     return `OpenAI rate limit/quota issue (429): ${message}.${retryHint} Check OpenAI billing and usage limits.`;
   }
 
+  if (response.status === 504) {
+    return `${message || 'Generation timed out'} Try one focused package type at a time, or open Samples and load a starter package before refining it.`;
+  }
+
   return message;
 };
 

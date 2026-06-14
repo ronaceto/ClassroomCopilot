@@ -1,7 +1,8 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-const OPENAI_MAX_TOKENS = Number.parseInt(process.env.OPENAI_MAX_TOKENS || '3500', 10);
-const FUNCTION_VERSION = 'curriculum-builder-2026-06-13';
+const OPENAI_MAX_TOKENS = Number.parseInt(process.env.OPENAI_MAX_TOKENS || '2200', 10);
+const OPENAI_TIMEOUT_MS = Number.parseInt(process.env.OPENAI_TIMEOUT_MS || '45000', 10);
+const FUNCTION_VERSION = 'curriculum-builder-2026-06-14-timeout-guard';
 
 // System prompts
 const TEACHER_SYSTEM_PROMPT = `You are "Classroom Copilot — Teacher Mode," a friendly, seasoned instructional designer. Produce ready-to-use classroom materials that are accurate, age-appropriate, and aligned with the configuration provided. Use clear sections and checklists. Prefer concrete examples over abstractions. If a standard set is selected, list exact codes when supplied; if inferring, state "inferred" and be conservative. Include differentiation as toggled (ELL, IEP/504, extension). Never fabricate citations or sources. Keep tone conversational and practical for a busy teacher. When asked for assessments, generate varied item types and include answer keys. If the user shares proprietary content, keep it in-session only.`;
@@ -137,20 +138,23 @@ exports.handler = async (event, context) => {
       ...messages.filter(m => m.role !== 'system')
     ];
 
-    // Call OpenAI API
+    // Call OpenAI API with a function-level timeout guard so users get a useful error instead of a platform 504.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), Number.isFinite(OPENAI_TIMEOUT_MS) ? OPENAI_TIMEOUT_MS : 45000);
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: OPENAI_MODEL,
         messages: openaiMessages,
         max_tokens: Number.isFinite(OPENAI_MAX_TOKENS) ? OPENAI_MAX_TOKENS : 1500,
-        temperature: 0.7
+        temperature: 0.4
       })
-    });
+    }).finally(() => clearTimeout(timeout));
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -197,6 +201,25 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('Chat API Error:', error);
+    if (error.name === 'AbortError') {
+      return {
+        statusCode: 504,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          error: 'Generation timed out',
+          message: 'The requested package took too long to generate. Try one focused package type at a time, or use a sample package and refine it.',
+          troubleshooting: {
+            model: OPENAI_MODEL,
+            maxTokens: Number.isFinite(OPENAI_MAX_TOKENS) ? OPENAI_MAX_TOKENS : 1500,
+            timeoutMs: Number.isFinite(OPENAI_TIMEOUT_MS) ? OPENAI_TIMEOUT_MS : 45000
+          }
+        })
+      };
+    }
+
     return {
       statusCode: 500,
       headers: {

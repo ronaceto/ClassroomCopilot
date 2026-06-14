@@ -367,6 +367,31 @@ const advisorySectorOptions = [
   'Logistics AI',
 ];
 
+const programOutputPromptInstructions: Record<string, string> = {
+  program_coordinator_packet:
+    'Generate a concise Program Coordinator Packet with executive summary, vision, mission, workforce justification, labor market alignment, curriculum map, course sequence, learning outcomes, assessment plan, CQI plan, advisory structure, industry partnership plan, recruitment plan, enrollment growth plan, faculty resources, equipment, budget considerations, and 3-year roadmap.',
+  advisory_board_toolkit:
+    'Generate an Advisory Board Toolkit with advisory board charter, annual meeting agenda, quarterly meeting agenda, employer skills validation survey, internship feedback form, graduate readiness survey, industry trends discussion guide, program review worksheet, curriculum gap analysis worksheet, annual recommendations report, and recommended advisory board member categories.',
+  course_outcome_matrix:
+    'Generate a Course-to-Outcome Matrix mapping program outcomes to supporting courses, course outcomes, assessments, capstone evidence, industry skills, and CQI evidence sources.',
+  program_pathway_map:
+    'Generate a Visual Program Pathway Map with a clear arrow-style text diagram and slide-ready table. Show credential progression and course progression.',
+  accreditation_readiness_package:
+    'Generate an Accreditation Readiness Package with program outcomes, course outcomes, assessment strategy, rubric alignment, CQI process, evidence collection plan, student success metrics, graduate placement metrics, industry alignment evidence, and annual review schedule.',
+  workforce_alignment_report:
+    'Generate a Workforce Alignment Report mapping target careers such as AI Technician, Data Analyst, Prompt Engineer, Automation Specialist, AI Operations Specialist, and AI Support Specialist to skills, courses, outcomes, and curriculum gaps.',
+  dean_approval_presentation:
+    'Generate a 10-15 slide Dean Approval Presentation outline covering executive summary, why this program, labor market demand, student demand, curriculum overview, pathway, resources, budget, faculty, industry alignment, outcomes, enrollment forecast, risks, success measures, and approval request.',
+  recruitment_toolkit:
+    'Generate a Recruitment Toolkit with student flyer copy, parent flyer copy, website copy, social media posts, email campaign, open house presentation outline, guidance counselor handout, career pathway overview, and local-data placeholders for salary claims.',
+  cqi_management_center:
+    'Generate a CQI Management Center with annual review schedule, course review forms, faculty review forms, student feedback forms, employer feedback forms, advisory review forms, action plan templates, and dashboard metrics for enrollment, retention, completion, placement, feedback, and satisfaction.',
+  industry_partnership_center:
+    'Generate an Industry Partnership Center with partnership prospect list structure, internship strategy, employer outreach plan, advisory invitations, work-based learning plan, guest speaker plan, and employer engagement calendar.',
+  evidence_repository:
+    'Generate an Evidence Repository structure for course maps, outcome maps, assessment results, advisory minutes, employer surveys, CQI reports, accreditation evidence, recruitment materials, owners, review dates, status labels, and privacy-safe evidence rules.',
+};
+
 const readinessChecks = [
   {
     label: 'Standards / outcomes alignment',
@@ -2292,6 +2317,7 @@ function CollegeProgramBuilder({
   const [sourceNotes, setSourceNotes] = useState('');
   const selectedProgramOutput = programPlatformOutputOptions.find((option) => option.value === settings.packagePreset) ?? programPlatformOutputOptions[0];
   const pathwaySteps = programPathwayTemplates[settings.pathwayModel] ?? programPathwayTemplates['Stackable certificate to associate degree'];
+  const selectedOutputInstruction = programOutputPromptInstructions[settings.packagePreset] ?? programOutputPromptInstructions.program_coordinator_packet;
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
@@ -2318,18 +2344,8 @@ function CollegeProgramBuilder({
       `Visual pathway map sequence: ${pathwaySteps.join(' -> ')}`,
       sourceNotes.trim() ? `Additional program source/context notes: ${sourceNotes.trim()}` : 'Additional program source/context notes: none provided.',
       '',
-      'Return a Phase 3 AI Program Development Platform package with these headings when relevant: ## Executive Summary, ## Program Vision Statement, ## Program Mission, ## Workforce Justification, ## Labor Market Alignment, ## Visual Program Pathway Map, ## Curriculum Map, ## Course Sequence, ## Program Learning Outcomes, ## Course-to-Outcome Matrix, ## Assessment Plan, ## CQI Plan, ## Advisory Board Toolkit, ## Industry Partnership Plan, ## Recruitment Plan, ## Enrollment Growth Plan, ## Faculty Resource Requirements, ## Equipment Requirements, ## Budget Considerations, ## 3-Year Roadmap, ## Department / Dean Review Checklist.',
-      'For Program Coordinator Packet, include all launch-and-operate deliverables: executive summary, vision, mission, workforce justification, labor market alignment, curriculum map, course sequence, learning outcomes, assessment plan, CQI plan, advisory structure, industry partnership plan, recruitment plan, enrollment growth plan, faculty resources, equipment, budget, and 3-year roadmap.',
-      'For Advisory Board Toolkit, include advisory board charter, annual meeting agenda, quarterly meeting agenda, employer skills validation survey, internship feedback form, graduate readiness survey, industry trends discussion guide, program review worksheet, curriculum gap analysis worksheet, annual recommendations report, and recommended advisory board member categories based on AI, data analytics, cybersecurity, manufacturing automation, healthcare AI, and logistics AI.',
-      'For Visual Program Pathway Map, include a clear text diagram using arrows plus a slide-ready table. Show both credential progression and course progression when useful.',
-      'For Course-to-Outcome Matrix, map program outcomes to supporting courses, course outcomes, assessments, capstone evidence, industry skills, and CQI evidence sources.',
-      'For Accreditation Readiness Package, include program outcomes, course outcomes, assessment strategy, rubric alignment, CQI process, evidence collection plan, student success metrics, graduate placement metrics, industry alignment evidence, and annual review schedule for institutional review.',
-      'For Workforce Alignment Engine, generate a career alignment report that maps target careers such as AI Technician, Data Analyst, Prompt Engineer, Automation Specialist, AI Operations Specialist, and AI Support Specialist to skills, courses, outcomes, and curriculum gaps.',
-      'For Dean Approval Presentation, generate a 10-15 slide outline covering executive summary, why this program, labor market demand, student demand, curriculum overview, pathway, resources, budget, faculty, industry alignment, outcomes, enrollment forecast, risks, success measures, and approval request.',
-      'For Recruitment Toolkit, generate student flyer copy, parent flyer copy, website copy, social media posts, email campaign, open house presentation outline, guidance counselor handout, career pathway overview, and industry salary overview placeholders that require local verification.',
-      'For CQI Management Center, generate annual review schedule, course review forms, faculty review forms, student feedback forms, employer feedback forms, advisory review forms, action plan templates, and dashboard metrics for enrollment, retention, completion, placement, feedback, and satisfaction.',
-      'For Industry Partnership Center, generate partnership prospect list structure, internship strategy, employer outreach plan, advisory invitations, work-based learning plan, guest speaker plan, and employer engagement calendar.',
-      'For Evidence Repository, generate a repository structure for course maps, outcome maps, assessment results, advisory minutes, employer surveys, CQI reports, accreditation evidence, recruitment materials, owners, review dates, and status labels.',
+      selectedOutputInstruction,
+      'Keep the response complete but concise: use short sections, bullets, compact tables, and practical placeholders. Target 900-1400 words so the package can generate within a serverless request.',
       'For CQI, include artifacts to collect, review cadence, improvement triggers, and documentation notes.',
       'For advisory board, include agenda items, employer feedback questions, and how feedback updates curriculum.',
       'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
