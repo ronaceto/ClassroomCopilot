@@ -1422,6 +1422,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpCenterOpen, setHelpCenterOpen] = useState(false);
   const [trustOpen, setTrustOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(() => localStorage.getItem('classroomCopilot.tourCompleted.v1') !== 'true');
   const [fontScale, setFontScale] = useState<FontScale>('standard');
   const [highContrast, setHighContrast] = useState(false);
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
@@ -1551,6 +1552,12 @@ function App() {
     setSelectedGoal(null);
     localStorage.removeItem('classroomCopilot.role.v1');
     localStorage.removeItem('classroomCopilot.goal.v1');
+  };
+
+  const finishTour = () => {
+    setTourOpen(false);
+    localStorage.setItem('classroomCopilot.tourCompleted.v1', 'true');
+    trackBetaEvent('guided_tour_completed', activeMode, selectedRole ?? 'no_role');
   };
 
   const saveCurrentPackage = (content: string, status: ReviewStatus) => {
@@ -1760,7 +1767,13 @@ function App() {
         </div>
 
         {!selectedRole || !selectedGoal ? (
-          <RoleGoalLanding onChooseRole={chooseRole} onChooseGoal={chooseGoal} selectedGoal={selectedGoal} />
+          <RoleGoalLanding
+            onChooseRole={chooseRole}
+            onChooseGoal={chooseGoal}
+            selectedGoal={selectedGoal}
+            onTakeTour={() => setTourOpen(true)}
+            onSkipTour={finishTour}
+          />
         ) : (
           <>
         <WorkspaceLaunchBar
@@ -1780,6 +1793,9 @@ function App() {
             setFeedbackOpen(true);
           }}
           onOpenHelp={() => openHelpCenter('workspace launch bar')}
+          onOpenTour={() => setTourOpen(true)}
+          selectedRole={selectedRole}
+          selectedGoal={selectedGoal}
         />
 
         {activeMode === 'curriculum-pack' ? (
@@ -1813,6 +1829,7 @@ function App() {
 
       <TeacherSupportCenter open={helpCenterOpen} onClose={() => setHelpCenterOpen(false)} />
       <TrustComplianceCenter open={trustOpen} onClose={() => setTrustOpen(false)} />
+      <GuidedTour open={tourOpen} onClose={finishTour} />
       <GlobalAsyncStatus isLoading={isLoading} action={globalAction} />
       <BetaFeedbackDrawer
         open={feedbackOpen}
@@ -1882,13 +1899,11 @@ function CurriculumPackBuilder({
   const [settings, setSettings] = useState<CurriculumPackSettings>(draft?.settings ?? defaultCurriculumPackSettings);
   const [sourceNotes, setSourceNotes] = useState(draft?.sourceNotes ?? '');
   const [draftStatus, setDraftStatus] = useState(draft ? 'Draft restored' : 'Draft autosaves locally');
-  const [openSections, setOpenSections] = useState<Record<string, string>>({
-    Start: 'template',
-    Context: 'classroom',
-    'AI Access': 'access',
-    Deliverables: 'package',
-    Sources: 'source-notes',
-    Review: 'summary',
+  const [openSections, setOpenSections] = useState<Record<string, string>>(() => {
+    const mobile = window.matchMedia('(max-width: 767px)').matches;
+    return mobile
+      ? { Start: '', Context: '', 'AI Access': '', Deliverables: '', Sources: '', Review: '' }
+      : { Start: 'template', Context: 'classroom', 'AI Access': 'access', Deliverables: 'package', Sources: 'source-notes', Review: 'summary' };
   });
 
   const packOptions = [
@@ -2769,6 +2784,8 @@ function CollegeProgramBuilder({
 function WorkspaceLaunchBar({
   activeMode,
   experienceMode,
+  selectedRole,
+  selectedGoal,
   events,
   feedback,
   fontScale,
@@ -2780,9 +2797,12 @@ function WorkspaceLaunchBar({
   onLoadSample,
   onOpenFeedback,
   onOpenHelp,
+  onOpenTour,
 }: {
   activeMode: BuilderMode;
   experienceMode: ExperienceMode;
+  selectedRole: UserRole | null;
+  selectedGoal: BuildGoal | null;
   events: BetaEvent[];
   feedback: BetaFeedback[];
   fontScale: FontScale;
@@ -2794,6 +2814,7 @@ function WorkspaceLaunchBar({
   onLoadSample: (sample: (typeof samplePackages)[number]) => void;
   onOpenFeedback: () => void;
   onOpenHelp: () => void;
+  onOpenTour: () => void;
 }) {
   const [openPanel, setOpenPanel] = useState<'samples' | 'demo' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
   const [showStartTip, setShowStartTip] = useState(() => localStorage.getItem('classroomCopilot.workspaceTip.dismissed.v1') !== 'true');
@@ -2848,6 +2869,14 @@ function WorkspaceLaunchBar({
           </button>
           <button
             type="button"
+            onClick={onOpenTour}
+            title="Open the 90-second guided tour."
+            className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+          >
+            Tour
+          </button>
+          <button
+            type="button"
             onClick={onOpenFeedback}
             title="Send beta feedback, report a bug, or request a template."
             className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
@@ -2865,6 +2894,8 @@ function WorkspaceLaunchBar({
           </button>
         </div>
       )}
+
+      <SmartRecommendations selectedRole={selectedRole} selectedGoal={selectedGoal} activeMode={activeMode} experienceMode={experienceMode} />
 
       {openPanel && (
         <div className="mt-3 border-t border-slate-100 pt-3">
@@ -2912,10 +2943,14 @@ function RoleGoalLanding({
   onChooseRole,
   onChooseGoal,
   selectedGoal,
+  onTakeTour,
+  onSkipTour,
 }: {
   onChooseRole: (role: UserRole) => void;
   onChooseGoal: (goal: BuildGoal) => void;
   selectedGoal: BuildGoal | null;
+  onTakeTour: () => void;
+  onSkipTour: () => void;
 }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -2925,6 +2960,14 @@ function RoleGoalLanding({
         <p className="mt-2 text-sm leading-6 text-slate-600">
           Classroom Copilot routes you to the right workflow first, then reveals advanced program, CQI, advisory, and accreditation tools only when they match your goal.
         </p>
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <button type="button" onClick={onTakeTour} className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white">
+            Take 90-second tour
+          </button>
+          <button type="button" onClick={onSkipTour} className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700">
+            Skip tour
+          </button>
+        </div>
       </div>
       <div className="grid gap-3 lg:grid-cols-5">
         {roleOptions.map((role) => (
@@ -2959,10 +3002,96 @@ function RoleGoalLanding({
   );
 }
 
+function SmartRecommendations({
+  selectedRole,
+  selectedGoal,
+  activeMode,
+  experienceMode,
+}: {
+  selectedRole: UserRole | null;
+  selectedGoal: BuildGoal | null;
+  activeMode: BuilderMode;
+  experienceMode: ExperienceMode;
+}) {
+  const role = roleOptions.find((item) => item.id === selectedRole);
+  const goal = goalOptions.find((item) => item.id === selectedGoal);
+  const recommendations = getSmartRecommendations(selectedRole, selectedGoal, activeMode).slice(0, experienceMode === 'simple' ? 3 : 6);
+
+  if (!role || !goal) return null;
+
+  return (
+    <div className="mt-3 rounded-lg border border-green-100 bg-green-50 p-3">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase text-green-800">Recommended for {role.label}</p>
+          <p className="text-sm leading-6 text-slate-700">{goal.label}: start with these outputs, then switch to Expert Mode to override.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {recommendations.map((item) => (
+            <span key={item} className="rounded-md border border-green-200 bg-white px-2.5 py-1.5 text-xs font-bold text-green-900">
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GuidedTour({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [step, setStep] = useState(0);
+  const steps = [
+    ['Select your goal', 'Start by choosing who you are and what you need to build. The app routes you to the right workflow.'],
+    ['Configure your content', 'Simple Mode shows only core decisions. Expert Mode reveals CQI, accreditation, advisory, and workforce controls.'],
+    ['Build', 'Use the blue Build button. While generation runs, the status center locks conflicting actions and shows progress.'],
+    ['Review', 'Open Review / Export to inspect readiness signals, refine in Expert Mode, and save versions.'],
+    ['Export', 'Download HTML, print/PDF, PPT, Markdown, LMS copy, or a faculty portfolio when relevant.'],
+  ];
+
+  if (!open) return null;
+
+  const [title, detail] = steps[step];
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+      <div className="w-full max-w-lg rounded-xl bg-white p-5 shadow-2xl">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase text-blue-800">Guided tour</p>
+            <h2 id="tour-title" className="mt-1 text-2xl font-bold text-slate-950">{title}</h2>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600">Skip</button>
+        </div>
+        <p className="text-sm leading-6 text-slate-600">{detail}</p>
+        <div className="mt-5 grid grid-cols-5 gap-2">
+          {steps.map((item, index) => (
+            <div key={item[0]} className={`h-2 rounded-full ${index <= step ? 'bg-blue-700' : 'bg-slate-200'}`} />
+          ))}
+        </div>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <button type="button" onClick={() => setStep(Math.max(step - 1, 0))} disabled={step === 0} className="min-h-10 rounded-md border border-slate-300 px-4 text-sm font-bold text-slate-700 disabled:opacity-40">
+            Back
+          </button>
+          {step < steps.length - 1 ? (
+            <button type="button" onClick={() => setStep(step + 1)} className="min-h-10 rounded-md bg-blue-700 px-4 text-sm font-bold text-white">
+              Next
+            </button>
+          ) : (
+            <button type="button" onClick={onClose} className="min-h-10 rounded-md bg-blue-700 px-4 text-sm font-bold text-white">
+              Done
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GlobalAsyncStatus({ isLoading, action }: { isLoading: boolean; action: string }) {
   if (!isLoading) return null;
 
-  const steps = ['Preparing package', action || 'Generating content', 'Saving history', 'Ready'];
+  const steps = ['Preparing Content', 'Generating Outputs', 'Formatting Files', 'Saving Version', 'Finalizing Package'];
+  const activeIndex = action.toLowerCase().includes('refin') ? 1 : action.toLowerCase().includes('export') ? 2 : 1;
 
   return (
     <div className="fixed bottom-6 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 rounded-lg border border-blue-100 bg-white p-4 shadow-xl">
@@ -2970,9 +3099,12 @@ function GlobalAsyncStatus({ isLoading, action }: { isLoading: boolean; action: 
         <strong className="text-sm text-slate-950">{action || 'Working on package'}</strong>
         <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">Do not close</span>
       </div>
-      <div className="grid gap-2 sm:grid-cols-4">
+      <div className="mb-3 h-2 overflow-hidden rounded-full bg-slate-100">
+        <div className="h-full w-2/5 rounded-full bg-blue-700 transition-all" />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-5">
         {steps.map((step, index) => (
-          <div key={step} className={`rounded-md px-3 py-2 text-xs font-bold ${index <= 1 ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-500'}`}>
+          <div key={step} className={`rounded-md px-3 py-2 text-xs font-bold ${index <= activeIndex ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-500'}`}>
             {step}
           </div>
         ))}
@@ -4216,10 +4348,12 @@ function LivePreview({
 
 function Panel({ title, icon: Icon, children }: { title: string; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <header className="mb-4 flex items-center gap-3">
-        <Icon className="h-5 w-5 text-blue-700" />
-        <h3 className="text-lg font-bold">{title}</h3>
+    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <header className="mb-5 flex items-center gap-3">
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+          <Icon className="h-5 w-5 text-blue-700" />
+        </span>
+        <h3 className="text-xl font-bold text-slate-950">{title}</h3>
       </header>
       {children}
     </article>
@@ -4473,7 +4607,7 @@ function CollapsibleSubsection({
 
 function GuidanceNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
+    <div className="mb-5 flex items-start gap-2 rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
       <HelpCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
       <p>{children}</p>
     </div>
@@ -4937,7 +5071,7 @@ function SegmentedOptions({ value, onChange, options }: { value: string; onChang
           }`}
         >
           <span className="block">{option.label}</span>
-          {option.description && <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">{option.description}</span>}
+          {option.description && <span className="mt-1 block max-h-10 overflow-hidden text-xs font-medium leading-5 text-slate-500">{option.description}</span>}
         </button>
       ))}
     </div>
@@ -4960,22 +5094,54 @@ function CardOptions({
       {options.map((option) => {
         const details = detailKey === 'deliverables' ? option.deliverables : option.includedOutputs;
         const description = option.description ?? deliverableDescriptions[option.value];
+        const help = getAdvancedHelp(option.value);
         return (
-          <button
+          <div
             key={option.value}
-            type="button"
-            onClick={() => onChange(option.value)}
             className={`rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
               value === option.value ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 text-slate-700 hover:border-slate-300'
             }`}
           >
-            <strong className="block">{option.label}</strong>
-            {description && <span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span>}
-            <span className="mt-2 block text-xs font-medium text-slate-500">{(details ?? []).slice(0, 4).map(labelFromValue).join(', ')}</span>
-          </button>
+            <div className="flex items-start justify-between gap-2">
+              <button type="button" onClick={() => onChange(option.value)} className="min-w-0 flex-1 text-left">
+                <strong className="block">{option.label}</strong>
+                {description && <span className="mt-1 block max-h-10 overflow-hidden text-xs leading-5 text-slate-600">{description}</span>}
+              </button>
+              {help && <ContextHelp title={option.label} body={help} />}
+            </div>
+            <button type="button" onClick={() => onChange(option.value)} className="mt-2 block text-left text-xs font-medium text-slate-500">
+              {(details ?? []).slice(0, 4).map(labelFromValue).join(', ')}
+            </button>
+          </div>
         );
       })}
     </div>
+  );
+}
+
+function ContextHelp({ title, body }: { title: string; body: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          setOpen((current) => !current);
+        }}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 hover:text-blue-800"
+        aria-label={`Explain ${title}`}
+      >
+        <HelpCircle className="h-4 w-4" />
+      </button>
+      {open && (
+        <span className="absolute right-0 top-9 z-20 w-72 rounded-lg border border-slate-200 bg-white p-3 text-left shadow-xl">
+          <strong className="block text-sm text-slate-950">{title}</strong>
+          <span className="mt-1 block text-xs leading-5 text-slate-600">{body}</span>
+          <span className="mt-2 block text-xs font-bold text-blue-800">Learn more in Help Center.</span>
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -5521,6 +5687,31 @@ function getNextVersion(packages: SavedPackage[], mode: BuilderMode, title: stri
     .filter((savedPackage) => savedPackage.mode === mode && savedPackage.title.replace(/\s+Copy$/, '') === title.replace(/\s+Copy$/, ''))
     .map((savedPackage) => savedPackage.version ?? 1);
   return matchingVersions.length > 0 ? Math.max(...matchingVersions) + 1 : 1;
+}
+
+function getSmartRecommendations(role: UserRole | null, goal: BuildGoal | null, mode: BuilderMode): string[] {
+  if (goal === 'lesson' || role === 'k12_teacher') return ['Full Lesson Pack', 'Mini-Unit', 'AI Use Guardrails', 'Polished HTML'];
+  if (goal === 'course' || role === 'college_faculty') return ['Full Course Package', 'Lab-Ready Course', 'Ethics Policy', 'Syllabus Packet'];
+  if (goal === 'approval' || role === 'dean') return ['Dean Approval Presentation', 'Program Pathway', 'Budget Considerations', 'Success Measures'];
+  if (goal === 'advisory' || role === 'workforce_advisory') return ['Advisory Board Toolkit', 'Employer Skills Survey', 'Gap Analysis', 'Industry Feedback'];
+  if (goal === 'accreditation') return ['Accreditation Package', 'Course-to-Outcome Matrix', 'CQI Plan', 'Evidence Repository'];
+  if (goal === 'recruiting') return ['Recruitment Toolkit', 'Student Flyer', 'Website Copy', 'Career Pathway'];
+  if (mode === 'college-program') return ['Program Coordinator Packet', 'Pathway Map', 'CQI Plan', 'Advisory Board Toolkit'];
+  return ['Recommended Package', 'Review', 'Export'];
+}
+
+function getAdvancedHelp(value: string): string {
+  const help: Record<string, string> = {
+    cqi_management_center: 'A CQI center organizes evidence, review cadence, and improvement actions. Program coordinators and department chairs use it to document continuous improvement.',
+    accreditation_readiness_package: 'An accreditation package maps outcomes, assessments, evidence, and review schedules. Use it for institutional review preparation, not as a claim of approval.',
+    workforce_alignment_report: 'A workforce alignment report connects target careers to skills, courses, outcomes, and evidence. It is most useful for advisory boards, deans, and workforce partners.',
+    advisory_board_toolkit: 'An advisory toolkit supports employer feedback, agendas, surveys, and curriculum validation. Use it when industry review matters.',
+    evidence_repository: 'An evidence repository is a planning structure for course maps, surveys, CQI reports, and accreditation artifacts. It helps teams maintain one source of truth.',
+    dean_approval_presentation: 'A dean approval presentation summarizes rationale, resources, risks, outcomes, and the approval request. It is designed for administrative review.',
+    recruitment_toolkit: 'A recruitment toolkit creates student-facing and stakeholder-facing copy. Use it to explain pathways, careers, and program value.',
+    program_coordinator_packet: 'A coordinator packet combines vision, pathway, curriculum map, CQI, advisory board, recruitment, and resource planning for launch conversations.',
+  };
+  return help[value] ?? '';
 }
 
 function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {
