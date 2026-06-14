@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   BookOpen,
   BrainCircuit,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
@@ -23,6 +24,7 @@ import {
   Printer,
   RefreshCw,
   ScanSearch,
+  Search,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
@@ -105,6 +107,38 @@ interface BuilderStep {
   content: React.ReactNode;
 }
 
+interface CurriculumPackSettings {
+  gradeLevel: string;
+  readingLevel: string;
+  subjectContext: string;
+  standardsTarget: string;
+  timeAvailable: string;
+  classFormat: string;
+  studentAiAccessLevel: string;
+  packPreset: string;
+  readingSupport: string;
+  promptLibraryPreset: string;
+  rubricFocus: string;
+  interactiveLab: string;
+  policyCheck: string;
+  policyOutput: string;
+}
+
+interface CurriculumDraft {
+  unitId: string;
+  moduleId: string;
+  settings: CurriculumPackSettings;
+  sourceNotes: string;
+}
+
+interface SubsectionItem {
+  id: string;
+  title: string;
+  description: string;
+  complete: boolean;
+  content: React.ReactNode;
+}
+
 interface FinishLineSettings {
   languageSupport: string;
   iepSupport: string;
@@ -118,6 +152,7 @@ interface FinishLineSettings {
 const curriculumData = curriculumDataJson as CurriculumData;
 const curriculumWorkflow = curriculumWorkflowJson as WorkflowConfig;
 const courseWorkflow = courseWorkflowJson as WorkflowConfig;
+const curriculumDraftKey = 'classroom-copilot-curriculum-pack-draft-v1';
 
 const modes: Array<{
   id: BuilderMode;
@@ -147,6 +182,23 @@ const baseConfig: ClassroomConfig = {
   },
   teacherTone: 'ConversationalFriendly',
   studentTone: 'SupportiveNeutral',
+};
+
+const defaultCurriculumPackSettings: CurriculumPackSettings = {
+  gradeLevel: '10',
+  readingLevel: 'Grade 10',
+  subjectContext: 'AI Literacy',
+  standardsTarget: 'ISTE',
+  timeAvailable: '60 min',
+  classFormat: 'Whole class',
+  studentAiAccessLevel: 'teacher_demo_ai',
+  packPreset: 'full_lesson_pack',
+  readingSupport: 'standard_supports',
+  promptLibraryPreset: 'evaluate_ai_output',
+  rubricFocus: 'balanced_ai_literacy',
+  interactiveLab: 'sandbox_ai_experiment',
+  policyCheck: 'teacher_demo_only',
+  policyOutput: 'Classroom AI Use Policy',
 };
 
 const studentAccessNotes: Record<string, string> = {
@@ -1252,35 +1304,30 @@ function CurriculumPackBuilder({
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
 }) {
+  const draft = useMemo(() => loadCurriculumDraft(), []);
   const [activeStep, setActiveStep] = useState(0);
-  const [unitId, setUnitId] = useState(curriculumData.units[0].id);
+  const [unitId, setUnitId] = useState(draft?.unitId ?? curriculumData.units[0].id);
   const selectedUnit = useMemo(
     () => curriculumData.units.find((unit) => unit.id === unitId) ?? curriculumData.units[0],
     [unitId],
   );
-  const [moduleId, setModuleId] = useState(selectedUnit.modules[0].id);
+  const [moduleId, setModuleId] = useState(draft?.moduleId ?? selectedUnit.modules[0].id);
   const selectedModule = useMemo(
     () => selectedUnit.modules.find((module) => module.id === moduleId) ?? selectedUnit.modules[0],
     [selectedUnit, moduleId],
   );
 
-  const [settings, setSettings] = useState({
-    gradeLevel: '10',
-    readingLevel: 'Grade 10',
-    subjectContext: 'AI Literacy',
-    standardsTarget: 'ISTE',
-    timeAvailable: '60 min',
-    classFormat: 'Whole class',
-    studentAiAccessLevel: 'teacher_demo_ai',
-    packPreset: 'full_lesson_pack',
-    readingSupport: 'standard_supports',
-    promptLibraryPreset: 'evaluate_ai_output',
-    rubricFocus: 'balanced_ai_literacy',
-    interactiveLab: 'sandbox_ai_experiment',
-    policyCheck: 'teacher_demo_only',
-    policyOutput: 'Classroom AI Use Policy',
+  const [settings, setSettings] = useState<CurriculumPackSettings>(draft?.settings ?? defaultCurriculumPackSettings);
+  const [sourceNotes, setSourceNotes] = useState(draft?.sourceNotes ?? '');
+  const [draftStatus, setDraftStatus] = useState(draft ? 'Draft restored' : 'Draft autosaves locally');
+  const [openSections, setOpenSections] = useState<Record<string, string>>({
+    Start: 'template',
+    Context: 'classroom',
+    'AI Access': 'access',
+    Deliverables: 'package',
+    Sources: 'source-notes',
+    Review: 'summary',
   });
-  const [sourceNotes, setSourceNotes] = useState('');
 
   const packOptions = [
     ...(getFieldOptions(curriculumWorkflow, 'deliverables', 'packPreset') as OptionItem[]),
@@ -1300,10 +1347,34 @@ function CurriculumPackBuilder({
     setSettings((current) => ({ ...current, [key]: value }));
   };
 
+  const saveDraft = (message = 'Draft saved') => {
+    saveCurriculumDraft({ unitId, moduleId: selectedModule.id, settings, sourceNotes });
+    setDraftStatus(message);
+    window.setTimeout(() => setDraftStatus('Draft autosaves locally'), 2500);
+  };
+
+  useEffect(() => {
+    saveCurriculumDraft({ unitId, moduleId: selectedModule.id, settings, sourceNotes });
+  }, [unitId, selectedModule.id, settings, sourceNotes]);
+
   const applyQuickStart = (quickStart: (typeof curriculumQuickStarts)[number]) => {
     setSettings(quickStart.settings);
     setActiveStep(1);
+    setOpenSections((current) => ({ ...current, Context: 'classroom' }));
   };
+
+  const updateOpenSection = (stepTitle: string, sectionId: string) => {
+    setOpenSections((current) => ({ ...current, [stepTitle]: sectionId }));
+  };
+
+  const renderSubsections = (stepTitle: string, sections: SubsectionItem[]) => (
+    <InStepSubsectionLayout
+      stepTitle={stepTitle}
+      sections={sections}
+      openSection={openSections[stepTitle] ?? sections[0]?.id ?? ''}
+      onOpenSection={(sectionId) => updateOpenSection(stepTitle, sectionId)}
+    />
+  );
 
   const buildPrompt = () => {
     const config: ClassroomConfig = {
@@ -1380,31 +1451,57 @@ function CurriculumPackBuilder({
       complete: Boolean(selectedUnit && selectedModule),
       content: (
         <Panel title="Choose Curriculum Source" icon={LibraryBig}>
-          <GuidanceNote>
-            Pick a quick start when you want the fastest teacher path, or choose a specific unit and module from the AI for Students curriculum map.
-          </GuidanceNote>
-          <QuickStartGrid quickStarts={curriculumQuickStarts} onApply={applyQuickStart} />
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <SelectField
-              label="Unit"
-              value={unitId}
-              onChange={(value) => {
-                const nextUnit = curriculumData.units.find((unit) => unit.id === value);
-                setUnitId(value);
-                setModuleId(nextUnit?.modules[0]?.id ?? '');
-              }}
-              options={curriculumData.units.map((unit) => ({ value: unit.id, label: unit.title }))}
-              help="This anchors the package in the book instead of a blank AI prompt."
-            />
-            <SelectField
-              label="Module"
-              value={selectedModule.id}
-              onChange={setModuleId}
-              options={selectedUnit.modules.map((module) => ({ value: module.id, label: `${module.chapter}. ${module.title}` }))}
-              help="Modules become the lesson topic, objectives, vocabulary, activity seed, and assessment seed."
-            />
-          </div>
-          <ModulePreview module={selectedModule} />
+          {renderSubsections('Start', [
+            {
+              id: 'template',
+              title: 'Select Template',
+              description: 'Use a quick start when you want a reliable starting point.',
+              complete: Boolean(settings.packPreset),
+              content: (
+                <>
+                  <GuidanceNote>
+                    Pick a quick start when you want the fastest teacher path, or choose a specific unit and module from the AI for Students curriculum map.
+                  </GuidanceNote>
+                  <QuickStartGrid quickStarts={curriculumQuickStarts} onApply={applyQuickStart} />
+                </>
+              ),
+            },
+            {
+              id: 'curriculum-source',
+              title: 'Choose Curriculum Source',
+              description: 'Anchor the generated pack in the AI for Students book map.',
+              complete: Boolean(selectedUnit && selectedModule),
+              content: (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <SelectField
+                    label="Unit"
+                    value={unitId}
+                    onChange={(value) => {
+                      const nextUnit = curriculumData.units.find((unit) => unit.id === value);
+                      setUnitId(value);
+                      setModuleId(nextUnit?.modules[0]?.id ?? '');
+                    }}
+                    options={curriculumData.units.map((unit) => ({ value: unit.id, label: unit.title }))}
+                    help="This anchors the package in the book instead of a blank AI prompt."
+                  />
+                  <SelectField
+                    label="Module"
+                    value={selectedModule.id}
+                    onChange={setModuleId}
+                    options={selectedUnit.modules.map((module) => ({ value: module.id, label: `${module.chapter}. ${module.title}` }))}
+                    help="Modules become the lesson topic, objectives, vocabulary, activity seed, and assessment seed."
+                  />
+                </div>
+              ),
+            },
+            {
+              id: 'essential-question',
+              title: 'Essential Question',
+              description: 'Review the lesson goal, objectives, vocabulary, and guardrails before moving on.',
+              complete: Boolean(selectedModule.essentialQuestion),
+              content: <ModulePreview module={selectedModule} />,
+            },
+          ])}
         </Panel>
       ),
     },
@@ -1414,26 +1511,52 @@ function CurriculumPackBuilder({
       complete: Boolean(settings.gradeLevel && settings.subjectContext && settings.timeAvailable),
       content: (
         <Panel title="Set Classroom Context" icon={SlidersHorizontal}>
-          <GuidanceNote>
-            The simple high-school path only needs grade, subject, time, and AI access. Standards and reading level can stay on the defaults unless the school requires something specific.
-          </GuidanceNote>
-          <FieldGrid>
-            <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} help="Used to tune examples, independence, guardrails, and reading level." />
-            <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} help="Student-facing instructions and handouts should match this level." />
-            <SelectField label="Reading support" value={settings.readingSupport} onChange={(value) => updateSetting('readingSupport', value)} options={readingSupportOptions} help="Adds a simplified, ELL-friendly, standard, or extension-ready student version." />
-            <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Art / Media', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
-            <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'CSTA', 'NGSS', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
-            <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} help="Controls pacing, activity depth, and assessment scope." />
-            <SelectField label="Format" value={settings.classFormat} onChange={(value) => updateSetting('classFormat', value)} options={toSelectOptions(['Whole class', 'Small group', 'Individual', 'Station rotation', 'Online/asynchronous'])} help="Shapes directions, facilitation notes, and participation structures." />
-          </FieldGrid>
-          <div className="mt-5">
-            <LiteracyComponentStrip />
-          </div>
-          <StandardsAlignmentPreview
-            subject={settings.subjectContext}
-            standardsTarget={settings.standardsTarget}
-            suggestions={standardsSuggestions}
-          />
+          {renderSubsections('Context', [
+            {
+              id: 'classroom',
+              title: 'Classroom Basics',
+              description: 'Set grade, subject, reading level, time, and format.',
+              complete: Boolean(settings.gradeLevel && settings.subjectContext && settings.timeAvailable),
+              content: (
+                <>
+                  <GuidanceNote>
+                    The simple high-school path only needs grade, subject, time, and AI access. Standards and reading level can stay on the defaults unless the school requires something specific.
+                  </GuidanceNote>
+                  <FieldGrid>
+                    <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} help="Used to tune examples, independence, guardrails, and reading level." />
+                    <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} help="Student-facing instructions and handouts should match this level." />
+                    <SelectField label="Reading support" value={settings.readingSupport} onChange={(value) => updateSetting('readingSupport', value)} options={readingSupportOptions} help="Adds a simplified, ELL-friendly, standard, or extension-ready student version." />
+                    <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Art / Media', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
+                    <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} help="Controls pacing, activity depth, and assessment scope." />
+                    <SelectField label="Format" value={settings.classFormat} onChange={(value) => updateSetting('classFormat', value)} options={toSelectOptions(['Whole class', 'Small group', 'Individual', 'Station rotation', 'Online/asynchronous'])} help="Shapes directions, facilitation notes, and participation structures." />
+                  </FieldGrid>
+                </>
+              ),
+            },
+            {
+              id: 'literacy',
+              title: 'AI Literacy Components',
+              description: 'Confirm the core AI literacy skills included by default.',
+              complete: aiLiteracyComponents.length > 0,
+              content: <LiteracyComponentStrip />,
+            },
+            {
+              id: 'standards',
+              title: 'Standards Alignment',
+              description: 'Choose the review target and inspect draft outcomes.',
+              complete: Boolean(settings.standardsTarget),
+              content: (
+                <>
+                  <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'CSTA', 'NGSS', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
+                  <StandardsAlignmentPreview
+                    subject={settings.subjectContext}
+                    standardsTarget={settings.standardsTarget}
+                    suggestions={standardsSuggestions}
+                  />
+                </>
+              ),
+            },
+          ])}
         </Panel>
       ),
     },
@@ -1443,12 +1566,30 @@ function CurriculumPackBuilder({
       complete: Boolean(settings.studentAiAccessLevel),
       content: (
         <Panel title="Set Student AI Access" icon={Sparkles}>
-          <GuidanceNote>
-            This is the core safety decision. The generated lesson will match the selected access level and include the right privacy, citation, and verification guardrails.
-          </GuidanceNote>
-          <SegmentedOptions value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
-          <p className="mt-3 text-sm text-slate-600">{studentAccessNotes[settings.studentAiAccessLevel]}</p>
-          <PolicyCheckPanel value={settings.policyCheck} onChange={(value) => updateSetting('policyCheck', value)} />
+          {renderSubsections('AI Access', [
+            {
+              id: 'access',
+              title: 'Student AI Access Level',
+              description: 'Decide whether students use AI directly, under supervision, or not at all.',
+              complete: Boolean(settings.studentAiAccessLevel),
+              content: (
+                <>
+                  <GuidanceNote>
+                    This is the core safety decision. The generated lesson will match the selected access level and include the right privacy, citation, and verification guardrails.
+                  </GuidanceNote>
+                  <SegmentedOptions value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
+                  <p className="mt-3 text-sm text-slate-600">{studentAccessNotes[settings.studentAiAccessLevel]}</p>
+                </>
+              ),
+            },
+            {
+              id: 'policy',
+              title: 'Policy Guardrails',
+              description: 'Choose policy language and privacy expectations for the generated pack.',
+              complete: Boolean(settings.policyCheck),
+              content: <PolicyCheckPanel value={settings.policyCheck} onChange={(value) => updateSetting('policyCheck', value)} />,
+            },
+          ])}
         </Panel>
       ),
     },
@@ -1458,18 +1599,42 @@ function CurriculumPackBuilder({
       complete: Boolean(settings.packPreset),
       content: (
         <Panel title="Choose Deliverables" icon={ClipboardList}>
-          <GuidanceNote>
-            Start with Full Lesson Pack for most classrooms. Mini-Unit is best when you want multiple days, and No-AI Version is best for restrictive school policies.
-          </GuidanceNote>
-          <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
-          <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <PromptLibraryChooser value={settings.promptLibraryPreset} onChange={(value) => updateSetting('promptLibraryPreset', value)} />
-            <RubricFocusChooser value={settings.rubricFocus} onChange={(value) => updateSetting('rubricFocus', value)} />
-          </div>
-          <div className="mt-5">
-            <InteractiveLabChooser value={settings.interactiveLab} onChange={(value) => updateSetting('interactiveLab', value)} />
-          </div>
+          {renderSubsections('Deliverables', [
+            {
+              id: 'package',
+              title: 'Package Type',
+              description: 'Choose the main output package and included materials.',
+              complete: Boolean(settings.packPreset),
+              content: (
+                <>
+                  <GuidanceNote>
+                    Start with Full Lesson Pack for most classrooms. Mini-Unit is best when you want multiple days, and No-AI Version is best for restrictive school policies.
+                  </GuidanceNote>
+                  <CardOptions value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} detailKey="deliverables" />
+                  <ChipList items={(selectedPack.deliverables ?? []).map(labelFromValue)} />
+                </>
+              ),
+            },
+            {
+              id: 'prompt-rubric',
+              title: 'Prompt Library and Rubric',
+              description: 'Select the prompt skill and assessment focus students will use.',
+              complete: Boolean(settings.promptLibraryPreset && settings.rubricFocus),
+              content: (
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <PromptLibraryChooser value={settings.promptLibraryPreset} onChange={(value) => updateSetting('promptLibraryPreset', value)} />
+                  <RubricFocusChooser value={settings.rubricFocus} onChange={(value) => updateSetting('rubricFocus', value)} />
+                </div>
+              ),
+            },
+            {
+              id: 'lab',
+              title: 'Interactive Lab',
+              description: 'Add hands-on AI literacy practice with appropriate guardrails.',
+              complete: Boolean(settings.interactiveLab),
+              content: <InteractiveLabChooser value={settings.interactiveLab} onChange={(value) => updateSetting('interactiveLab', value)} />,
+            },
+          ])}
         </Panel>
       ),
     },
@@ -1478,15 +1643,60 @@ function CurriculumPackBuilder({
       description: 'Add local policy, standards, or notes when needed.',
       complete: true,
       content: (
-        <SourceContextPanel
-          title="Source / Local Requirements"
-          hint="Optional, but powerful: add local standards, policies, or constraints to make the generated package more review-ready."
-          policyOutput={settings.policyOutput}
-          onPolicyChange={(value) => updateSetting('policyOutput', value)}
-          sourceNotes={sourceNotes}
-          onSourceNotesChange={setSourceNotes}
-          placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
-        />
+        renderSubsections('Sources', [
+          {
+            id: 'source-notes',
+            title: 'Upload or Paste Sources',
+            description: 'Add local standards, policy language, outcomes, or other de-identified context.',
+            complete: true,
+            content: (
+              <SourceContextPanel
+                title="Source / Local Requirements"
+                hint="Optional, but powerful: add local standards, policies, or constraints to make the generated package more review-ready."
+                policyOutput={settings.policyOutput}
+                onPolicyChange={(value) => updateSetting('policyOutput', value)}
+                sourceNotes={sourceNotes}
+                onSourceNotesChange={setSourceNotes}
+                placeholder="Paste standards, school AI policy language, local requirements, employer skill notes, or constraints you want reflected in the generated package."
+              />
+            ),
+          },
+        ])
+      ),
+    },
+    {
+      title: 'Review',
+      description: 'Confirm choices, save draft, or jump back before building.',
+      complete: true,
+      content: (
+        <Panel title="Summary and Step-Jump Review" icon={CheckCircle2}>
+          {renderSubsections('Review', [
+            {
+              id: 'summary',
+              title: 'Build Summary',
+              description: 'Review every major choice before generation.',
+              complete: true,
+              content: (
+                <CurriculumBuildSummary
+                  items={[
+                    ['Template / package', selectedPack.label, 3],
+                    ['Curriculum source', `${selectedUnit.title} / ${selectedModule.title}`, 0],
+                    ['Essential question', selectedModule.essentialQuestion, 0],
+                    ['Grade and time', `Grade ${settings.gradeLevel}, ${settings.timeAvailable}, ${settings.classFormat}`, 1],
+                    ['Reading and accessibility', `${settings.readingLevel}, ${selectedReadingSupport.label}`, 1],
+                    ['Standards', settings.standardsTarget, 1],
+                    ['AI access', selectedAccess?.label ?? labelFromValue(settings.studentAiAccessLevel), 2],
+                    ['Policy', selectedPolicyPreset.label, 2],
+                    ['Prompt and rubric', `${selectedPromptLibrary.label}; ${selectedRubricFocus.label}`, 3],
+                    ['Interactive lab', selectedInteractiveLab.label, 3],
+                    ['Sources', sourceNotes.trim() ? 'Local notes added' : 'No local notes added', 4],
+                  ]}
+                  onEdit={(step) => setActiveStep(step)}
+                />
+              ),
+            },
+          ])}
+        </Panel>
       ),
     },
   ];
@@ -1517,6 +1727,8 @@ function CurriculumPackBuilder({
       onStepChange={setActiveStep}
       previewTitle="Live Curriculum Preview"
       previewItems={previewItems}
+      draftStatus={draftStatus}
+      onSaveDraft={() => saveDraft()}
       summary={[
         ['Source', `${selectedUnit.title} / ${selectedModule.title}`],
         ['Classroom', `Grade ${settings.gradeLevel}, ${settings.timeAvailable}`],
@@ -2200,31 +2412,186 @@ function StartFromGallery({
   activeMode: BuilderMode;
   onLoadSample: (sample: (typeof samplePackages)[number]) => void;
 }) {
-  const visibleSamples = samplePackages.filter((sample) => sample.mode === activeMode);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTag, setActiveTag] = useState('All');
+  const [previewSample, setPreviewSample] = useState<(typeof samplePackages)[number] | null>(null);
+  const modeSamples = samplePackages.filter((sample) => sample.mode === activeMode);
+  const tags = ['All', ...Array.from(new Set(modeSamples.flatMap(getSampleTags)))].slice(0, 9);
+  const visibleSamples = modeSamples.filter((sample) => {
+    const haystack = `${sample.title} ${sample.description} ${getSampleTags(sample).join(' ')}`.toLowerCase();
+    const matchesSearch = haystack.includes(searchTerm.trim().toLowerCase());
+    const matchesTag = activeTag === 'All' || getSampleTags(sample).includes(activeTag);
+    return matchesSearch && matchesTag;
+  });
+  const groupedSamples = visibleSamples.reduce<Record<string, typeof visibleSamples>>((groups, sample) => {
+    const category = getSampleCategory(sample);
+    groups[category] = [...(groups[category] ?? []), sample];
+    return groups;
+  }, {});
 
   return (
     <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <Library className="h-5 w-5 text-blue-700" />
-        <div>
+        <div className="min-w-0 flex-1">
           <h3 className="font-bold text-slate-950">Start From</h3>
           <p className="text-xs text-slate-600">Use a sample, the built-in curriculum map, an upload, or your own notes.</p>
         </div>
+        <label className="relative block lg:w-80">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <span className="sr-only">Search templates</span>
+          <input
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search templates"
+            className="h-10 w-full rounded-md border border-slate-300 bg-white pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+        </label>
       </div>
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {visibleSamples.map((sample) => (
+      <div className="mb-4 flex flex-wrap gap-2">
+        {tags.map((tag) => (
           <button
-            key={sample.title}
+            key={tag}
             type="button"
-            onClick={() => onLoadSample(sample)}
-            className="rounded-md border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+            onClick={() => setActiveTag(tag)}
+            className={`rounded-md border px-3 py-1.5 text-xs font-bold transition ${
+              activeTag === tag ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-blue-200'
+            }`}
           >
-            <strong className="block text-sm text-slate-950">{sample.title}</strong>
-            <span className="mt-1 block text-xs leading-5 text-slate-600">{sample.description}</span>
+            {tag}
           </button>
         ))}
       </div>
+      <div className="space-y-4">
+        {Object.entries(groupedSamples).map(([category, samples]) => (
+          <div key={category}>
+            <h4 className="mb-2 text-xs font-bold uppercase text-slate-500">{category}</h4>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {samples.map((sample) => (
+                <div key={sample.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <strong className="block text-sm text-slate-950">{sample.title}</strong>
+                  <span className="mt-1 block text-xs leading-5 text-slate-600">{sample.description}</span>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onLoadSample(sample)}
+                      className="rounded-md bg-blue-700 px-3 py-2 text-xs font-bold text-white transition hover:bg-blue-800"
+                    >
+                      Use
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewSample(sample)}
+                      className="rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                    >
+                      Preview
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        {visibleSamples.length === 0 && <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">No templates match that search.</div>}
+      </div>
+      {previewSample && (
+        <TemplatePreviewModal
+          sample={previewSample}
+          onClose={() => setPreviewSample(null)}
+          onUse={() => {
+            onLoadSample(previewSample);
+            setPreviewSample(null);
+          }}
+        />
+      )}
     </section>
+  );
+}
+
+function getSampleTags(sample: (typeof samplePackages)[number]): string[] {
+  const text = `${sample.title} ${sample.description}`.toLowerCase();
+  const tags = new Set<string>();
+  if (text.includes('ela')) tags.add('ELA');
+  if (text.includes('social')) tags.add('Social Studies');
+  if (text.includes('art')) tags.add('Art');
+  if (text.includes('responsible') || text.includes('privacy')) tags.add('Responsible AI');
+  if (text.includes('mini') || text.includes('5-day')) tags.add('Mini-unit');
+  if (text.includes('lms') || text.includes('canvas') || text.includes('google classroom')) tags.add('LMS-ready');
+  if (text.includes('lab') || text.includes('sandbox') || text.includes('experiment')) tags.add('Labs');
+  if (text.includes('program') || text.includes('course')) tags.add('College');
+  if (tags.size === 0) tags.add('AI Literacy');
+  return Array.from(tags);
+}
+
+function getSampleCategory(sample: (typeof samplePackages)[number]): string {
+  const tags = getSampleTags(sample);
+  if (tags.includes('LMS-ready')) return 'LMS-Ready Assignments';
+  if (tags.includes('ELA') || tags.includes('Social Studies') || tags.includes('Art')) return 'Cross-Curricular Labs';
+  if (tags.includes('Labs')) return 'Interactive Labs';
+  if (tags.includes('College')) return 'College and Program Packages';
+  return 'AI Literacy Core';
+}
+
+function getSampleMeta(sample: (typeof samplePackages)[number]) {
+  const text = `${sample.title} ${sample.description}`.toLowerCase();
+  return {
+    duration: text.includes('5-day') || text.includes('mini') ? '5 days' : text.includes('course') || text.includes('program') ? 'Multi-week' : '45-60 minutes',
+    grade: sample.mode === 'college-course' || sample.mode === 'college-program' ? 'College / adult learners' : text.includes('8') ? 'Grade 8+' : 'Grade 9-12',
+    standards: getSampleTags(sample).includes('Responsible AI') ? 'ISTE / digital citizenship' : getSampleTags(sample).includes('ELA') ? 'Common Core ELA / AI literacy' : 'AI literacy / local review',
+  };
+}
+
+function TemplatePreviewModal({
+  sample,
+  onClose,
+  onUse,
+}: {
+  sample: (typeof samplePackages)[number];
+  onClose: () => void;
+  onUse: () => void;
+}) {
+  const meta = getSampleMeta(sample);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4" role="dialog" aria-modal="true" aria-labelledby="template-preview-title">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-5 shadow-xl">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h3 id="template-preview-title" className="text-xl font-bold text-slate-950">{sample.title}</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-600">{sample.description}</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:text-slate-950">
+            Close
+          </button>
+        </div>
+        <div className="mb-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-md bg-slate-50 p-3">
+            <span className="text-xs font-bold uppercase text-slate-500">Duration</span>
+            <strong className="mt-1 block text-sm text-slate-950">{meta.duration}</strong>
+          </div>
+          <div className="rounded-md bg-slate-50 p-3">
+            <span className="text-xs font-bold uppercase text-slate-500">Target</span>
+            <strong className="mt-1 block text-sm text-slate-950">{meta.grade}</strong>
+          </div>
+          <div className="rounded-md bg-slate-50 p-3">
+            <span className="text-xs font-bold uppercase text-slate-500">Standards</span>
+            <strong className="mt-1 block text-sm text-slate-950">{meta.standards}</strong>
+          </div>
+        </div>
+        <div className="mb-4 rounded-md border border-slate-200 bg-slate-50 p-3">
+          <span className="text-xs font-bold uppercase text-slate-500">Preview</span>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{sample.content.slice(0, 900)}{sample.content.length > 900 ? '...' : ''}</p>
+        </div>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:text-blue-800">
+            Keep Browsing
+          </button>
+          <button type="button" onClick={onUse} className="rounded-md bg-blue-700 px-4 py-2 text-sm font-bold text-white hover:bg-blue-800">
+            Use Template
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -2241,6 +2608,8 @@ function BuilderFrame({
   onStepChange,
   previewTitle = 'Live Package Preview',
   previewItems,
+  draftStatus,
+  onSaveDraft,
   children,
 }: {
   eyebrow: string;
@@ -2255,6 +2624,8 @@ function BuilderFrame({
   onStepChange?: (step: number) => void;
   previewTitle?: string;
   previewItems?: Array<[string, string]>;
+  draftStatus?: string;
+  onSaveDraft?: () => void;
   children: React.ReactNode;
 }) {
   const canGoBack = Boolean(steps && onStepChange && activeStep > 0);
@@ -2273,16 +2644,28 @@ function BuilderFrame({
           <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
           <p className="mt-2 max-w-3xl text-slate-600">{subtitle}</p>
         </div>
-        <button
-          type="button"
-          onClick={onBuild}
-          disabled={isLoading}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          <Sparkles className="h-4 w-4" />
-          {isLoading ? 'Building...' : buttonLabel}
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          {onSaveDraft && (
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-300 hover:text-blue-800"
+            >
+              Save Draft
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onBuild}
+            disabled={isLoading}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Sparkles className="h-4 w-4" />
+            {isLoading ? 'Building...' : buttonLabel}
+          </button>
+        </div>
       </div>
+      {draftStatus && <p className="-mt-3 mb-4 text-xs font-semibold text-slate-500">{draftStatus}</p>}
 
       <div className="mb-5 grid overflow-hidden rounded-lg bg-slate-900 text-white lg:grid-cols-4">
         {summary.map(([label, value]) => (
@@ -2329,6 +2712,13 @@ function BuilderFrame({
                 </button>
               )}
             </div>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="fixed bottom-6 right-4 z-30 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-lg transition hover:border-blue-300 hover:text-blue-800"
+            >
+              Back to top
+            </button>
           </div>
           <LivePreview title={previewTitle} items={previewItems} steps={steps} activeStep={activeStep} />
         </div>
@@ -2349,7 +2739,7 @@ function StepProgress({
   onStepChange?: (step: number) => void;
 }) {
   return (
-    <nav className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 md:grid-cols-3 xl:grid-cols-5" aria-label="Build progress">
+    <nav className="mb-5 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-semibold text-slate-600 md:grid-cols-3 xl:grid-cols-6" aria-label="Build progress">
       {steps.map((step, index) => {
         const isActive = index === activeStep;
         return (
@@ -2374,6 +2764,37 @@ function StepProgress({
         );
       })}
     </nav>
+  );
+}
+
+function CurriculumBuildSummary({
+  items,
+  onEdit,
+}: {
+  items: Array<[string, string, number]>;
+  onEdit: (step: number) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      {items.map(([label, value, step]) => (
+        <div key={label} className="flex flex-col gap-2 rounded-md border border-slate-200 bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span className="block text-xs font-bold uppercase text-slate-500">{label}</span>
+            <span className="mt-1 block text-sm font-semibold leading-5 text-slate-950">{value}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => onEdit(step)}
+            className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      ))}
+      <GuidanceNote>
+        Use Edit to jump directly to the relevant step. The draft is saved locally, so refreshing the page should preserve these choices on this device.
+      </GuidanceNote>
+    </div>
   );
 }
 
@@ -2426,6 +2847,90 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: React.Com
       </header>
       {children}
     </article>
+  );
+}
+
+function InStepSubsectionLayout({
+  stepTitle,
+  sections,
+  openSection,
+  onOpenSection,
+}: {
+  stepTitle: string;
+  sections: SubsectionItem[];
+  openSection: string;
+  onOpenSection: (id: string) => void;
+}) {
+  const jumpToSection = (id: string) => {
+    onOpenSection(id);
+    window.setTimeout(() => document.getElementById(`${stepTitle}-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <nav className="h-fit rounded-lg border border-slate-200 bg-white p-3 shadow-sm lg:sticky lg:top-32" aria-label={`${stepTitle} sections`}>
+        <p className="mb-2 text-xs font-bold uppercase text-slate-500">Step sections</p>
+        <div className="space-y-1">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              type="button"
+              onClick={() => jumpToSection(section.id)}
+              className={`flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left text-xs font-semibold transition ${
+                openSection === section.id ? 'bg-blue-50 text-blue-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'
+              }`}
+            >
+              <span>{section.title}</span>
+              {section.complete && <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-green-700" />}
+            </button>
+          ))}
+        </div>
+      </nav>
+      <div className="space-y-3">
+        {sections.map((section) => (
+          <CollapsibleSubsection
+            key={section.id}
+            id={`${stepTitle}-${section.id}`}
+            section={section}
+            isOpen={openSection === section.id}
+            onToggle={() => onOpenSection(openSection === section.id ? '' : section.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CollapsibleSubsection({
+  id,
+  section,
+  isOpen,
+  onToggle,
+}: {
+  id: string;
+  section: SubsectionItem;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <section id={id} className="rounded-lg border border-slate-200 bg-white shadow-sm">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <span>
+          <span className="flex items-center gap-2 font-bold text-slate-950">
+            {section.complete && <CheckCircle2 className="h-4 w-4 text-green-700" />}
+            {section.title}
+          </span>
+          <span className="mt-1 block text-xs leading-5 text-slate-600">{section.description}</span>
+        </span>
+        <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && <div className="border-t border-slate-100 p-4">{section.content}</div>}
+    </section>
   );
 }
 
@@ -2826,15 +3331,18 @@ function SelectField({
   options: OptionItem[];
   help?: string;
 }) {
+  const helpId = `${label.replace(/\s+/g, '-').toLowerCase()}-help`;
+
   return (
     <label className="block">
       <span className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase text-slate-600">
         {label}
-        {help && <HelpCircle className="h-3.5 w-3.5 text-slate-400" aria-label={help} />}
+        {help && <HelpCircle className="h-3.5 w-3.5 text-slate-400" aria-label={help} title={help} />}
       </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        aria-describedby={help ? helpId : undefined}
         className="h-11 w-full rounded-md border border-slate-300 bg-white px-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
       >
         {options.map((option) => (
@@ -2843,7 +3351,7 @@ function SelectField({
           </option>
         ))}
       </select>
-      {help && <span className="mt-1 block text-xs leading-5 text-slate-500">{help}</span>}
+      {help && <span id={helpId} className="mt-1 block text-xs leading-5 text-slate-500">{help}</span>}
     </label>
   );
 }
@@ -2889,7 +3397,8 @@ function SegmentedOptions({ value, onChange, options }: { value: string; onChang
             value === option.value ? 'border-blue-700 bg-blue-50 text-blue-900' : 'border-slate-200 text-slate-700 hover:border-slate-300'
           }`}
         >
-          {option.label}
+          <span className="block">{option.label}</span>
+          {option.description && <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">{option.description}</span>}
         </button>
       ))}
     </div>
@@ -3329,6 +3838,32 @@ function normalizeStandards(value: string): ClassroomConfig['standards']['type']
 
 const savedPackagesKey = 'classroomCopilot.savedPackages.v1';
 const standardsLibraryKey = 'classroomCopilot.standardsLibrary.v1';
+
+function loadCurriculumDraft(): CurriculumDraft | null {
+  try {
+    const raw = localStorage.getItem(curriculumDraftKey);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CurriculumDraft;
+    if (!parsed?.unitId || !parsed?.moduleId || !parsed?.settings) return null;
+    return {
+      unitId: parsed.unitId,
+      moduleId: parsed.moduleId,
+      settings: { ...defaultCurriculumPackSettings, ...parsed.settings },
+      sourceNotes: typeof parsed.sourceNotes === 'string' ? parsed.sourceNotes : '',
+    };
+  } catch (error) {
+    console.error('Failed to load curriculum draft:', error);
+    return null;
+  }
+}
+
+function saveCurriculumDraft(draft: CurriculumDraft): void {
+  try {
+    localStorage.setItem(curriculumDraftKey, JSON.stringify(draft));
+  } catch (error) {
+    console.error('Failed to save curriculum draft:', error);
+  }
+}
 
 function loadSavedPackages(): SavedPackage[] {
   try {
