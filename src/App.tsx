@@ -191,6 +191,10 @@ const readinessChecks = [
     terms: ['prompt library', 'prompt stem', 'prompt card', 'prompting'],
   },
   {
+    label: 'Interactive AI lab',
+    terms: ['interactive lab', 'lab flow', 'prompt experiment', 'scenario card', 'verification lab'],
+  },
+  {
     label: 'AI evaluation rubric',
     terms: ['rubric', 'accuracy', 'bias', 'evidence', 'verification'],
   },
@@ -275,6 +279,7 @@ const refinementPresets = [
   { label: 'ELL-friendly', instruction: 'Add vocabulary previews, sentence frames, visual cues, partner talk, and language-accessible directions for multilingual learners.' },
   { label: 'More examples', instruction: 'Add concrete teacher and student examples, model responses, common misconceptions, and non-examples.' },
   { label: 'Extension challenge', instruction: 'Add an advanced extension task with deeper reasoning, transfer, and optional independent inquiry.' },
+  { label: 'Turn into AI lab', instruction: 'Convert this package into a safe interactive AI literacy lab with teacher setup, student lab flow, sample materials, guardrails, reflection, evidence of learning, and slide outline.' },
   { label: 'Check Bias & Inclusivity', instruction: 'Review the package for biased, exclusionary, culturally narrow, inaccessible, or stereotype-reinforcing language. Return one improved package plus a concise ## Bias and Inclusivity Notes section that names what changed.' },
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
@@ -382,6 +387,27 @@ const rubricFocusOptions = [
   },
 ];
 
+const interactiveLabOptions = [
+  {
+    value: 'prompt_experimenter',
+    label: 'Prompt Experimenter',
+    description: 'Students compare a weak prompt, an improved prompt, response differences, and reflection.',
+    steps: ['Weak prompt', 'Improve context and constraints', 'Compare responses', 'Reflect on what changed'],
+  },
+  {
+    value: 'ai_output_evaluation_lab',
+    label: 'AI Output Evaluation Lab',
+    description: 'Students inspect a sample AI response for accuracy, evidence, missing context, bias, and verification steps.',
+    steps: ['Read sample AI output', 'Mark claims', 'Identify missing evidence', 'Plan verification', 'Revise responsibly'],
+  },
+  {
+    value: 'bias_fairness_scenario',
+    label: 'Bias/Fairness Scenario',
+    description: 'Students discuss whether an AI use is fair, risky, biased, appropriate, and how to improve it.',
+    steps: ['Read scenario', 'Identify affected people', 'Name risk or bias', 'Recommend guardrails', 'Reflect'],
+  },
+];
+
 const policyCheckItems = [
   'No private student information in uploads or prompts',
   'Student AI access matches school or district policy',
@@ -451,12 +477,33 @@ const deliverableDescriptions: Record<string, string> = {
   admin_ready_sample: 'Review-friendly sample with standards alignment, admin/family summary, and rubric evidence.',
   no_ai_classroom_version: 'Printable lesson path using examples and discussion instead of live student AI access.',
   mini_unit: 'Multi-day sequence with daily activities, assessments, reflection, and pacing.',
+  prompt_experiment_activity: 'Structured activity where students tune prompts and compare response quality.',
+  ai_output_evaluation_lab: 'Hands-on lab for checking claims, evidence, bias, hallucination risk, and verification steps.',
+  bias_fairness_scenario: 'Scenario discussion package for AI fairness, representation, risk, and responsible decisions.',
   syllabus_draft: 'Course overview, outcomes, policies, schedule, and grading language.',
   full_course_package: 'Full syllabus-ready course with modules, labs, assignments, assessment plan, and AI policy.',
   lab_ready_course: 'Hands-on course build with lab objectives, setup notes, checkpoints, rubrics, and troubleshooting.',
   online_hyflex_course: 'Course package adapted for online, asynchronous, synchronous, and HyFlex delivery.',
   program_coordinator_packet: 'Course-to-program alignment, CQI evidence, advisory questions, and workforce narrative.',
 };
+
+const interactiveDeliverableOptions: OptionItem[] = [
+  {
+    value: 'prompt_experiment_activity',
+    label: 'Prompt Experiment Activity',
+    deliverables: ['teacher_plan', 'prompt_cards', 'student_handout', 'reflection', 'rubric_checklist'],
+  },
+  {
+    value: 'ai_output_evaluation_lab',
+    label: 'AI Output Evaluation Lab',
+    deliverables: ['sample_ai_output', 'claim_checking', 'verification_steps', 'student_handout', 'rubric_checklist'],
+  },
+  {
+    value: 'bias_fairness_scenario',
+    label: 'Bias/Fairness Scenario',
+    deliverables: ['scenario_cards', 'discussion_questions', 'guardrail_recommendations', 'reflection', 'rubric_checklist'],
+  },
+];
 
 const curriculumQuickStarts = [
   {
@@ -474,6 +521,7 @@ const curriculumQuickStarts = [
       readingSupport: 'standard_supports',
       promptLibraryPreset: 'evaluate_ai_output',
       rubricFocus: 'balanced_ai_literacy',
+      interactiveLab: 'ai_output_evaluation_lab',
       policyCheck: 'teacher_demo_only',
       policyOutput: 'Classroom AI Use Policy',
     },
@@ -493,6 +541,7 @@ const curriculumQuickStarts = [
       readingSupport: 'ell_friendly',
       promptLibraryPreset: 'no_ai_discussion',
       rubricFocus: 'responsible_use',
+      interactiveLab: 'bias_fairness_scenario',
       policyCheck: 'teacher_demo_only',
       policyOutput: 'Student Responsible AI Agreement',
     },
@@ -512,6 +561,7 @@ const curriculumQuickStarts = [
       readingSupport: 'simplified_student_version',
       promptLibraryPreset: 'no_ai_discussion',
       rubricFocus: 'responsible_use',
+      interactiveLab: 'bias_fairness_scenario',
       policyCheck: 'strict_no_student_ai',
       policyOutput: 'Family / Guardian AI Notice',
     },
@@ -566,6 +616,24 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     mode: 'curriculum-pack',
     description: 'Cross-curricular creative AI lesson on authorship, ownership, attribution, and ethics.',
     content: '## Lesson Snapshot\nArt/media lesson where students evaluate generative AI use through creativity, attribution, representation, and ownership questions.\n\n## Student Activity\nStudents compare human-created and AI-assisted media scenarios, discuss attribution, and create responsible-use guidelines.\n\n## AI Use Guardrails\nProtect privacy, avoid uploading personal images without permission, disclose AI assistance, and verify tool rules.\n\n## AI Evaluation Rubric\nCriteria include ethical use, attribution, representation, creative intent, and reflection.\n\n## Family / Admin Note\nExplains how AI is discussed as a literacy and ethics topic rather than a replacement for student creativity.',
+  },
+  {
+    title: 'Prompt Tuning Lab',
+    mode: 'curriculum-pack',
+    description: 'Interactive prompt experiment where students improve prompts and compare response quality.',
+    content: '## Lab Snapshot\nStudents compare a weak prompt with an improved prompt, predict how the response should change, and reflect on what made the prompt more useful.\n\n## Interactive Lab Flow\n1. Read the weak prompt.\n2. Add context, audience, constraints, and output format.\n3. Compare response quality using teacher-provided examples or supervised AI access.\n4. Revise once more and explain the improvement.\n\n## AI Use Guardrails\nNo private information, teacher-approved prompts only, verify outputs, and cite AI assistance when allowed.\n\n## Student Handout\nIncludes prompt revision table, response comparison chart, and reflection questions.\n\n## Rubric\nCriteria include task clarity, context, output format, response evaluation, and reflection.',
+  },
+  {
+    title: 'AI Hallucination Check',
+    mode: 'curriculum-pack',
+    description: 'AI output evaluation lab for claims, evidence, missing context, and verification.',
+    content: '## Lab Snapshot\nStudents inspect a sample AI response, mark claims that need evidence, identify possible hallucination risks, and plan verification steps.\n\n## Interactive Lab Flow\n1. Read the AI response.\n2. Highlight claims and unsupported details.\n3. Sort each claim as reliable, uncertain, or needs verification.\n4. Choose sources or class evidence to check.\n5. Rewrite the response responsibly.\n\n## AI Use Guardrails\nAI is not the final authority. Students verify with trusted sources and do not enter private personal information.\n\n## Rubric\nCriteria include claim checking, evidence quality, missing context, bias detection, verification plan, and revision recommendations.',
+  },
+  {
+    title: 'Bias in AI Scenario Discussion',
+    mode: 'curriculum-pack',
+    description: 'Scenario-based lab for fairness, representation, risk, and responsible guardrails.',
+    content: '## Lab Snapshot\nStudents evaluate an AI-use scenario for fairness, bias, representation, privacy, and possible harm.\n\n## Interactive Lab Flow\n1. Read the scenario card.\n2. Identify who is affected by the AI decision or output.\n3. Name possible bias, missing perspectives, or privacy risks.\n4. Recommend guardrails or a better decision process.\n5. Reflect on how human judgment should stay involved.\n\n## Bias and Inclusivity Notes\nTeacher reviews scenarios for cultural assumptions, representation, and accessible language before use.\n\n## Rubric\nCriteria include fairness reasoning, risk identification, representation, privacy, guardrail quality, and reflection.',
   },
   {
     title: 'Intro AI Technology Course',
@@ -766,18 +834,23 @@ function CurriculumPackBuilder({
     readingSupport: 'standard_supports',
     promptLibraryPreset: 'evaluate_ai_output',
     rubricFocus: 'balanced_ai_literacy',
+    interactiveLab: 'ai_output_evaluation_lab',
     policyCheck: 'teacher_demo_only',
     policyOutput: 'Classroom AI Use Policy',
   });
   const [sourceNotes, setSourceNotes] = useState('');
 
-  const packOptions = getFieldOptions(curriculumWorkflow, 'deliverables', 'packPreset') as OptionItem[];
+  const packOptions = [
+    ...(getFieldOptions(curriculumWorkflow, 'deliverables', 'packPreset') as OptionItem[]),
+    ...interactiveDeliverableOptions,
+  ];
   const studentAccessOptions = getFieldOptions(curriculumWorkflow, 'student-ai-access', 'studentAiAccessLevel') as OptionItem[];
   const selectedPack = packOptions.find((option) => option.value === settings.packPreset) ?? packOptions[1];
   const selectedAccess = studentAccessOptions.find((option) => option.value === settings.studentAiAccessLevel);
   const selectedReadingSupport = readingSupportOptions.find((option) => option.value === settings.readingSupport) ?? readingSupportOptions[0];
   const selectedPromptLibrary = promptLibraryOptions.find((option) => option.value === settings.promptLibraryPreset) ?? promptLibraryOptions[0];
   const selectedRubricFocus = rubricFocusOptions.find((option) => option.value === settings.rubricFocus) ?? rubricFocusOptions[0];
+  const selectedInteractiveLab = interactiveLabOptions.find((option) => option.value === settings.interactiveLab) ?? interactiveLabOptions[1];
   const selectedPolicyPreset = policyPresetOptions.find((option) => option.value === settings.policyCheck) ?? policyPresetOptions[1];
   const standardsSuggestions = getStandardsSuggestions(settings.subjectContext, settings.standardsTarget, settings.gradeLevel);
 
@@ -829,6 +902,8 @@ function CurriculumPackBuilder({
       `Prompt examples to include or adapt: ${selectedPromptLibrary.prompts.join(' | ')}`,
       `Rubric focus: ${selectedRubricFocus.label} - ${selectedRubricFocus.description}`,
       `Rubric criteria to include: ${selectedRubricFocus.criteria.join(', ')}`,
+      `Interactive lab focus: ${selectedInteractiveLab.label} - ${selectedInteractiveLab.description}`,
+      `Interactive lab flow: ${selectedInteractiveLab.steps.join(' -> ')}`,
       `Policy preset: ${selectedPolicyPreset.label} - ${selectedPolicyPreset.description}`,
       `Policy preset guardrails: ${selectedPolicyPreset.guardrails.join('; ')}`,
       `Policy/privacy checklist to include: ${policyCheckItems.join('; ')}`,
@@ -840,6 +915,7 @@ function CurriculumPackBuilder({
       'Use the suggested standards/outcomes where relevant, but label them as draft alignment suggestions for educator review.',
       'For the prompt library, include teacher-facing setup notes and student-facing prompt stems that match the selected AI access level.',
       'For the rubric, include four clear performance levels and the selected AI-output evaluation criteria.',
+      'For the interactive lab, include teacher setup, student-facing directions, lab steps, reflection prompts, safety guardrails, evidence of learning, and a slide outline. Treat it as a safe simulated or teacher-controlled AI literacy experience unless student AI access explicitly allows independent use.',
       'For accessibility, include the selected reading/accessibility support as concrete student-facing adjustments.',
       'For policy compliance, include a short Policy Alignment Summary covering privacy, AI disclosure, student access, teacher review, and family/admin language.',
       'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
@@ -945,6 +1021,9 @@ function CurriculumPackBuilder({
             <PromptLibraryChooser value={settings.promptLibraryPreset} onChange={(value) => updateSetting('promptLibraryPreset', value)} />
             <RubricFocusChooser value={settings.rubricFocus} onChange={(value) => updateSetting('rubricFocus', value)} />
           </div>
+          <div className="mt-5">
+            <InteractiveLabChooser value={settings.interactiveLab} onChange={(value) => updateSetting('interactiveLab', value)} />
+          </div>
         </Panel>
       ),
     },
@@ -973,6 +1052,7 @@ function CurriculumPackBuilder({
     ['Output', selectedPack?.label ?? 'Full Lesson Pack'],
     ['Prompt library', selectedPromptLibrary.label],
     ['Rubric', selectedRubricFocus.label],
+    ['Interactive lab', selectedInteractiveLab.label],
     ['Standards', `${settings.standardsTarget}: ${standardsSuggestions.length} suggestions`],
     ['Policy', selectedPolicyPreset.label],
     ['AI literacy', aiLiteracyComponents.join(', ')],
@@ -1883,6 +1963,35 @@ function RubricFocusChooser({
       <SelectField label="Rubric focus" value={value} onChange={onChange} options={rubricFocusOptions} help="Choose how students should be assessed when working with AI or AI examples." />
       <div className="mt-3">
         <ChipList items={selected.criteria} />
+      </div>
+    </div>
+  );
+}
+
+function InteractiveLabChooser({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = interactiveLabOptions.find((option) => option.value === value) ?? interactiveLabOptions[1];
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <BrainCircuit className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">Interactive AI Lab</h4>
+          <p className="text-xs leading-5 text-slate-600">Adds a safe hands-on learning experience to the generated curriculum pack.</p>
+        </div>
+      </div>
+      <CardOptions value={value} onChange={onChange} options={interactiveLabOptions} detailKey="includedOutputs" />
+      <div className="rounded-md border border-blue-100 bg-white p-3">
+        <div className="text-xs font-bold uppercase text-slate-600">Lab flow</div>
+        <div className="mt-2">
+          <ChipList items={selected.steps} />
+        </div>
       </div>
     </div>
   );
