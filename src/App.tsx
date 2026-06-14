@@ -14,6 +14,7 @@ import {
   GraduationCap,
   HelpCircle,
   Eye,
+  Languages,
   LockKeyhole,
   Library,
   Layers3,
@@ -21,6 +22,7 @@ import {
   Presentation,
   Printer,
   RefreshCw,
+  ScanSearch,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
@@ -35,6 +37,7 @@ import curriculumWorkflowJson from '../product-planning/data/build-workflow-conf
 import courseWorkflowJson from '../product-planning/data/build-college-course-config.json';
 
 type BuilderMode = 'curriculum-pack' | 'college-course' | 'college-program';
+type FontScale = 'standard' | 'large' | 'extra-large';
 
 interface SavedPackage {
   id: string;
@@ -199,6 +202,14 @@ const readinessChecks = [
     label: 'Implementation notes',
     terms: ['checklist', 'implementation', 'materials', 'delivery'],
   },
+  {
+    label: 'Bias / inclusivity review',
+    terms: ['bias', 'inclusive', 'representation', 'stereotype', 'culturally responsive'],
+  },
+  {
+    label: 'Data privacy transparency',
+    terms: ['data privacy', 'source upload', 'deleted', 'stored', 'privacy note'],
+  },
 ];
 
 const policyOptions = [
@@ -209,10 +220,47 @@ const policyOptions = [
   'Department Review Draft',
 ];
 
+const policyPresetOptions = [
+  {
+    value: 'strict_no_student_ai',
+    label: 'Strict no-student-AI',
+    description: 'Printable or teacher-led only; no student prompt entry or live AI access.',
+    guardrails: ['Use teacher-prepared examples only', 'Include no-AI activity path', 'Add family/admin note'],
+  },
+  {
+    value: 'teacher_demo_only',
+    label: 'Teacher-demo only',
+    description: 'Teacher projects AI examples while students critique and reflect.',
+    guardrails: ['Teacher enters prompts', 'Students do not enter private data', 'Pause for verification checks'],
+  },
+  {
+    value: 'supervised_student_ai',
+    label: 'Supervised student AI',
+    description: 'Students use approved prompts with monitoring, privacy warnings, and reflection.',
+    guardrails: ['Use approved prompt stems', 'Require disclosure', 'Require output verification'],
+  },
+  {
+    value: 'independent_with_disclosure',
+    label: 'Independent with disclosure',
+    description: 'Student AI use is allowed with citation, verification, and responsible-use rules.',
+    guardrails: ['Students cite AI help', 'Teacher reviews evidence', 'Privacy rules stay visible'],
+  },
+  {
+    value: 'higher_ed_course_policy',
+    label: 'Higher-ed course policy',
+    description: 'College course language for allowed/prohibited uses, academic integrity, and privacy.',
+    guardrails: ['Label syllabus draft', 'Clarify academic-integrity expectations', 'Avoid claiming institutional approval'],
+  },
+];
+
 const reviewStatuses: ReviewStatus[] = ['Draft', 'Needs Review', 'Faculty Review', 'Advisory Review', 'Ready to Share'];
 
 const defaultStandardsLibrary = [
   'ISTE AI literacy: students evaluate AI outputs, use AI responsibly, protect privacy, and explain limitations.',
+  'CSTA: students explain impacts of computing, analyze data, discuss algorithms, and evaluate responsible technology use.',
+  'NGSS practice: students analyze data, evaluate explanations, and distinguish evidence from unsupported claims.',
+  'Common Core ELA: students evaluate claims, evidence, source credibility, audience, purpose, and reasoning.',
+  'Tennessee/local placeholder: map local digital readiness, computer science, or subject standards before sharing externally.',
   'AI literacy competencies: define AI, identify examples, prompt effectively, verify outputs, cite AI assistance, and reflect on ethical use.',
   'Course outcome: apply Python and data tools to analyze a small dataset and communicate findings.',
   'Program outcome: design, evaluate, and present applied AI solutions that meet ethical, privacy, and workforce expectations.',
@@ -227,6 +275,7 @@ const refinementPresets = [
   { label: 'ELL-friendly', instruction: 'Add vocabulary previews, sentence frames, visual cues, partner talk, and language-accessible directions for multilingual learners.' },
   { label: 'More examples', instruction: 'Add concrete teacher and student examples, model responses, common misconceptions, and non-examples.' },
   { label: 'Extension challenge', instruction: 'Add an advanced extension task with deeper reasoning, transfer, and optional independent inquiry.' },
+  { label: 'Check Bias & Inclusivity', instruction: 'Review the package for biased, exclusionary, culturally narrow, inaccessible, or stereotype-reinforcing language. Return one improved package plus a concise ## Bias and Inclusivity Notes section that names what changed.' },
   { label: 'Advisory version', instruction: 'Rewrite or extend this for advisory board review with employer-facing rationale, questions, evidence needs, and decision points.' },
   { label: 'Recruitment version', instruction: 'Create student-facing and stakeholder-facing recruitment copy, talking points, program benefits, and career relevance.' },
   { label: 'Convert to HyFlex', instruction: 'Convert the package to HyFlex delivery with in-person, online synchronous, and asynchronous options.' },
@@ -364,6 +413,11 @@ const standardsSuggestionLibrary: Record<string, string[]> = {
     'AI literacy: inspect model limitations and discuss uncertainty, bias, and verification.',
     'Responsible use: protect privacy when using datasets or examples.',
   ],
+  'Art / Media': [
+    'Media arts: students analyze authorship, audience, purpose, representation, and creative choices.',
+    'AI literacy: students explain how generative tools may shape ownership, attribution, and representation.',
+    'Responsible use: disclose AI assistance and avoid uploading personal images without permission.',
+  ],
   'Social Studies': [
     'Civic reasoning: evaluate information sources, bias, misinformation, and societal impacts of AI.',
     'AI literacy: examine how automated systems may shape decisions, access, and representation.',
@@ -420,7 +474,7 @@ const curriculumQuickStarts = [
       readingSupport: 'standard_supports',
       promptLibraryPreset: 'evaluate_ai_output',
       rubricFocus: 'balanced_ai_literacy',
-      policyCheck: 'teacher_review',
+      policyCheck: 'teacher_demo_only',
       policyOutput: 'Classroom AI Use Policy',
     },
   },
@@ -439,7 +493,7 @@ const curriculumQuickStarts = [
       readingSupport: 'ell_friendly',
       promptLibraryPreset: 'no_ai_discussion',
       rubricFocus: 'responsible_use',
-      policyCheck: 'teacher_review',
+      policyCheck: 'teacher_demo_only',
       policyOutput: 'Student Responsible AI Agreement',
     },
   },
@@ -458,7 +512,7 @@ const curriculumQuickStarts = [
       readingSupport: 'simplified_student_version',
       promptLibraryPreset: 'no_ai_discussion',
       rubricFocus: 'responsible_use',
-      policyCheck: 'restrictive_policy',
+      policyCheck: 'strict_no_student_ai',
       policyOutput: 'Family / Guardian AI Notice',
     },
   },
@@ -496,6 +550,24 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
     content: '## Lesson Snapshot\nNo-student-AI lesson using teacher-provided examples, discussion scenarios, printable handouts, and exit-ticket reflection.\n\n## AI Use Guardrails\nStudents do not enter prompts or data into AI tools. Teacher uses prepared examples only. No private student information is used.\n\n## Policy Alignment Summary\nDesigned for restrictive policies with teacher review, family/admin language, AI disclosure notes, and privacy reminders.\n\n## Student Activity\nStudents compare possible AI uses, identify risks, and recommend responsible-use rules.\n\n## Teacher Implementation Checklist\nPrint examples, review policy language, prepare discussion norms, and collect exit-ticket evidence.',
   },
   {
+    title: 'ELA Source Evaluation with AI',
+    mode: 'curriculum-pack',
+    description: 'Cross-curricular ELA lesson on claims, evidence, source credibility, and AI verification.',
+    content: '## Lesson Snapshot\nELA lesson where students compare a sample AI explanation with classroom sources and decide which claims need evidence.\n\n## Standards / Outcomes Alignment Matrix\nCommon Core ELA claim/evidence analysis maps to AI literacy outcomes for verification, bias detection, and responsible citation.\n\n## Prompt Library\nStudents ask what claim is being made, what source evidence supports it, and what context is missing.\n\n## AI Evaluation Rubric\nCriteria include accuracy, source evidence, reasoning, bias and limitations, and revision quality.\n\n## Bias and Inclusivity Notes\nTeacher reviews examples for representation, assumptions, and accessible language before use.',
+  },
+  {
+    title: 'Social Studies AI Misinformation',
+    mode: 'curriculum-pack',
+    description: 'Cross-curricular civic reasoning lesson on AI, misinformation, bias, and elections/media.',
+    content: '## Lesson Snapshot\nSocial studies lesson where students analyze an AI-generated civic claim, identify misinformation risks, and practice evidence-based verification.\n\n## Standards / Outcomes Alignment Matrix\nCivic reasoning and media literacy outcomes align to AI literacy skills: verify outputs, recognize bias, and explain human judgment.\n\n## Student Activity\nStudents annotate a claim, identify who might be affected, list sources to check, and write a responsible-use recommendation.\n\n## Policy Alignment Summary\nUses teacher-prepared examples, no private student information, and clear AI disclosure language.\n\n## Teacher Implementation Checklist\nPrepare neutral examples, review discussion norms, provide source list, and collect reflection evidence.',
+  },
+  {
+    title: 'Art and Media AI Ownership',
+    mode: 'curriculum-pack',
+    description: 'Cross-curricular creative AI lesson on authorship, ownership, attribution, and ethics.',
+    content: '## Lesson Snapshot\nArt/media lesson where students evaluate generative AI use through creativity, attribution, representation, and ownership questions.\n\n## Student Activity\nStudents compare human-created and AI-assisted media scenarios, discuss attribution, and create responsible-use guidelines.\n\n## AI Use Guardrails\nProtect privacy, avoid uploading personal images without permission, disclose AI assistance, and verify tool rules.\n\n## AI Evaluation Rubric\nCriteria include ethical use, attribution, representation, creative intent, and reflection.\n\n## Family / Admin Note\nExplains how AI is discussed as a literacy and ethics topic rather than a replacement for student creativity.',
+  },
+  {
     title: 'Intro AI Technology Course',
     mode: 'college-course',
     description: 'Course package with weekly modules, labs, policy, and CQI plan.',
@@ -518,6 +590,8 @@ const samplePackages: Array<{ title: string; mode: BuilderMode; description: str
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [debugOpen, setDebugOpen] = useState(false);
+  const [fontScale, setFontScale] = useState<FontScale>('standard');
+  const [highContrast, setHighContrast] = useState(false);
   const [loadedPackageContent, setLoadedPackageContent] = useState('');
   const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
@@ -568,7 +642,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className={`min-h-screen bg-slate-50 text-slate-900 ${fontScale === 'large' ? 'text-[17px]' : fontScale === 'extra-large' ? 'text-[18px]' : ''} ${highContrast ? 'contrast-125 saturate-150' : ''}`}>
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
@@ -604,6 +678,12 @@ function App() {
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <ProductEdgeStrip />
+        <AccessibilityControls
+          fontScale={fontScale}
+          onFontScaleChange={setFontScale}
+          highContrast={highContrast}
+          onHighContrastChange={setHighContrast}
+        />
         <StartFromGallery activeMode={activeMode} onLoadSample={loadSample} />
 
         {activeMode === 'curriculum-pack' ? (
@@ -686,7 +766,7 @@ function CurriculumPackBuilder({
     readingSupport: 'standard_supports',
     promptLibraryPreset: 'evaluate_ai_output',
     rubricFocus: 'balanced_ai_literacy',
-    policyCheck: 'teacher_review',
+    policyCheck: 'teacher_demo_only',
     policyOutput: 'Classroom AI Use Policy',
   });
   const [sourceNotes, setSourceNotes] = useState('');
@@ -698,6 +778,7 @@ function CurriculumPackBuilder({
   const selectedReadingSupport = readingSupportOptions.find((option) => option.value === settings.readingSupport) ?? readingSupportOptions[0];
   const selectedPromptLibrary = promptLibraryOptions.find((option) => option.value === settings.promptLibraryPreset) ?? promptLibraryOptions[0];
   const selectedRubricFocus = rubricFocusOptions.find((option) => option.value === settings.rubricFocus) ?? rubricFocusOptions[0];
+  const selectedPolicyPreset = policyPresetOptions.find((option) => option.value === settings.policyCheck) ?? policyPresetOptions[1];
   const standardsSuggestions = getStandardsSuggestions(settings.subjectContext, settings.standardsTarget, settings.gradeLevel);
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
@@ -748,7 +829,8 @@ function CurriculumPackBuilder({
       `Prompt examples to include or adapt: ${selectedPromptLibrary.prompts.join(' | ')}`,
       `Rubric focus: ${selectedRubricFocus.label} - ${selectedRubricFocus.description}`,
       `Rubric criteria to include: ${selectedRubricFocus.criteria.join(', ')}`,
-      `Policy check status: ${labelFromValue(settings.policyCheck)}`,
+      `Policy preset: ${selectedPolicyPreset.label} - ${selectedPolicyPreset.description}`,
+      `Policy preset guardrails: ${selectedPolicyPreset.guardrails.join('; ')}`,
       `Policy/privacy checklist to include: ${policyCheckItems.join('; ')}`,
       `Requested policy artifact: ${settings.policyOutput}`,
       sourceNotes.trim() ? `Additional source/context notes from educator: ${sourceNotes.trim()}` : 'Additional source/context notes from educator: none provided.',
@@ -817,8 +899,8 @@ function CurriculumPackBuilder({
             <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} help="Used to tune examples, independence, guardrails, and reading level." />
             <SelectField label="Reading" value={settings.readingLevel} onChange={(value) => updateSetting('readingLevel', value)} options={toSelectOptions(['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'])} help="Student-facing instructions and handouts should match this level." />
             <SelectField label="Reading support" value={settings.readingSupport} onChange={(value) => updateSetting('readingSupport', value)} options={readingSupportOptions} help="Adds a simplified, ELL-friendly, standard, or extension-ready student version." />
-            <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
-            <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
+            <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Art / Media', 'CTE', 'Computer Science', 'Advisory', 'Career Readiness'])} help="Use this when AI literacy is being taught inside another course." />
+            <SelectField label="Standards" value={settings.standardsTarget} onChange={(value) => updateSetting('standardsTarget', value)} options={toSelectOptions(['None', 'ISTE', 'CSTA', 'NGSS', 'Common Core ELA', 'Tennessee', 'Missouri', 'Kansas', 'State standards'])} help="Choose the review target that should appear in the alignment matrix." />
             <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} help="Controls pacing, activity depth, and assessment scope." />
             <SelectField label="Format" value={settings.classFormat} onChange={(value) => updateSetting('classFormat', value)} options={toSelectOptions(['Whole class', 'Small group', 'Individual', 'Station rotation', 'Online/asynchronous'])} help="Shapes directions, facilitation notes, and participation structures." />
           </FieldGrid>
@@ -892,6 +974,7 @@ function CurriculumPackBuilder({
     ['Prompt library', selectedPromptLibrary.label],
     ['Rubric', selectedRubricFocus.label],
     ['Standards', `${settings.standardsTarget}: ${standardsSuggestions.length} suggestions`],
+    ['Policy', selectedPolicyPreset.label],
     ['AI literacy', aiLiteracyComponents.join(', ')],
   ];
 
@@ -1327,6 +1410,61 @@ function ProductEdgeStrip() {
   );
 }
 
+function AccessibilityControls({
+  fontScale,
+  onFontScaleChange,
+  highContrast,
+  onHighContrastChange,
+}: {
+  fontScale: FontScale;
+  onFontScaleChange: (value: FontScale) => void;
+  highContrast: boolean;
+  onHighContrastChange: (value: boolean) => void;
+}) {
+  return (
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Accessibility display controls">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-start gap-2">
+          <Languages className="mt-0.5 h-5 w-5 text-blue-700" />
+          <div>
+            <h3 className="text-sm font-bold text-slate-950">Accessibility and Language Readiness</h3>
+            <p className="text-xs leading-5 text-slate-600">Adjust display size and contrast while generated materials continue to include reading-level supports.</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="grid grid-cols-3 gap-1 rounded-md border border-slate-200 bg-slate-100 p-1" aria-label="Font size">
+            {([
+              ['standard', 'Standard'],
+              ['large', 'Large'],
+              ['extra-large', 'XL'],
+            ] as Array<[FontScale, string]>).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => onFontScaleChange(value)}
+                className={`min-h-9 rounded px-3 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                  fontScale === value ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600 hover:text-slate-950'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <label className="inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+            <input
+              type="checkbox"
+              checked={highContrast}
+              onChange={(event) => onHighContrastChange(event.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-500"
+            />
+            High contrast
+          </label>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function WorkflowMap() {
   const steps = ['Start from', 'Set context', 'Add sources', 'Build', 'Review / export'];
 
@@ -1663,11 +1801,7 @@ function PolicyCheckPanel({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const options = [
-    { value: 'teacher_review', label: 'Teacher review ready', description: 'Builds standard privacy, verification, citation, and teacher-review language.' },
-    { value: 'restrictive_policy', label: 'Restrictive policy', description: 'Adds no-student-AI alternatives and family/admin language for cautious schools.' },
-    { value: 'student_ai_allowed', label: 'Student AI allowed', description: 'Adds student disclosure, verification, and responsible-use checkpoints.' },
-  ];
+  const selected = policyPresetOptions.find((option) => option.value === value) ?? policyPresetOptions[1];
 
   return (
     <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -1678,7 +1812,14 @@ function PolicyCheckPanel({
           <p className="text-xs leading-5 text-slate-600">Adds a policy alignment summary and privacy checklist to the generated package.</p>
         </div>
       </div>
-      <SegmentedOptions value={value} onChange={onChange} options={options} />
+      <SegmentedOptions value={value} onChange={onChange} options={policyPresetOptions} />
+      <div className="mt-3 rounded-md border border-blue-100 bg-white p-3">
+        <div className="text-xs font-bold uppercase text-slate-600">Selected policy language</div>
+        <p className="mt-1 text-sm leading-6 text-slate-700">{selected.description}</p>
+        <div className="mt-2">
+          <ChipList items={selected.guardrails} />
+        </div>
+      </div>
       <div className="mt-3 grid gap-2 md:grid-cols-2">
         {policyCheckItems.map((item) => (
           <div key={item} className="flex items-start gap-2 rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
@@ -1742,6 +1883,35 @@ function RubricFocusChooser({
       <SelectField label="Rubric focus" value={value} onChange={onChange} options={rubricFocusOptions} help="Choose how students should be assessed when working with AI or AI examples." />
       <div className="mt-3">
         <ChipList items={selected.criteria} />
+      </div>
+    </div>
+  );
+}
+
+function DataPrivacyPanel() {
+  const items = [
+    'Source text is used to shape the generated package and should be reviewed before submission.',
+    'Do not upload student names, grades, IEP/504 details, family information, or private identifiers.',
+    'Saved Package History is stored in this browser, not as a shared school record system.',
+    'Exports should be reviewed by the educator before sharing with students, families, or administrators.',
+  ];
+
+  return (
+    <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 flex items-start gap-2">
+        <ShieldCheck className="mt-0.5 h-4 w-4 text-blue-700" />
+        <div>
+          <h4 className="text-sm font-bold text-slate-950">Data Privacy Transparency</h4>
+          <p className="text-xs leading-5 text-slate-600">Use source uploads for public or de-identified planning material only.</p>
+        </div>
+      </div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {items.map((item) => (
+          <div key={item} className="flex items-start gap-2 rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
+            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-green-700" />
+            <span>{item}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1812,6 +1982,8 @@ function SourceContextPanel({
         <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" />
         <p>{hint}</p>
       </div>
+
+      <DataPrivacyPanel />
 
       <SelectField label="AI Policy to Include" value={policyOutput} onChange={onPolicyChange} options={toSelectOptions(policyOptions)} />
 
@@ -2075,7 +2247,7 @@ function GeneratedOutput({
       'Improve the generated package below for product readiness.',
       `Focus especially on: ${missingLabels}.`,
       'Preserve useful existing content, but rewrite the package as one complete improved version.',
-      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, and implementation notes.',
+      'Add any missing standards/outcomes alignment, assessment evidence, AI-use guardrails, privacy language, prompt library, AI evaluation rubric, accessibility supports, family/admin language, bias/inclusivity review notes, data privacy transparency, and implementation notes.',
       'Include a Policy Alignment Summary when privacy, family/admin language, or AI-use guardrails are missing.',
       'Use clean markdown headings and keep it ready for export to HTML, print/PDF, Markdown, or PPT.',
       '',
@@ -2090,6 +2262,18 @@ function GeneratedOutput({
       instruction,
       'Preserve useful existing content, but return one complete updated package with clean markdown headings.',
       'Keep outcomes alignment, assessment evidence, AI guardrails, accessibility, export readiness, and implementation details intact.',
+      '',
+      'Current package:',
+      content,
+    ].join('\n'));
+  };
+
+  const checkBiasAndInclusivity = () => {
+    onImprove([
+      'Review the generated package below for bias, inclusivity, representation, accessibility, and culturally narrow assumptions.',
+      'Return one improved package with the same core learning goals, plus a concise ## Bias and Inclusivity Notes section.',
+      'Look for stereotype-reinforcing examples, exclusionary language, inaccessible assumptions, narrow cultural references, unsupported claims about groups, and missing representation.',
+      'Preserve standards alignment, AI guardrails, privacy language, assessment evidence, and implementation details.',
       '',
       'Current package:',
       content,
@@ -2154,6 +2338,12 @@ function GeneratedOutput({
             label="Fix Missing Pieces"
             disabled={!hasContent || isLoading}
             onClick={improveReadiness}
+          />
+          <ExportButton
+            icon={ScanSearch}
+            label="Bias Check"
+            disabled={!hasContent || isLoading}
+            onClick={checkBiasAndInclusivity}
           />
           <ExportButton
             icon={Archive}
@@ -2378,9 +2568,10 @@ function getStandardsSuggestions(subject: string, standardsTarget: string, grade
 
 function normalizeStandards(value: string): ClassroomConfig['standards']['type'] {
   if (value === 'ISTE') return 'ISTE';
+  if (value === 'NGSS') return 'NGSS';
   if (value === 'Tennessee') return 'TN';
   if (value === 'Common Core ELA') return 'CCSS';
-  if (value === 'State standards' || value === 'Custom') return 'Custom';
+  if (value === 'CSTA' || value === 'State standards' || value === 'Custom') return 'Custom';
   return null;
 }
 
