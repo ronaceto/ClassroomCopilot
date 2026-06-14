@@ -151,6 +151,24 @@ interface FinishLineSettings {
   communityWorkflow: string;
 }
 
+interface BetaEvent {
+  id: string;
+  event: string;
+  mode: BuilderMode;
+  detail: string;
+  createdAt: number;
+}
+
+interface BetaFeedback {
+  id: string;
+  feedbackType: string;
+  role: string;
+  mode: BuilderMode;
+  rating: string;
+  message: string;
+  createdAt: number;
+}
+
 const curriculumData = curriculumDataJson as CurriculumData;
 const curriculumWorkflow = curriculumWorkflowJson as WorkflowConfig;
 const courseWorkflow = courseWorkflowJson as WorkflowConfig;
@@ -230,6 +248,36 @@ const productEdges = [
   {
     title: 'Platform-ready',
     text: 'Adds language access, IEP supports, sandbox labs, LMS planning, analytics, PD, and teacher community workflows.',
+  },
+];
+
+const betaSuccessTargets = [
+  { label: 'Time to first package', target: '< 5 min', event: 'build started' },
+  { label: 'Completion lift', target: '+25%', event: 'build completed' },
+  { label: 'Abandonment reduction', target: '-30%', event: 'step drop-off' },
+  { label: 'Teacher satisfaction', target: '4.5 / 5', event: 'feedback rating' },
+];
+
+const targetSegments = [
+  'High school AI literacy teachers',
+  'CTE and computer science departments',
+  'Curriculum directors and instructional coaches',
+  'Community college AI faculty',
+  'Workforce development teams',
+];
+
+const marketingProofPoints = [
+  {
+    title: 'Responsible AI curriculum builder',
+    detail: 'Built for AI literacy, privacy, guardrails, accessibility, and review-ready outputs.',
+  },
+  {
+    title: 'Beyond lesson generation',
+    detail: 'Moves from classroom packs to college courses, program proposals, CQI, and advisory board assets.',
+  },
+  {
+    title: 'Implementation-ready outputs',
+    detail: 'Exports polished documents, decks, markdown, LMS copy blocks, and saved package history.',
   },
 ];
 
@@ -1154,15 +1202,20 @@ function App() {
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
   const [loadedPackageContent, setLoadedPackageContent] = useState('');
   const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
+  const [betaEvents, setBetaEvents] = useState<BetaEvent[]>(() => loadBetaEvents());
+  const [betaFeedback, setBetaFeedback] = useState<BetaFeedback[]>(() => loadBetaFeedback());
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
+    trackBetaEvent('build_started', activeMode, config.subjects);
     setLoadedPackageContent('');
     clearChat();
     void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', config);
   };
 
   const handleImprove = (prompt: string) => {
+    trackBetaEvent('refinement_requested', activeMode, prompt.slice(0, 72));
     void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
@@ -1173,6 +1226,35 @@ function App() {
     saveSavedPackages(savedPackages);
   }, [savedPackages]);
 
+  useEffect(() => {
+    saveBetaEvents(betaEvents);
+  }, [betaEvents]);
+
+  useEffect(() => {
+    saveBetaFeedback(betaFeedback);
+  }, [betaFeedback]);
+
+  const trackBetaEvent = (event: string, mode = activeMode, detail = '') => {
+    const nextEvent: BetaEvent = {
+      id: crypto.randomUUID(),
+      event,
+      mode,
+      detail,
+      createdAt: new Date().getTime(),
+    };
+    setBetaEvents((current) => [nextEvent, ...current].slice(0, 120));
+  };
+
+  const openHelpCenter = (detail = 'toolbar') => {
+    trackBetaEvent('help_center_opened', activeMode, detail);
+    setHelpCenterOpen(true);
+  };
+
+  const handleModeChange = (mode: BuilderMode) => {
+    setActiveMode(mode);
+    trackBetaEvent('mode_changed', mode, mode);
+  };
+
   const saveCurrentPackage = (content: string, status: ReviewStatus) => {
     const nextPackage: SavedPackage = {
       id: crypto.randomUUID(),
@@ -1180,29 +1262,62 @@ function App() {
       mode: activeMode,
       content,
       status,
-      createdAt: Date.now(),
+      createdAt: new Date().getTime(),
     };
     setSavedPackages((current) => [nextPackage, ...current].slice(0, 24));
+    trackBetaEvent('package_saved', activeMode, nextPackage.title);
   };
 
   const loadPackage = (savedPackage: SavedPackage) => {
     setActiveMode(savedPackage.mode);
     setLoadedPackageContent(savedPackage.content);
     clearChat();
+    trackBetaEvent('saved_package_loaded', savedPackage.mode, savedPackage.title);
   };
 
   const deletePackage = (id: string) => {
     setSavedPackages((current) => current.filter((savedPackage) => savedPackage.id !== id));
+    trackBetaEvent('saved_package_deleted', activeMode, id);
   };
 
   const loadSample = (sample: (typeof samplePackages)[number]) => {
     setActiveMode(sample.mode);
     setLoadedPackageContent(sample.content);
     clearChat();
+    trackBetaEvent('sample_loaded', sample.mode, sample.title);
   };
 
   const updateFinishLineSetting = (key: keyof FinishLineSettings, value: string) => {
     setFinishLineSettings((current) => ({ ...current, [key]: value }));
+    trackBetaEvent('advanced_option_changed', activeMode, `${key}: ${value}`);
+  };
+
+  const submitBetaFeedback = async (feedback: Omit<BetaFeedback, 'id' | 'createdAt'>) => {
+    const nextFeedback: BetaFeedback = {
+      ...feedback,
+      id: crypto.randomUUID(),
+      createdAt: new Date().getTime(),
+    };
+    setBetaFeedback((current) => [nextFeedback, ...current].slice(0, 60));
+    trackBetaEvent('feedback_submitted', feedback.mode, `${feedback.feedbackType}: ${feedback.rating}`);
+
+    try {
+      const formData = new URLSearchParams({
+        'form-name': 'beta-feedback',
+        feedbackType: feedback.feedbackType,
+        role: feedback.role,
+        mode: feedback.mode,
+        rating: feedback.rating,
+        message: feedback.message,
+      });
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString(),
+      });
+    } catch (submitError) {
+      console.error('Feedback was saved locally but Netlify submission failed:', submitError);
+    }
   };
 
   return (
@@ -1222,7 +1337,7 @@ function App() {
           <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
-              onClick={() => setHelpCenterOpen(true)}
+              onClick={() => openHelpCenter('mobile_header')}
               className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
             >
               Help
@@ -1245,7 +1360,7 @@ function App() {
                 <button
                   key={mode.id}
                   type="button"
-                  onClick={() => setActiveMode(mode.id)}
+                  onClick={() => handleModeChange(mode.id)}
                   className={`flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium transition ${
                     activeMode === mode.id ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600 hover:text-slate-950'
                   }`}
@@ -1258,7 +1373,7 @@ function App() {
           </nav>
           <button
             type="button"
-            onClick={() => setHelpCenterOpen(true)}
+            onClick={() => openHelpCenter('desktop_header')}
             className="hidden min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 lg:inline-flex"
           >
             Help Center
@@ -1273,7 +1388,7 @@ function App() {
                   key={mode.id}
                   type="button"
                   onClick={() => {
-                    setActiveMode(mode.id);
+                    handleModeChange(mode.id);
                     setMobileMenuOpen(false);
                   }}
                   className={`flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
@@ -1291,6 +1406,22 @@ function App() {
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <ProductEdgeStrip />
+        <BetaCommandCenter
+          events={betaEvents}
+          feedback={betaFeedback}
+          onOpenFeedback={() => {
+            trackBetaEvent('feedback_drawer_opened', activeMode, 'beta command center');
+            setFeedbackOpen(true);
+          }}
+          onOpenHelp={() => openHelpCenter('beta command center')}
+        />
+        <MarketingProofPanel
+          onViewSamples={() => document.getElementById('sample-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          onOpenFeedback={() => {
+            trackBetaEvent('feedback_drawer_opened', activeMode, 'marketing proof');
+            setFeedbackOpen(true);
+          }}
+        />
         <AccessibilityControls
           fontScale={fontScale}
           onFontScaleChange={setFontScale}
@@ -1318,10 +1449,18 @@ function App() {
           savedPackages={savedPackages}
           onLoadPackage={loadPackage}
           onDeletePackage={deletePackage}
+          onTrack={trackBetaEvent}
         />
       </main>
 
       <TeacherSupportCenter open={helpCenterOpen} onClose={() => setHelpCenterOpen(false)} />
+      <BetaFeedbackDrawer
+        open={feedbackOpen}
+        activeMode={activeMode}
+        feedback={betaFeedback}
+        onClose={() => setFeedbackOpen(false)}
+        onSubmit={submitBetaFeedback}
+      />
 
       {debugInfo && (
         <div className="fixed bottom-20 right-4 z-40 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white shadow-lg sm:max-w-md">
@@ -2202,6 +2341,141 @@ function ProductEdgeStrip() {
   );
 }
 
+function BetaCommandCenter({
+  events,
+  feedback,
+  onOpenFeedback,
+  onOpenHelp,
+}: {
+  events: BetaEvent[];
+  feedback: BetaFeedback[];
+  onOpenFeedback: () => void;
+  onOpenHelp: () => void;
+}) {
+  const eventCounts = events.reduce<Record<string, number>>((counts, event) => {
+    counts[event.event] = (counts[event.event] ?? 0) + 1;
+    return counts;
+  }, {});
+  const buildStarts = eventCounts.build_started ?? 0;
+  const exportClicks = Object.entries(eventCounts)
+    .filter(([event]) => event.startsWith('export_'))
+    .reduce((total, [, count]) => total + count, 0);
+  const averageRating = feedback.length > 0
+    ? (feedback.reduce((total, item) => total + Number(item.rating || 0), 0) / feedback.length).toFixed(1)
+    : 'N/A';
+
+  return (
+    <section className="mb-5 rounded-lg border border-blue-100 bg-blue-50 p-4 shadow-sm" aria-label="Beta readiness dashboard">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase text-blue-800">Teacher beta command center</p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">Measure the next 20-50 teacher beta</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-700">
+            Track usage signals in this browser, collect feedback, and keep support materials one click away during the beta.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={onOpenFeedback}
+            className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white transition hover:bg-blue-800"
+          >
+            Give Beta Feedback
+          </button>
+          <button
+            type="button"
+            onClick={onOpenHelp}
+            className="inline-flex min-h-10 items-center justify-center rounded-md border border-blue-200 bg-white px-4 text-sm font-bold text-blue-800 transition hover:border-blue-300"
+          >
+            Open Help Center
+          </button>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <MetricTile label="Build starts" value={String(buildStarts)} detail="Local beta signal" />
+        <MetricTile label="Exports" value={String(exportClicks)} detail="HTML, PDF, PPT, LMS, copy" />
+        <MetricTile label="Feedback items" value={String(feedback.length)} detail={`Avg rating: ${averageRating}`} />
+        <MetricTile label="Recent events" value={String(events.length)} detail="Stored locally for beta review" />
+      </div>
+      <div className="mt-4 grid gap-2 lg:grid-cols-4">
+        {betaSuccessTargets.map((target) => (
+          <div key={target.label} className="rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-700">
+            <span className="block font-bold text-slate-950">{target.label}: {target.target}</span>
+            <span>Measure with {target.event} signals.</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MetricTile({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="rounded-md border border-blue-100 bg-white p-3">
+      <span className="text-xs font-bold uppercase text-slate-500">{label}</span>
+      <strong className="mt-1 block text-2xl text-slate-950">{value}</strong>
+      <span className="text-xs leading-5 text-slate-600">{detail}</span>
+    </div>
+  );
+}
+
+function MarketingProofPanel({
+  onViewSamples,
+  onOpenFeedback,
+}: {
+  onViewSamples: () => void;
+  onOpenFeedback: () => void;
+}) {
+  return (
+    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-label="Classroom Copilot market proof">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+        <div>
+          <p className="text-xs font-bold uppercase text-blue-800">Positioning</p>
+          <h2 className="mt-1 text-2xl font-bold text-slate-950">Responsible AI curriculum, not generic lesson generation</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Classroom Copilot is built for educators who need AI literacy materials that are policy-aware, accessible, LMS-ready, and review-ready.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {marketingProofPoints.map((point) => (
+              <div key={point.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                <strong className="block text-sm text-slate-950">{point.title}</strong>
+                <span className="mt-1 block text-xs leading-5 text-slate-600">{point.detail}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={onViewSamples}
+              className="inline-flex min-h-10 items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-bold text-white transition hover:bg-slate-800"
+            >
+              View Sample Outputs
+            </button>
+            <button
+              type="button"
+              onClick={onOpenFeedback}
+              className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+            >
+              Send Beta Feedback
+            </button>
+          </div>
+        </div>
+        <aside className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h3 className="text-sm font-bold text-slate-950">Best-fit beta segments</h3>
+          <div className="mt-3 grid gap-2">
+            {targetSegments.map((segment) => (
+              <div key={segment} className="flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm text-slate-700">
+                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-green-700" />
+                <span>{segment}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
 function AccessibilityControls({
   fontScale,
   onFontScaleChange,
@@ -2432,6 +2706,138 @@ function TeacherSupportCenter({ open, onClose }: { open: boolean; onClose: () =>
   );
 }
 
+function BetaFeedbackDrawer({
+  open,
+  activeMode,
+  feedback,
+  onClose,
+  onSubmit,
+}: {
+  open: boolean;
+  activeMode: BuilderMode;
+  feedback: BetaFeedback[];
+  onClose: () => void;
+  onSubmit: (feedback: Omit<BetaFeedback, 'id' | 'createdAt'>) => Promise<void>;
+}) {
+  const [feedbackType, setFeedbackType] = useState('UX feedback');
+  const [role, setRole] = useState('Teacher');
+  const [mode, setMode] = useState<BuilderMode>(activeMode);
+  const [rating, setRating] = useState('5');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState('');
+
+  if (!open) return null;
+
+  const submitFeedback = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!message.trim()) {
+      setStatus('Add a short note before submitting.');
+      return;
+    }
+    await onSubmit({ feedbackType, role, mode, rating, message: message.trim() });
+    setMessage('');
+    setStatus('Feedback saved for beta review.');
+    window.setTimeout(() => setStatus(''), 3000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="beta-feedback-title">
+      <aside className="ml-auto h-full w-full max-w-2xl overflow-y-auto bg-white p-5 shadow-xl">
+        <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+          <div>
+            <h2 id="beta-feedback-title" className="text-xl font-bold text-slate-950">Beta Feedback</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Capture teacher feedback, issue reports, workflow friction, and sample-output requests.</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-200 p-2 text-slate-500 hover:text-slate-950" aria-label="Close beta feedback">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <form name="beta-feedback" method="POST" data-netlify="true" onSubmit={submitFeedback} className="grid gap-4">
+          <input type="hidden" name="form-name" value="beta-feedback" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField
+              label="Feedback type"
+              value={feedbackType}
+              onChange={setFeedbackType}
+              options={toSelectOptions(['UX feedback', 'Bug report', 'Feature request', 'Template request', 'Beta testimonial'])}
+              help="Use this to separate usability issues, defects, and market proof from general notes."
+            />
+            <SelectField
+              label="Role"
+              value={role}
+              onChange={setRole}
+              options={toSelectOptions(['Teacher', 'Instructional coach', 'Curriculum director', 'College faculty', 'Program coordinator', 'Administrator', 'Other'])}
+              help="Captures which beta segment is providing feedback."
+            />
+            <SelectField
+              label="Builder mode"
+              value={mode}
+              onChange={(value) => setMode(value as BuilderMode)}
+              options={toSelectOptions([
+                { value: 'curriculum-pack', label: 'Curriculum Pack' },
+                { value: 'college-course', label: 'College Course' },
+                { value: 'college-program', label: 'College Program' },
+              ])}
+              help="Connects the feedback to the workflow being tested."
+            />
+            <SelectField
+              label="Satisfaction"
+              value={rating}
+              onChange={setRating}
+              options={toSelectOptions(['5', '4', '3', '2', '1'])}
+              help="Use 5 for ready to recommend and 1 for major blocker."
+            />
+          </div>
+
+          <label className="grid gap-1">
+            <span className="text-sm font-semibold text-slate-700">Feedback note</span>
+            <textarea
+              name="message"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              rows={6}
+              placeholder="What worked, what was confusing, what was missing, or what should be improved before broader release?"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm leading-6 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-xs leading-5 text-slate-500">Saved locally first. In production, the same note is submitted to Netlify Forms.</span>
+            <button type="submit" className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white transition hover:bg-blue-800">
+              Submit Feedback
+            </button>
+          </div>
+          {status && <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-900">{status}</div>}
+        </form>
+
+        <section className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="text-sm font-bold text-slate-950">Recent local feedback</h3>
+            <span className="rounded-md bg-white px-2 py-1 text-xs font-bold text-slate-600">{feedback.length}</span>
+          </div>
+          {feedback.length > 0 ? (
+            <div className="grid gap-2">
+              {feedback.slice(0, 6).map((item) => (
+                <div key={item.id} className="rounded-md bg-white p-3 text-sm">
+                  <div className="mb-1 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
+                    <span>{item.feedbackType}</span>
+                    <span>{labelFromValue(item.mode)}</span>
+                    <span>{item.rating}/5</span>
+                  </div>
+                  <p className="leading-6 text-slate-700">{item.message}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-md border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">No beta feedback captured in this browser yet.</div>
+          )}
+        </section>
+      </aside>
+    </div>
+  );
+}
+
 function StepAssistance({ stepTitle }: { stepTitle: string }) {
   const assistance = stepAssistance[stepTitle];
   if (!assistance) return null;
@@ -2493,7 +2899,7 @@ function StartFromGallery({
   }, {});
 
   return (
-    <section className="mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <section id="sample-gallery" className="scroll-mt-28 mb-5 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <Library className="h-5 w-5 text-blue-700" />
         <div className="min-w-0 flex-1">
@@ -3585,6 +3991,7 @@ function GeneratedOutput({
   savedPackages,
   onLoadPackage,
   onDeletePackage,
+  onTrack,
 }: {
   isLoading: boolean;
   content: string;
@@ -3595,6 +4002,7 @@ function GeneratedOutput({
   savedPackages: SavedPackage[];
   onLoadPackage: (savedPackage: SavedPackage) => void;
   onDeletePackage: (id: string) => void;
+  onTrack: (event: string, mode?: BuilderMode, detail?: string) => void;
 }) {
   const [exportStatus, setExportStatus] = useState('');
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('Draft');
@@ -3607,6 +4015,7 @@ function GeneratedOutput({
   const runExport = async (label: string, action: () => void | Promise<void>) => {
     try {
       await action();
+      onTrack(`export_${label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}`, activeMode, copyTemplate);
       setExportStatus(label);
       window.setTimeout(() => setExportStatus(''), 3000);
     } catch (exportError) {
@@ -3617,6 +4026,7 @@ function GeneratedOutput({
   };
 
   const improveReadiness = () => {
+    onTrack('fix_missing_pieces_clicked', activeMode, missingChecks.map((check) => check.label).join(', '));
     const missingLabels = missingChecks.map((check) => check.label).join(', ') || 'polish, specificity, and implementation quality';
     onImprove([
       'Improve the generated package below for product readiness.',
@@ -3634,6 +4044,7 @@ function GeneratedOutput({
   };
 
   const runRefinement = (label: string, instruction: string) => {
+    onTrack('refinement_preset_clicked', activeMode, label);
     onImprove([
       `Refine the generated package using this focus: ${label}.`,
       instruction,
@@ -3646,6 +4057,7 @@ function GeneratedOutput({
   };
 
   const checkBiasAndInclusivity = () => {
+    onTrack('bias_check_clicked', activeMode, 'review workspace');
     onImprove([
       'Review the generated package below for bias, inclusivity, representation, accessibility, and culturally narrow assumptions.',
       'Return one improved package with the same core learning goals, plus a concise ## Bias and Inclusivity Notes section.',
@@ -3961,6 +4373,8 @@ function normalizeStandards(value: string): ClassroomConfig['standards']['type']
 
 const savedPackagesKey = 'classroomCopilot.savedPackages.v1';
 const standardsLibraryKey = 'classroomCopilot.standardsLibrary.v1';
+const betaEventsKey = 'classroomCopilot.betaEvents.v1';
+const betaFeedbackKey = 'classroomCopilot.betaFeedback.v1';
 
 function loadCurriculumDraft(): CurriculumDraft | null {
   try {
@@ -4008,8 +4422,56 @@ function saveSavedPackages(savedPackages: SavedPackage[]): void {
   }
 }
 
+function loadBetaEvents(): BetaEvent[] {
+  try {
+    const raw = localStorage.getItem(betaEventsKey);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as BetaEvent[];
+    return Array.isArray(parsed) ? parsed.filter(isBetaEvent).slice(0, 120) : [];
+  } catch (error) {
+    console.error('Failed to load beta events:', error);
+    return [];
+  }
+}
+
+function saveBetaEvents(events: BetaEvent[]): void {
+  try {
+    localStorage.setItem(betaEventsKey, JSON.stringify(events));
+  } catch (error) {
+    console.error('Failed to save beta events:', error);
+  }
+}
+
+function loadBetaFeedback(): BetaFeedback[] {
+  try {
+    const raw = localStorage.getItem(betaFeedbackKey);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as BetaFeedback[];
+    return Array.isArray(parsed) ? parsed.filter(isBetaFeedback).slice(0, 60) : [];
+  } catch (error) {
+    console.error('Failed to load beta feedback:', error);
+    return [];
+  }
+}
+
+function saveBetaFeedback(feedback: BetaFeedback[]): void {
+  try {
+    localStorage.setItem(betaFeedbackKey, JSON.stringify(feedback));
+  } catch (error) {
+    console.error('Failed to save beta feedback:', error);
+  }
+}
+
 function isSavedPackage(value: SavedPackage): value is SavedPackage {
   return Boolean(value?.id && value?.title && value?.content && value?.createdAt && value?.mode);
+}
+
+function isBetaEvent(value: BetaEvent): value is BetaEvent {
+  return Boolean(value?.id && value?.event && value?.mode && value?.createdAt);
+}
+
+function isBetaFeedback(value: BetaFeedback): value is BetaFeedback {
+  return Boolean(value?.id && value?.feedbackType && value?.role && value?.mode && value?.rating && value?.message && value?.createdAt);
 }
 
 function inferPackageTitle(content: string, mode: BuilderMode): string {

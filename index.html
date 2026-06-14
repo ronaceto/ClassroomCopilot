@@ -7,6 +7,14 @@
     <title>Classroom Copilot - AI Curriculum Builder</title>
   </head>
   <body>
+    <form name="beta-feedback" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="beta-feedback" />
+      <input name="feedbackType" />
+      <input name="role" />
+      <input name="mode" />
+      <input name="rating" />
+      <textarea name="message"></textarea>
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
