@@ -42,6 +42,9 @@ import courseWorkflowJson from '../product-planning/data/build-college-course-co
 
 type BuilderMode = 'curriculum-pack' | 'college-course' | 'college-program';
 type FontScale = 'standard' | 'large' | 'extra-large';
+type ExperienceMode = 'simple' | 'expert';
+type UserRole = 'k12_teacher' | 'college_faculty' | 'program_coordinator' | 'dean' | 'workforce_advisory';
+type BuildGoal = 'lesson' | 'course' | 'program' | 'approval' | 'advisory' | 'accreditation' | 'recruiting';
 
 interface SamplePackage {
   title: string;
@@ -57,6 +60,8 @@ interface SavedPackage {
   content: string;
   status: ReviewStatus;
   createdAt: number;
+  version?: number;
+  parentId?: string;
 }
 
 type ReviewStatus = 'Draft' | 'Needs Review' | 'Faculty Review' | 'Advisory Review' | 'Ready to Share';
@@ -158,6 +163,32 @@ interface FinishLineSettings {
   communityWorkflow: string;
 }
 
+interface PathwayNode {
+  id: string;
+  label: string;
+  type: 'course' | 'certificate' | 'degree' | 'certification' | 'employment';
+}
+
+interface CourseSequenceRow {
+  id: string;
+  term: string;
+  code: string;
+  title: string;
+  credits: string;
+  prerequisites: string;
+  skills: string;
+  outcome: string;
+}
+
+interface OutcomeMatrixRow {
+  id: string;
+  outcome: string;
+  course: string;
+  level: 'Introduced' | 'Reinforced' | 'Mastered' | 'Assessed';
+  assessment: string;
+  notes: string;
+}
+
 interface BetaEvent {
   id: string;
   event: string;
@@ -189,6 +220,24 @@ const modes: Array<{
   { id: 'curriculum-pack', label: 'Curriculum Pack', icon: BookOpen },
   { id: 'college-course', label: 'College Course', icon: GraduationCap },
   { id: 'college-program', label: 'College Program', icon: Layers3 },
+];
+
+const roleOptions: Array<{ id: UserRole; label: string; detail: string; mode: BuilderMode; goal: BuildGoal }> = [
+  { id: 'k12_teacher', label: 'K-12 Teacher', detail: 'Lessons, mini-units, student activities, and AI guardrails.', mode: 'curriculum-pack', goal: 'lesson' },
+  { id: 'college_faculty', label: 'College Faculty', detail: 'Syllabi, weekly modules, labs, assignments, and assessments.', mode: 'college-course', goal: 'course' },
+  { id: 'program_coordinator', label: 'Program Coordinator', detail: 'Certificates, pathways, CQI, advisory boards, and launch planning.', mode: 'college-program', goal: 'program' },
+  { id: 'dean', label: 'Department Chair / Dean', detail: 'Program approval, resources, risks, and institutional review packages.', mode: 'college-program', goal: 'approval' },
+  { id: 'workforce_advisory', label: 'Workforce / Advisory Board', detail: 'Skills validation, employer feedback, internships, and recruitment.', mode: 'college-program', goal: 'advisory' },
+];
+
+const goalOptions: Array<{ id: BuildGoal; label: string; detail: string; mode: BuilderMode; packagePreset?: string }> = [
+  { id: 'lesson', label: 'Lesson or mini-unit', detail: 'Fast teacher-ready curriculum pack.', mode: 'curriculum-pack', packagePreset: 'mini_unit' },
+  { id: 'course', label: 'College course', detail: 'Syllabus, modules, labs, assessments, and ethics policy.', mode: 'college-course' },
+  { id: 'program', label: 'Certificate or degree program', detail: 'Pathway, course sequence, outcomes, CQI, and advisory structure.', mode: 'college-program', packagePreset: 'program_coordinator_packet' },
+  { id: 'approval', label: 'Program approval package', detail: 'Dean-ready presentation, rationale, resources, risks, and ask.', mode: 'college-program', packagePreset: 'dean_approval_presentation' },
+  { id: 'advisory', label: 'Advisory board materials', detail: 'Charter, agenda, employer survey, and gap analysis.', mode: 'college-program', packagePreset: 'advisory_board_toolkit' },
+  { id: 'accreditation', label: 'Accreditation / CQI documentation', detail: 'Outcomes, evidence, annual review, and improvement tracking.', mode: 'college-program', packagePreset: 'accreditation_readiness_package' },
+  { id: 'recruiting', label: 'Recruiting materials', detail: 'Student flyer, web copy, counselor handout, and open-house deck.', mode: 'college-program', packagePreset: 'recruitment_toolkit' },
 ];
 
 const baseConfig: ClassroomConfig = {
@@ -1366,9 +1415,13 @@ const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
 
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(() => (localStorage.getItem('classroomCopilot.role.v1') as UserRole | null) || null);
+  const [selectedGoal, setSelectedGoal] = useState<BuildGoal | null>(() => (localStorage.getItem('classroomCopilot.goal.v1') as BuildGoal | null) || null);
+  const [experienceMode, setExperienceMode] = useState<ExperienceMode>(() => (localStorage.getItem('classroomCopilot.experienceMode.v1') as ExperienceMode | null) || 'simple');
   const [debugOpen, setDebugOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpCenterOpen, setHelpCenterOpen] = useState(false);
+  const [trustOpen, setTrustOpen] = useState(false);
   const [fontScale, setFontScale] = useState<FontScale>('standard');
   const [highContrast, setHighContrast] = useState(false);
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
@@ -1380,10 +1433,13 @@ function App() {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loadedSample, setLoadedSample] = useState<SamplePackage | null>(null);
   const [lastAutoSavedMessage, setLastAutoSavedMessage] = useState<number | null>(null);
+  const [globalAction, setGlobalAction] = useState('');
   const { messages, isLoading, error, debugInfo, sendMessage, clearChat } = useChat();
 
   const handleBuild = (prompt: string, config: ClassroomConfig) => {
+    if (isLoading) return;
     trackBetaEvent('build_started', activeMode, config.subjects);
+    setGlobalAction('Generating content');
     setReviewOpen(true);
     setLoadedPackageContent('');
     clearChat();
@@ -1391,7 +1447,9 @@ function App() {
   };
 
   const handleImprove = async (prompt: string) => {
+    if (isLoading) return false;
     trackBetaEvent('refinement_requested', activeMode, prompt.slice(0, 72));
+    setGlobalAction('Refining package');
     return sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
@@ -1410,6 +1468,7 @@ function App() {
       status: 'Draft',
       createdAt: latestAssistantMessage.timestamp,
     };
+    nextPackage.version = getNextVersion(savedPackages, nextPackage.mode, nextPackage.title);
     setSavedPackages((current) => {
       const alreadySaved = current.some((savedPackage) => savedPackage.createdAt === nextPackage.createdAt);
       return alreadySaved ? current : [nextPackage, ...current].slice(0, 24);
@@ -1421,6 +1480,14 @@ function App() {
   useEffect(() => {
     saveSavedPackages(savedPackages);
   }, [savedPackages]);
+
+  useEffect(() => {
+    localStorage.setItem('classroomCopilot.experienceMode.v1', experienceMode);
+  }, [experienceMode]);
+
+  useEffect(() => {
+    if (!isLoading) setGlobalAction('');
+  }, [isLoading]);
 
   useEffect(() => {
     saveBetaEvents(betaEvents);
@@ -1459,6 +1526,33 @@ function App() {
     trackBetaEvent('mode_changed', mode, mode);
   };
 
+  const chooseRole = (role: UserRole) => {
+    const option = roleOptions.find((item) => item.id === role);
+    if (!option) return;
+    setSelectedRole(role);
+    setSelectedGoal(option.goal);
+    setActiveMode(option.mode);
+    localStorage.setItem('classroomCopilot.role.v1', role);
+    localStorage.setItem('classroomCopilot.goal.v1', option.goal);
+    trackBetaEvent('role_selected', option.mode, option.label);
+  };
+
+  const chooseGoal = (goal: BuildGoal) => {
+    const option = goalOptions.find((item) => item.id === goal);
+    if (!option) return;
+    setSelectedGoal(goal);
+    setActiveMode(option.mode);
+    localStorage.setItem('classroomCopilot.goal.v1', goal);
+    trackBetaEvent('goal_selected', option.mode, option.label);
+  };
+
+  const resetOnboarding = () => {
+    setSelectedRole(null);
+    setSelectedGoal(null);
+    localStorage.removeItem('classroomCopilot.role.v1');
+    localStorage.removeItem('classroomCopilot.goal.v1');
+  };
+
   const saveCurrentPackage = (content: string, status: ReviewStatus) => {
     const nextPackage: SavedPackage = {
       id: crypto.randomUUID(),
@@ -1467,6 +1561,7 @@ function App() {
       content,
       status,
       createdAt: new Date().getTime(),
+      version: getNextVersion(savedPackages, activeMode, inferPackageTitle(content, activeMode)),
     };
     setSavedPackages((current) => [nextPackage, ...current].slice(0, 24));
     trackBetaEvent('package_saved', activeMode, nextPackage.title);
@@ -1484,6 +1579,23 @@ function App() {
   const deletePackage = (id: string) => {
     setSavedPackages((current) => current.filter((savedPackage) => savedPackage.id !== id));
     trackBetaEvent('saved_package_deleted', activeMode, id);
+  };
+
+  const updatePackage = (id: string, patch: Partial<SavedPackage>) => {
+    setSavedPackages((current) => current.map((savedPackage) => (savedPackage.id === id ? { ...savedPackage, ...patch } : savedPackage)));
+  };
+
+  const duplicatePackage = (savedPackage: SavedPackage) => {
+    const nextPackage: SavedPackage = {
+      ...savedPackage,
+      id: crypto.randomUUID(),
+      title: `${savedPackage.title} Copy`,
+      createdAt: new Date().getTime(),
+      parentId: savedPackage.id,
+      version: getNextVersion(savedPackages, savedPackage.mode, `${savedPackage.title} Copy`),
+    };
+    setSavedPackages((current) => [nextPackage, ...current].slice(0, 24));
+    trackBetaEvent('saved_package_duplicated', savedPackage.mode, savedPackage.title);
   };
 
   const loadSample = (sample: SamplePackage) => {
@@ -1586,6 +1698,13 @@ function App() {
           >
             Help Center
           </button>
+          <button
+            type="button"
+            onClick={() => setTrustOpen(true)}
+            className="hidden min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 lg:inline-flex"
+          >
+            Trust
+          </button>
         </div>
         {mobileMenuOpen && (
           <nav className="mx-auto mt-3 grid max-w-7xl gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 lg:hidden" aria-label="Mobile builder modes">
@@ -1613,8 +1732,40 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase text-blue-800">Workspace mode</p>
+            <p className="text-sm text-slate-600">{selectedRole ? `${roleOptions.find((role) => role.id === selectedRole)?.label ?? 'Role selected'} / ${goalOptions.find((goal) => goal.id === selectedGoal)?.label ?? 'Goal selected'}` : 'Choose a role and goal to personalize the builder.'}</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 rounded-md border border-slate-200 bg-slate-100 p-1">
+              {(['simple', 'expert'] as ExperienceMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setExperienceMode(mode)}
+                  className={`min-h-9 rounded px-3 text-sm font-bold capitalize ${experienceMode === mode ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600'}`}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={resetOnboarding} className="min-h-10 rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700">
+              Change role
+            </button>
+            <button type="button" onClick={() => setTrustOpen(true)} className="min-h-10 rounded-md border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 lg:hidden">
+              Trust
+            </button>
+          </div>
+        </div>
+
+        {!selectedRole || !selectedGoal ? (
+          <RoleGoalLanding onChooseRole={chooseRole} onChooseGoal={chooseGoal} selectedGoal={selectedGoal} />
+        ) : (
+          <>
         <WorkspaceLaunchBar
           activeMode={activeMode}
+          experienceMode={experienceMode}
           events={betaEvents}
           feedback={betaFeedback}
           fontScale={fontScale}
@@ -1649,13 +1800,20 @@ function App() {
           savedPackages={savedPackages}
           onLoadPackage={loadPackage}
           onDeletePackage={deletePackage}
+          onUpdatePackage={updatePackage}
+          onDuplicatePackage={duplicatePackage}
           onTrack={trackBetaEvent}
           open={reviewOpen}
           onOpenChange={setReviewOpen}
+          experienceMode={experienceMode}
         />
+          </>
+        )}
       </main>
 
       <TeacherSupportCenter open={helpCenterOpen} onClose={() => setHelpCenterOpen(false)} />
+      <TrustComplianceCenter open={trustOpen} onClose={() => setTrustOpen(false)} />
+      <GlobalAsyncStatus isLoading={isLoading} action={globalAction} />
       <BetaFeedbackDrawer
         open={feedbackOpen}
         activeMode={activeMode}
@@ -2374,12 +2532,38 @@ function CollegeProgramBuilder({
     policyOutput: 'Department Review Draft',
   });
   const [sourceNotes, setSourceNotes] = useState('');
+  const [pathwayNodes, setPathwayNodes] = useState<PathwayNode[]>(() =>
+    (programPathwayTemplates['Stackable certificate to associate degree'] ?? []).map((label, index) => ({
+      id: crypto.randomUUID(),
+      label,
+      type: index === 0 || index === 1 ? 'certificate' : index === 2 ? 'degree' : index === 3 ? 'certification' : 'employment',
+    })),
+  );
+  const [courseRows, setCourseRows] = useState<CourseSequenceRow[]>([
+    { id: crypto.randomUUID(), term: 'Term 1', code: 'AIT 101', title: 'Introduction to AI Technology', credits: '3', prerequisites: 'None', skills: 'AI concepts, responsible use', outcome: 'Explain AI concepts and risks' },
+    { id: crypto.randomUUID(), term: 'Term 1', code: 'AIT 120', title: 'Python Foundations for AI', credits: '3', prerequisites: 'None', skills: 'Python, problem solving', outcome: 'Apply programming foundations' },
+    { id: crypto.randomUUID(), term: 'Term 2', code: 'AIT 210', title: 'Data Analytics for AI', credits: '3', prerequisites: 'AIT 120', skills: 'Data cleaning, visualization, SQL', outcome: 'Analyze data for AI workflows' },
+    { id: crypto.randomUUID(), term: 'Term 2', code: 'AIT 230', title: 'Applied AI and Automation Lab', credits: '3', prerequisites: 'AIT 101', skills: 'Prompt operations, automation, ethics', outcome: 'Build applied AI portfolio evidence' },
+  ]);
+  const [matrixRows, setMatrixRows] = useState<OutcomeMatrixRow[]>([
+    { id: crypto.randomUUID(), outcome: 'Explain AI concepts and responsible-use limits', course: 'AIT 101', level: 'Introduced', assessment: 'Quiz and reflection', notes: 'Foundation outcome' },
+    { id: crypto.randomUUID(), outcome: 'Apply Python and data tools to AI workflows', course: 'AIT 120 / AIT 210', level: 'Reinforced', assessment: 'Labs and portfolio artifacts', notes: 'Technical sequence' },
+    { id: crypto.randomUUID(), outcome: 'Demonstrate workforce-ready applied AI practice', course: 'AIT 230', level: 'Assessed', assessment: 'Capstone lab and employer review', notes: 'CQI evidence' },
+  ]);
   const selectedProgramOutput = programPlatformOutputOptions.find((option) => option.value === settings.packagePreset) ?? programPlatformOutputOptions[0];
-  const pathwaySteps = programPathwayTemplates[settings.pathwayModel] ?? programPathwayTemplates['Stackable certificate to associate degree'];
+  const pathwaySteps = pathwayNodes.map((node) => node.label);
   const selectedOutputInstruction = programOutputPromptInstructions[settings.packagePreset] ?? programOutputPromptInstructions.program_coordinator_packet;
 
   const updateSetting = (key: keyof typeof settings, value: string) => {
     setSettings((current) => ({ ...current, [key]: value }));
+    if (key === 'pathwayModel') {
+      const nextSteps = programPathwayTemplates[value] ?? programPathwayTemplates['Stackable certificate to associate degree'];
+      setPathwayNodes(nextSteps.map((label, index) => ({
+        id: crypto.randomUUID(),
+        label,
+        type: index === 0 || label.toLowerCase().includes('certificate') ? 'certificate' : label.toLowerCase().includes('degree') ? 'degree' : label.toLowerCase().includes('employment') ? 'employment' : 'course',
+      })));
+    }
   };
 
   const buildPrompt = () => {
@@ -2401,6 +2585,8 @@ function CollegeProgramBuilder({
       `Included output components: ${(selectedProgramOutput.includedOutputs ?? []).map(labelFromValue).join(', ')}`,
       `Requested policy artifact: ${settings.policyOutput}`,
       `Visual pathway map sequence: ${pathwaySteps.join(' -> ')}`,
+      `Editable course sequence: ${courseRows.map((row) => `${row.term}: ${row.code} ${row.title} (${row.credits} credits; prerequisites: ${row.prerequisites}; skills: ${row.skills}; outcome: ${row.outcome})`).join(' | ')}`,
+      `Editable outcome matrix: ${matrixRows.map((row) => `${row.outcome} -> ${row.course} [${row.level}] assessment: ${row.assessment}; notes: ${row.notes}`).join(' | ')}`,
       sourceNotes.trim() ? `Additional program source/context notes: ${sourceNotes.trim()}` : 'Additional program source/context notes: none provided.',
       '',
       selectedOutputInstruction,
@@ -2440,7 +2626,33 @@ function CollegeProgramBuilder({
             <SelectField label="Learners" value={settings.targetLearners} onChange={(value) => updateSetting('targetLearners', value)} options={toSelectOptions(['Community college students and working adults', 'Recent high school graduates', 'Working adults / reskilling', 'Dual enrollment students', 'Mixed background learners'])} help="Shapes student success supports, recruitment copy, and prerequisite assumptions." />
             <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(['Stackable certificate to associate degree', 'Direct AAS pathway', 'Short-term workforce certificate', 'Transfer-informed pathway', 'Employer-sponsored cohort'])} help="Frames certificate milestones and degree progression." />
           </FieldGrid>
-          <ProgramPathwayPreview steps={pathwaySteps} />
+          <ProgramPathwayEditor nodes={pathwayNodes} onChange={setPathwayNodes} />
+        </Panel>
+      ),
+    },
+    {
+      title: 'Sequence',
+      description: 'Edit courses, terms, credits, skills, and prerequisites.',
+      complete: courseRows.length > 0,
+      content: (
+        <Panel title="Course Sequence Workspace" icon={ClipboardList}>
+          <GuidanceNote>
+            Edit the program structure directly before generating the coordinator packet, approval deck, pathway map, or accreditation evidence.
+          </GuidanceNote>
+          <CourseSequenceEditor rows={courseRows} onChange={setCourseRows} />
+        </Panel>
+      ),
+    },
+    {
+      title: 'Matrix',
+      description: 'Map program outcomes to courses, assessments, and evidence.',
+      complete: matrixRows.length > 0,
+      content: (
+        <Panel title="Editable Course-to-Outcome Matrix" icon={Gauge}>
+          <GuidanceNote>
+            Use Introduced, Reinforced, Mastered, and Assessed levels to make accreditation and CQI evidence easier to review.
+          </GuidanceNote>
+          <OutcomeMatrixEditor rows={matrixRows} onChange={setMatrixRows} />
         </Panel>
       ),
     },
@@ -2538,6 +2750,7 @@ function CollegeProgramBuilder({
         ['Credential', settings.credentialType],
         ['Pathway', settings.pathwayModel],
         ['Output', selectedProgramOutput.label],
+        ['Sequence', `${courseRows.length} courses / ${matrixRows.length} mappings`],
         ['Workforce focus', settings.workforceFocus],
         ['CQI / advisory', `${settings.cqiCadence}; ${settings.advisoryFocus}`],
       ]}
@@ -2555,6 +2768,7 @@ function CollegeProgramBuilder({
 
 function WorkspaceLaunchBar({
   activeMode,
+  experienceMode,
   events,
   feedback,
   fontScale,
@@ -2568,6 +2782,7 @@ function WorkspaceLaunchBar({
   onOpenHelp,
 }: {
   activeMode: BuilderMode;
+  experienceMode: ExperienceMode;
   events: BetaEvent[];
   feedback: BetaFeedback[];
   fontScale: FontScale;
@@ -2580,7 +2795,7 @@ function WorkspaceLaunchBar({
   onOpenFeedback: () => void;
   onOpenHelp: () => void;
 }) {
-  const [openPanel, setOpenPanel] = useState<'samples' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
+  const [openPanel, setOpenPanel] = useState<'samples' | 'demo' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
   const [showStartTip, setShowStartTip] = useState(() => localStorage.getItem('classroomCopilot.workspaceTip.dismissed.v1') !== 'true');
   const togglePanel = (panel: NonNullable<typeof openPanel>) => setOpenPanel((current) => (current === panel ? null : panel));
   const dismissStartTip = () => {
@@ -2597,12 +2812,17 @@ function WorkspaceLaunchBar({
           <p className="text-xs leading-5 text-slate-600">Samples, accessibility, advanced options, beta feedback, and positioning are available without pushing the builder down the page.</p>
         </div>
         <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-end">
-          {([
+          {(experienceMode === 'expert' ? [
             ['samples', 'Samples', 'Open sample packages and templates.'],
+            ['demo', 'Demo', 'Open complete demo scenarios for reviewers.'],
             ['advanced', 'Advanced', 'Open language access, IEP/504, sandbox, LMS, PD, and community settings.'],
             ['display', 'Display', 'Adjust text size and contrast.'],
             ['beta', 'Beta', 'Open beta metrics and feedback status.'],
             ['positioning', 'Positioning', 'Open product positioning and proof points.'],
+          ] : [
+            ['samples', 'Samples', 'Open sample packages and templates.'],
+            ['demo', 'Demo', 'Open complete demo scenarios for reviewers.'],
+            ['display', 'Display', 'Adjust text size and contrast.'],
           ] as Array<[NonNullable<typeof openPanel>, string, string]>).map(([panel, label, help]) => (
             <button
               key={panel}
@@ -2652,6 +2872,7 @@ function WorkspaceLaunchBar({
             This support panel is optional. Close it by clicking the active button again and continue building below.
           </p>
           {openPanel === 'samples' && <StartFromGallery activeMode={activeMode} onLoadSample={onLoadSample} compact />}
+          {openPanel === 'demo' && <DemoModePanel onLoadSample={onLoadSample} />}
           {openPanel === 'advanced' && <FinishLineToolkit settings={finishLineSettings} onChange={onFinishLineChange} initiallyOpen compact />}
           {openPanel === 'display' && (
             <AccessibilityControls
@@ -2683,6 +2904,151 @@ function WorkspaceLaunchBar({
           )}
         </div>
       )}
+    </section>
+  );
+}
+
+function RoleGoalLanding({
+  onChooseRole,
+  onChooseGoal,
+  selectedGoal,
+}: {
+  onChooseRole: (role: UserRole) => void;
+  onChooseGoal: (goal: BuildGoal) => void;
+  selectedGoal: BuildGoal | null;
+}) {
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-6 max-w-3xl">
+        <p className="text-xs font-bold uppercase text-blue-800">Start with intent</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">Who are you building for?</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Classroom Copilot routes you to the right workflow first, then reveals advanced program, CQI, advisory, and accreditation tools only when they match your goal.
+        </p>
+      </div>
+      <div className="grid gap-3 lg:grid-cols-5">
+        {roleOptions.map((role) => (
+          <button
+            key={role.id}
+            type="button"
+            onClick={() => onChooseRole(role.id)}
+            className="min-h-36 rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50"
+          >
+            <strong className="block text-base text-slate-950">{role.label}</strong>
+            <span className="mt-2 block text-sm leading-5 text-slate-600">{role.detail}</span>
+          </button>
+        ))}
+      </div>
+      <div className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
+        <h3 className="text-lg font-bold text-slate-950">What are you trying to create today?</h3>
+        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+          {goalOptions.map((goal) => (
+            <button
+              key={goal.id}
+              type="button"
+              onClick={() => onChooseGoal(goal.id)}
+              className={`rounded-md border p-3 text-left transition ${selectedGoal === goal.id ? 'border-blue-700 bg-white text-blue-900' : 'border-blue-100 bg-white/80 text-slate-700 hover:border-blue-300'}`}
+            >
+              <strong className="block text-sm">{goal.label}</strong>
+              <span className="mt-1 block text-xs leading-5">{goal.detail}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GlobalAsyncStatus({ isLoading, action }: { isLoading: boolean; action: string }) {
+  if (!isLoading) return null;
+
+  const steps = ['Preparing package', action || 'Generating content', 'Saving history', 'Ready'];
+
+  return (
+    <div className="fixed bottom-6 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 rounded-lg border border-blue-100 bg-white p-4 shadow-xl">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <strong className="text-sm text-slate-950">{action || 'Working on package'}</strong>
+        <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800">Do not close</span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-4">
+        {steps.map((step, index) => (
+          <div key={step} className={`rounded-md px-3 py-2 text-xs font-bold ${index <= 1 ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-500'}`}>
+            {step}
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-xs leading-5 text-slate-600">Build and refinement buttons are locked while this action runs. If it fails, your selections and saved packages stay available.</p>
+    </div>
+  );
+}
+
+function TrustComplianceCenter({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+
+  const items = [
+    ['FERPA-aware workflow', 'The tool is designed to warn users not to enter private student information. It does not claim FERPA certification.'],
+    ['Student data warning', 'Do not upload student names, grades, IEP/504 records, family details, or other personally identifiable information.'],
+    ['Local saved history', 'Saved Package History is stored in this browser local storage. Users can delete saved local packages.'],
+    ['Uploads and sources', 'Uploaded text is read in the browser and included in the generation request. Use public or de-identified planning material only.'],
+    ['Exports', 'HTML, Markdown, PPT, copy, and print outputs are generated in the browser for user review and download.'],
+    ['AI usage disclaimer', 'AI-generated materials are drafts. Educators and institutions must review accuracy, policy fit, accessibility, and local requirements.'],
+    ['Accessibility commitment', 'The product includes high-contrast and text-size controls and will continue toward WCAG and VPAT readiness.'],
+    ['Security contact', 'Use beta feedback or project contact channels to report security, privacy, or accessibility concerns.'],
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="trust-title">
+      <aside className="ml-auto h-full w-full max-w-3xl overflow-y-auto bg-white p-5 shadow-xl">
+        <div className="mb-5 flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+          <div>
+            <p className="text-xs font-bold uppercase text-blue-800">Institutional readiness</p>
+            <h2 id="trust-title" className="mt-1 text-2xl font-bold text-slate-950">Trust, Privacy, and Compliance</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">Honest beta-stage data handling and review expectations for educators and institutions.</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md border border-slate-200 p-2 text-slate-500 hover:text-slate-950" aria-label="Close trust panel">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="grid gap-3">
+          {items.map(([title, detail]) => (
+            <div key={title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <h3 className="text-sm font-bold text-slate-950">{title}</h3>
+              <p className="mt-1 text-sm leading-6 text-slate-600">{detail}</p>
+            </div>
+          ))}
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function DemoModePanel({ onLoadSample }: { onLoadSample: (sample: SamplePackage) => void }) {
+  const demoTitles = [
+    '5-Day AI Mini-Unit',
+    'Intro AI Technology Course',
+    'AI Program Coordinator Packet',
+    'Advisory Board Toolkit',
+    'Dean Approval Presentation',
+  ];
+  const demos = demoTitles
+    .map((title) => samplePackages.find((sample) => sample.title === title || sample.title.includes(title.replace('AI ', ''))))
+    .filter(Boolean) as SamplePackage[];
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <div className="mb-3">
+        <p className="text-xs font-bold uppercase text-blue-800">Institutional Demo Mode</p>
+        <h3 className="text-lg font-bold text-slate-950">Explore completed scenarios without setup</h3>
+        <p className="mt-1 text-sm leading-6 text-slate-600">Use these for hiring committees, deans, faculty reviewers, or beta walkthroughs. No login or generation required.</p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        {demos.map((demo) => (
+          <button key={demo.title} type="button" onClick={() => onLoadSample(demo)} className="rounded-md border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-300 hover:bg-blue-50">
+            <strong className="block text-sm text-slate-950">{demo.title}</strong>
+            <span className="mt-1 block text-xs leading-5 text-slate-600">{demo.description}</span>
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
@@ -3885,6 +4251,132 @@ function ProgramPathwayPreview({ steps }: { steps: string[] }) {
   );
 }
 
+function ProgramPathwayEditor({ nodes, onChange }: { nodes: PathwayNode[]; onChange: (nodes: PathwayNode[]) => void }) {
+  const updateNode = (id: string, patch: Partial<PathwayNode>) => {
+    onChange(nodes.map((node) => (node.id === id ? { ...node, ...patch } : node)));
+  };
+  const moveNode = (index: number, direction: -1 | 1) => {
+    const next = [...nodes];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  };
+
+  return (
+    <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h4 className="text-sm font-bold text-blue-950">Editable Program Pathway Designer</h4>
+          <p className="text-xs leading-5 text-blue-950">Add, remove, reorder, and label milestones before generation.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onChange([...nodes, { id: crypto.randomUUID(), label: 'New course or milestone', type: 'course' }])}
+          className="inline-flex min-h-9 items-center justify-center rounded-md bg-blue-700 px-3 text-xs font-bold text-white"
+        >
+          Add step
+        </button>
+      </div>
+      <div className="grid gap-3">
+        {nodes.map((node, index) => (
+          <div key={node.id} className="grid gap-2 rounded-md border border-blue-200 bg-white p-3 md:grid-cols-[1fr_150px_auto] md:items-center">
+            <input
+              value={node.label}
+              onChange={(event) => updateNode(node.id, { label: event.target.value })}
+              className="min-h-10 rounded-md border border-slate-300 px-3 text-sm"
+              aria-label={`Pathway step ${index + 1}`}
+            />
+            <select
+              value={node.type}
+              onChange={(event) => updateNode(node.id, { type: event.target.value as PathwayNode['type'] })}
+              className="min-h-10 rounded-md border border-slate-300 px-3 text-sm"
+              aria-label={`Pathway step ${index + 1} type`}
+            >
+              {['course', 'certificate', 'degree', 'certification', 'employment'].map((type) => <option key={type} value={type}>{labelFromValue(type)}</option>)}
+            </select>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => moveNode(index, -1)} className="rounded-md border border-slate-200 px-2 py-1 text-xs font-bold">Up</button>
+              <button type="button" onClick={() => moveNode(index, 1)} className="rounded-md border border-slate-200 px-2 py-1 text-xs font-bold">Down</button>
+              <button type="button" onClick={() => onChange(nodes.filter((item) => item.id !== node.id))} className="rounded-md border border-red-200 px-2 py-1 text-xs font-bold text-red-700">Remove</button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 grid gap-2 md:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
+        {nodes.map((node, index) => (
+          <div key={`preview-${node.id}`} className="flex items-center gap-2">
+            <div className="min-h-16 flex-1 rounded-md border border-blue-200 bg-white px-3 py-2 text-center text-sm font-bold leading-5 text-slate-950">
+              <span className="mb-1 block text-[11px] uppercase text-blue-800">{labelFromValue(node.type)}</span>
+              {node.label}
+            </div>
+            {index < nodes.length - 1 && <ChevronRight className="hidden h-5 w-5 flex-shrink-0 text-blue-700 md:block" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CourseSequenceEditor({ rows, onChange }: { rows: CourseSequenceRow[]; onChange: (rows: CourseSequenceRow[]) => void }) {
+  const updateRow = (id: string, patch: Partial<CourseSequenceRow>) => onChange(rows.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+  const fields: Array<[keyof CourseSequenceRow, string]> = [['term', 'Term'], ['code', 'Code'], ['title', 'Title'], ['credits', 'Credits'], ['prerequisites', 'Prereqs'], ['skills', 'Skills'], ['outcome', 'Outcome']];
+
+  return (
+    <div className="grid gap-3">
+      {rows.map((row) => (
+        <div key={row.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div className="grid gap-2 lg:grid-cols-7">
+            {fields.map(([field, label]) => (
+              <label key={field} className="grid gap-1">
+                <span className="text-[11px] font-bold uppercase text-slate-500">{label}</span>
+                <input value={row[field]} onChange={(event) => updateRow(row.id, { [field]: event.target.value })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm" />
+              </label>
+            ))}
+          </div>
+          <button type="button" onClick={() => onChange(rows.filter((item) => item.id !== row.id))} className="mt-2 rounded-md border border-red-200 px-2 py-1 text-xs font-bold text-red-700">Remove course</button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() => onChange([...rows, { id: crypto.randomUUID(), term: 'Term', code: 'AIT', title: 'New Course', credits: '3', prerequisites: 'TBD', skills: 'TBD', outcome: 'TBD' }])}
+        className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white"
+      >
+        Add course row
+      </button>
+    </div>
+  );
+}
+
+function OutcomeMatrixEditor({ rows, onChange }: { rows: OutcomeMatrixRow[]; onChange: (rows: OutcomeMatrixRow[]) => void }) {
+  const updateRow = (id: string, patch: Partial<OutcomeMatrixRow>) => onChange(rows.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+  const levels: OutcomeMatrixRow['level'][] = ['Introduced', 'Reinforced', 'Mastered', 'Assessed'];
+
+  return (
+    <div className="grid gap-3">
+      {rows.map((row) => (
+        <div key={row.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div className="grid gap-2 lg:grid-cols-[1.4fr_1fr_160px_1fr_1fr]">
+            <label className="grid gap-1"><span className="text-[11px] font-bold uppercase text-slate-500">Outcome</span><input value={row.outcome} onChange={(event) => updateRow(row.id, { outcome: event.target.value })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm" /></label>
+            <label className="grid gap-1"><span className="text-[11px] font-bold uppercase text-slate-500">Course</span><input value={row.course} onChange={(event) => updateRow(row.id, { course: event.target.value })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm" /></label>
+            <label className="grid gap-1"><span className="text-[11px] font-bold uppercase text-slate-500">Level</span><select value={row.level} onChange={(event) => updateRow(row.id, { level: event.target.value as OutcomeMatrixRow['level'] })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm">{levels.map((level) => <option key={level} value={level}>{level}</option>)}</select></label>
+            <label className="grid gap-1"><span className="text-[11px] font-bold uppercase text-slate-500">Assessment</span><input value={row.assessment} onChange={(event) => updateRow(row.id, { assessment: event.target.value })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm" /></label>
+            <label className="grid gap-1"><span className="text-[11px] font-bold uppercase text-slate-500">Notes</span><input value={row.notes} onChange={(event) => updateRow(row.id, { notes: event.target.value })} className="min-h-10 rounded-md border border-slate-300 px-2 text-sm" /></label>
+          </div>
+          <button type="button" onClick={() => onChange(rows.filter((item) => item.id !== row.id))} className="mt-2 rounded-md border border-red-200 px-2 py-1 text-xs font-bold text-red-700">Remove mapping</button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() => onChange([...rows, { id: crypto.randomUUID(), outcome: 'New program outcome', course: 'Course', level: 'Introduced', assessment: 'Assessment evidence', notes: 'Notes' }])}
+        className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white"
+      >
+        Add matrix row
+      </button>
+    </div>
+  );
+}
+
 function InStepSubsectionLayout({
   stepTitle,
   sections,
@@ -4509,9 +5001,12 @@ function GeneratedOutput({
   savedPackages,
   onLoadPackage,
   onDeletePackage,
+  onUpdatePackage,
+  onDuplicatePackage,
   onTrack,
   open,
   onOpenChange,
+  experienceMode,
 }: {
   isLoading: boolean;
   content: string;
@@ -4522,9 +5017,12 @@ function GeneratedOutput({
   savedPackages: SavedPackage[];
   onLoadPackage: (savedPackage: SavedPackage) => void;
   onDeletePackage: (id: string) => void;
+  onUpdatePackage: (id: string, patch: Partial<SavedPackage>) => void;
+  onDuplicatePackage: (savedPackage: SavedPackage) => void;
   onTrack: (event: string, mode?: BuilderMode, detail?: string) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  experienceMode: ExperienceMode;
 }) {
   const [exportStatus, setExportStatus] = useState('');
   const [activeRefinement, setActiveRefinement] = useState('');
@@ -4607,6 +5105,32 @@ function GeneratedOutput({
     ].join('\n'));
     setExportStatus(ok ? 'Bias and inclusivity review complete. Review the updated package below.' : 'Bias review did not complete. Try again with a smaller request.');
     window.setTimeout(() => setExportStatus(''), 5000);
+  };
+
+  const exportFacultyPortfolio = () => {
+    const portfolio = [
+      '# Faculty Candidate Portfolio: AI Technology Program Development',
+      '',
+      '## Candidate / Program Narrative',
+      'This portfolio demonstrates applied capability in AI curriculum development, program coordination, advisory board planning, CQI, workforce alignment, and institutional communication.',
+      '',
+      '## Included Evidence',
+      '- Program vision',
+      '- Proposed AI certificate pathway',
+      '- Sample course syllabus / course package',
+      '- Applied lab sample',
+      '- Program map',
+      '- Advisory board plan',
+      '- CQI plan',
+      '- Recruitment copy',
+      '- Dean approval narrative',
+      '',
+      '## Source Package',
+      content,
+    ].join('\n');
+    exportToHtml(portfolio, `Faculty-Candidate-Portfolio-${new Date().toISOString().slice(0, 10)}`, 'program_coordinator_packet');
+    setExportStatus('Faculty candidate portfolio exported as polished HTML.');
+    window.setTimeout(() => setExportStatus(''), 4000);
   };
 
   return (
@@ -4715,24 +5239,28 @@ function GeneratedOutput({
             disabled={!hasContent || isLoading}
             onClick={() => runExport('LMS assignment block copied.', () => copyToClipboard(buildLmsAssignmentCopy(content)))}
           />
-          <ExportButton
-            icon={BookOpen}
-            label="Markdown"
-            disabled={!hasContent || isLoading}
-            onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(content, filename))}
-          />
-          <ExportButton
-            icon={RefreshCw}
-            label="Fix Missing Pieces"
-            disabled={!hasContent || isLoading}
-            onClick={improveReadiness}
-          />
-          <ExportButton
-            icon={ScanSearch}
-            label="Bias Check"
-            disabled={!hasContent || isLoading}
-            onClick={checkBiasAndInclusivity}
-          />
+          {experienceMode === 'expert' && (
+            <>
+              <ExportButton
+                icon={BookOpen}
+                label="Markdown"
+                disabled={!hasContent || isLoading}
+                onClick={() => runExport('Markdown downloaded.', () => exportToMarkdown(content, filename))}
+              />
+              <ExportButton
+                icon={RefreshCw}
+                label="Fix Missing Pieces"
+                disabled={!hasContent || isLoading}
+                onClick={improveReadiness}
+              />
+              <ExportButton
+                icon={ScanSearch}
+                label="Bias Check"
+                disabled={!hasContent || isLoading}
+                onClick={checkBiasAndInclusivity}
+              />
+            </>
+          )}
           <ExportButton
             icon={Archive}
             label="Save"
@@ -4743,9 +5271,17 @@ function GeneratedOutput({
               window.setTimeout(() => setExportStatus(''), 3000);
             }}
           />
+          {activeMode === 'college-program' && (
+            <ExportButton
+              icon={GraduationCap}
+              label="Faculty Portfolio"
+              disabled={!hasContent || isLoading}
+              onClick={exportFacultyPortfolio}
+            />
+          )}
         </div>
       </div>
-      {hasContent && (
+      {hasContent && experienceMode === 'expert' && (
         <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 text-xs font-bold uppercase text-slate-600">Refine Package</div>
           <div className="flex flex-wrap gap-2">
@@ -4789,6 +5325,8 @@ function GeneratedOutput({
         savedPackages={savedPackages}
         onLoadPackage={onLoadPackage}
         onDeletePackage={onDeletePackage}
+        onUpdatePackage={onUpdatePackage}
+        onDuplicatePackage={onDuplicatePackage}
       />
         </div>
       )}
@@ -4801,14 +5339,23 @@ function SavedPackagesPanel({
   savedPackages,
   onLoadPackage,
   onDeletePackage,
+  onUpdatePackage,
+  onDuplicatePackage,
 }: {
   activeMode: BuilderMode;
   savedPackages: SavedPackage[];
   onLoadPackage: (savedPackage: SavedPackage) => void;
   onDeletePackage: (id: string) => void;
+  onUpdatePackage: (id: string, patch: Partial<SavedPackage>) => void;
+  onDuplicatePackage: (savedPackage: SavedPackage) => void;
 }) {
-  const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).slice(0, 6);
+  const visiblePackages = savedPackages.filter((savedPackage) => savedPackage.mode === activeMode).slice(0, 8);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+  const [compareOpen, setCompareOpen] = useState(false);
+  const latest = visiblePackages[0];
+  const previous = visiblePackages[1];
 
   return (
     <section className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -4820,17 +5367,39 @@ function SavedPackagesPanel({
             <p className="text-xs text-slate-600">Saved in this browser for quick reuse and revision.</p>
           </div>
         </div>
-        <span className="rounded-md bg-white px-2 py-1 text-xs font-bold text-slate-600">{visiblePackages.length}</span>
+        <button
+          type="button"
+          onClick={() => setCompareOpen((current) => !current)}
+          disabled={!latest || !previous}
+          className="rounded-md bg-white px-2 py-1 text-xs font-bold text-slate-600 disabled:opacity-50"
+        >
+          {visiblePackages.length} saved
+        </button>
       </div>
+      {compareOpen && latest && previous && (
+        <div className="mb-3 rounded-md border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-700">
+          <strong className="block text-slate-950">Latest vs previous</strong>
+          <span>{latest.title} v{latest.version ?? 1} compared with {previous.title} v{previous.version ?? 1}. Length changed from {previous.content.length.toLocaleString()} to {latest.content.length.toLocaleString()} characters.</span>
+        </div>
+      )}
       {visiblePackages.length > 0 ? (
         <div className="grid gap-2 lg:grid-cols-2">
           {visiblePackages.map((savedPackage) => (
             <div key={savedPackage.id} className="rounded-md border border-slate-200 bg-white p-3">
               <div className="flex items-center justify-between gap-3">
-              <button type="button" onClick={() => onLoadPackage(savedPackage)} className="min-w-0 flex-1 text-left">
-                <strong className="block truncate text-sm text-slate-950">{savedPackage.title}</strong>
-                <span className="text-xs text-slate-500">{savedPackage.status} - {new Date(savedPackage.createdAt).toLocaleString()}</span>
-              </button>
+              <div className="min-w-0 flex-1">
+                {renamingId === savedPackage.id ? (
+                  <div className="flex gap-2">
+                    <input value={renameValue} onChange={(event) => setRenameValue(event.target.value)} className="min-h-9 flex-1 rounded-md border border-slate-300 px-2 text-sm" />
+                    <button type="button" onClick={() => { onUpdatePackage(savedPackage.id, { title: renameValue.trim() || savedPackage.title }); setRenamingId(null); }} className="rounded-md bg-blue-700 px-2 text-xs font-bold text-white">Save</button>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => onLoadPackage(savedPackage)} className="min-w-0 text-left">
+                    <strong className="block truncate text-sm text-slate-950">{savedPackage.title}</strong>
+                    <span className="text-xs text-slate-500">v{savedPackage.version ?? 1} - {savedPackage.status} - {new Date(savedPackage.createdAt).toLocaleString()}</span>
+                  </button>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setPendingDeleteId(savedPackage.id)}
@@ -4876,6 +5445,23 @@ function SavedPackagesPanel({
                 </button>
                 <button
                   type="button"
+                  onClick={() => {
+                    setRenamingId(savedPackage.id);
+                    setRenameValue(savedPackage.title);
+                  }}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  Rename
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDuplicatePackage(savedPackage)}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  Duplicate
+                </button>
+                <button
+                  type="button"
                   onClick={() => exportToHtml(savedPackage.content, packageFilename(savedPackage), exportTemplateForMode(savedPackage.mode))}
                   className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
                 >
@@ -4887,6 +5473,13 @@ function SavedPackagesPanel({
                   className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
                 >
                   Markdown
+                </button>
+                <button
+                  type="button"
+                  onClick={() => printFormattedDocument(savedPackage.content, packageFilename(savedPackage), exportTemplateForMode(savedPackage.mode))}
+                  className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+                >
+                  PDF
                 </button>
                 <button
                   type="button"
@@ -4921,6 +5514,13 @@ function exportTemplateForMode(mode: BuilderMode): CopyTemplate {
   if (mode === 'college-course') return 'college_syllabus_packet';
   if (mode === 'college-program') return 'program_coordinator_packet';
   return 'teacher_lesson_deck';
+}
+
+function getNextVersion(packages: SavedPackage[], mode: BuilderMode, title: string): number {
+  const matchingVersions = packages
+    .filter((savedPackage) => savedPackage.mode === mode && savedPackage.title.replace(/\s+Copy$/, '') === title.replace(/\s+Copy$/, ''))
+    .map((savedPackage) => savedPackage.version ?? 1);
+  return matchingVersions.length > 0 ? Math.max(...matchingVersions) + 1 : 1;
 }
 
 function PackageReadiness({ checks }: { checks: ReadinessResult[] }) {
