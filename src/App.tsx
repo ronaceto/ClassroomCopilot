@@ -1436,6 +1436,7 @@ function App() {
   const [highContrast, setHighContrast] = useState(false);
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
   const [loadedPackageContent, setLoadedPackageContent] = useState('');
+  const [simpleBrief, setSimpleBrief] = useState('');
   const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
   const [betaEvents, setBetaEvents] = useState<BetaEvent[]>(() => loadBetaEvents());
   const [betaFeedback, setBetaFeedback] = useState<BetaFeedback[]>(() => loadBetaFeedback());
@@ -1462,6 +1463,55 @@ function App() {
     trackBetaEvent('refinement_requested', activeMode, prompt.slice(0, 72));
     setGlobalAction('Refining package');
     return sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
+  };
+
+  const handleSimpleBriefBuild = (brief: string) => {
+    if (isLoading) return;
+    const cleanBrief = brief.trim();
+    if (!cleanBrief) return;
+
+    const lower = cleanBrief.toLowerCase();
+    const nextMode: BuilderMode =
+      lower.includes('program') || lower.includes('certificate') || lower.includes('degree') || lower.includes('advisory') || lower.includes('accreditation') || lower.includes('dean') || lower.includes('recruit')
+        ? 'college-program'
+        : lower.includes('course') || lower.includes('syllabus') || lower.includes('college') || lower.includes('faculty')
+          ? 'college-course'
+          : 'curriculum-pack';
+    const nextRole: UserRole = nextMode === 'college-program' ? 'program_coordinator' : nextMode === 'college-course' ? 'college_faculty' : 'k12_teacher';
+    const nextGoal: BuildGoal = nextMode === 'college-program' ? 'program' : nextMode === 'college-course' ? 'course' : 'lesson';
+
+    setActiveMode(nextMode);
+    setSelectedRole(nextRole);
+    setSelectedGoal(nextGoal);
+    localStorage.setItem('classroomCopilot.role.v1', nextRole);
+    localStorage.setItem('classroomCopilot.goal.v1', nextGoal);
+    trackBetaEvent('simple_brief_build_started', nextMode, cleanBrief.slice(0, 120));
+    setGlobalAction('Generating content');
+    setReviewOpen(true);
+    setLoadedPackageContent('');
+    clearChat();
+
+    const config: ClassroomConfig = {
+      ...baseConfig,
+      subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : 'AI Literacy',
+      grades: nextMode === 'curriculum-pack' ? '10' : 'College intro',
+      standards: { type: nextMode === 'curriculum-pack' ? 'ISTE' : 'Institutional outcomes' },
+      outputDepth: 'Detailed',
+    };
+
+    const prompt = [
+      'Build the best Classroom Copilot package for this educator request.',
+      '',
+      `Educator request: ${cleanBrief}`,
+      '',
+      'Infer whether this should be a K-12 lesson pack, college course packet, or college program proposal. Do not ask follow-up questions.',
+      'Use sensible defaults and clearly state any assumptions in a short Assumptions line.',
+      'The output must feel polished and useful, not like a menu of possible features.',
+      'Return one complete share-ready draft with a title block, concise summary, clean headings, compact tables where helpful, and export-ready language.',
+      'Include only the materials needed for the request. Keep AI-use guardrails, privacy, accessibility, assessment evidence, and implementation notes practical and concise.',
+    ].join('\n');
+
+    void sendMessage([prompt, buildSimpleOutputPrompt()].join('\n\n'), 'teacher', config);
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
@@ -1753,6 +1803,37 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        {experienceMode === 'simple' ? (
+          <>
+            <SimpleBriefBuilder
+              brief={simpleBrief}
+              onBriefChange={setSimpleBrief}
+              isLoading={isLoading}
+              onBuild={handleSimpleBriefBuild}
+              onUseExpert={() => setExperienceMode('expert')}
+            />
+            {(generatedContent || isLoading) && (
+              <GeneratedOutput
+                isLoading={isLoading}
+                content={generatedContent}
+                activeMode={activeMode}
+                emptyTitle="Your package will appear here"
+                onImprove={handleImprove}
+                onSave={saveCurrentPackage}
+                savedPackages={savedPackages}
+                onLoadPackage={loadPackage}
+                onDeletePackage={deletePackage}
+                onUpdatePackage={updatePackage}
+                onDuplicatePackage={duplicatePackage}
+                onTrack={trackBetaEvent}
+                open={reviewOpen}
+                onOpenChange={setReviewOpen}
+                experienceMode={experienceMode}
+              />
+            )}
+          </>
+        ) : (
+        <>
         {selectedRole && selectedGoal && experienceMode === 'expert' && (
         <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
@@ -1843,6 +1924,8 @@ function App() {
           />
         )}
           </>
+        )}
+        </>
         )}
       </main>
 
@@ -3062,6 +3145,78 @@ function WorkspaceLaunchBar({
           )}
         </div>
       )}
+    </section>
+  );
+}
+
+function SimpleBriefBuilder({
+  brief,
+  onBriefChange,
+  isLoading,
+  onBuild,
+  onUseExpert,
+}: {
+  brief: string;
+  onBriefChange: (value: string) => void;
+  isLoading: boolean;
+  onBuild: (brief: string) => void;
+  onUseExpert: () => void;
+}) {
+  const examples = [
+    'Create a 60-minute Grade 10 AI literacy lesson on evaluating AI outputs.',
+    'Build an Introduction to AI college course with labs, syllabus, assignments, and ethics policy.',
+    'Create an AI Technology certificate program proposal with pathway, outcomes, advisory board plan, CQI, and recruitment copy.',
+  ];
+
+  return (
+    <section className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <div className="max-w-3xl">
+        <p className="text-xs font-bold uppercase text-blue-800">Classroom Copilot</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">What do you want to build?</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Describe the package in plain English. The app will choose the right format and generate a polished draft.
+        </p>
+      </div>
+
+      <label className="mt-6 block">
+        <span className="sr-only">Describe what you want to build</span>
+        <textarea
+          value={brief}
+          onChange={(event) => onBriefChange(event.target.value)}
+          placeholder="Example: Create a 5-day AI literacy mini-unit for Grade 10 with activities, rubric, slides, and teacher guardrails."
+          rows={6}
+          className="w-full rounded-xl border border-slate-300 bg-slate-50 p-4 text-base leading-7 text-slate-950 shadow-inner focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+        />
+      </label>
+
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          onClick={() => onBuild(brief)}
+          disabled={isLoading || !brief.trim()}
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Sparkles className="h-4 w-4" />
+          {isLoading ? 'Building...' : 'Build Package'}
+        </button>
+        <button type="button" onClick={onUseExpert} className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700">
+          Advanced setup
+        </button>
+      </div>
+
+      <div className="mt-6 grid gap-2">
+        <p className="text-xs font-bold uppercase text-slate-500">Examples</p>
+        {examples.map((example) => (
+          <button
+            key={example}
+            type="button"
+            onClick={() => onBriefChange(example)}
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-sm leading-6 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-900"
+          >
+            {example}
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
