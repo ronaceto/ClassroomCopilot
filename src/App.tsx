@@ -1413,15 +1413,49 @@ const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
     'Keep all student data privacy language de-identified. Do not ask educators to upload protected student details. Use practical teacher-ready language instead of technical integration promises.',
   ].join('\n');
 
-const buildSimpleOutputPrompt = (): string =>
-  [
+const buildSimpleOutputPrompt = (request = ''): string => {
+  const lower = request.toLowerCase();
+  const isPresentation = /\b(presentation|slides?|slide deck|deck|powerpoint|ppt)\b/.test(lower);
+  const isEarlyElementary = /\b(1st|first grade|grade 1|kindergarten|kinder|2nd|second grade|grade 2)\b/.test(lower);
+  return [
     'Simple Mode output requirements:',
-    'Create a focused first draft, not an exhaustive master package.',
-    'Target 500-750 words.',
-    'Use only these headings: ## Snapshot, ## Ready-to-Use Plan, ## Student Materials, ## Assessment, ## AI Guardrails, ## Export Notes.',
+    'Create a focused but substantive first draft, not a thin summary and not an exhaustive master package.',
+    'Target 900-1300 words when the request asks for a presentation, course, program proposal, or full lesson. Use less only for explicitly small artifacts.',
+    'Use only the headings needed for the request. Good defaults are: ## Snapshot, ## Ready-to-Use Plan, ## Student Materials, ## Assessment, ## AI Guardrails, ## Export Notes.',
     'Use concise bullets and one compact table only if it helps.',
+    'Never include placeholder text such as "add speaker notes here" or "insert activity here." Provide the actual teacher-ready content.',
     'Do not include unrelated CQI, LMS, community, analytics, accreditation, or advisory sections unless the user explicitly asks for them.',
-  ].join('\n');
+    isPresentation
+      ? 'For presentation or slide-deck requests, include a ## Slide Deck section with 8-12 slides formatted as separate markdown subheadings: ### Slide 1: Title, ### Slide 2: Title, etc. For each slide include: child/student-facing text, teacher talk track, visual suggestion, and one quick interaction or check for understanding. Also include a 60-minute pacing plan when a time is given.'
+      : '',
+    isEarlyElementary
+      ? 'For K-2 learners, use concrete age-appropriate language, no prior-knowledge assumptions, short vocabulary, movement/talk/draw interactions, and simple Remember/Describe/Share outcomes instead of advanced Bloom labels like Analyze.'
+      : '',
+  ].filter(Boolean).join('\n');
+};
+
+const inferSimpleGradeConfig = (request: string): Pick<ClassroomConfig, 'level' | 'grades' | 'readingLevel'> => {
+  const lower = request.toLowerCase();
+  if (/\b(kindergarten|kinder|prek|pre-k)\b/.test(lower)) return { level: 'Elementary', grades: 'Kindergarten', readingLevel: 1 };
+  const gradeMatch = lower.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s*(?:grade|graders?)\b/) || lower.match(/\bgrade\s*(\d{1,2})\b/);
+  const grade = gradeMatch ? Number.parseInt(gradeMatch[1], 10) : null;
+  if (grade && grade <= 5) return { level: 'Elementary', grades: String(grade), readingLevel: Math.max(1, grade) };
+  if (grade && grade <= 8) return { level: 'Middle', grades: String(grade), readingLevel: grade };
+  if (grade && grade <= 12) return { level: 'High', grades: String(grade), readingLevel: grade };
+  if (/\b(1st|first graders?|first grade)\b/.test(lower)) return { level: 'Elementary', grades: '1', readingLevel: 1 };
+  if (/\b(2nd|second graders?|second grade)\b/.test(lower)) return { level: 'Elementary', grades: '2', readingLevel: 2 };
+  return { level: 'High', grades: '10', readingLevel: 10 };
+};
+
+const inferSimpleSubject = (request: string): string => {
+  const lower = request.toLowerCase();
+  if (/\b(george washington|president|american history|history|civil war|revolution|government|civics)\b/.test(lower)) return 'Social Studies';
+  if (/\b(reading|writing|ela|english|story|literacy)\b/.test(lower)) return 'ELA';
+  if (/\b(math|addition|subtraction|multiplication|division|fractions?|geometry)\b/.test(lower)) return 'Math';
+  if (/\b(science|animals?|plants?|weather|space|forces?|matter|ecosystem)\b/.test(lower)) return 'Science';
+  if (/\b(computer science|coding|python|programming)\b/.test(lower)) return 'Computer Science';
+  return 'AI Literacy';
+};
 
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
@@ -1455,7 +1489,7 @@ function App() {
     setReviewOpen(true);
     setLoadedPackageContent('');
     clearChat();
-    const outputPrompt = experienceMode === 'expert' ? buildFinishLinePrompt(finishLineSettings) : buildSimpleOutputPrompt();
+    const outputPrompt = experienceMode === 'expert' ? buildFinishLinePrompt(finishLineSettings) : buildSimpleOutputPrompt(prompt);
     void sendMessage([prompt, outputPrompt].join('\n\n'), 'teacher', config);
   };
 
@@ -1492,11 +1526,14 @@ function App() {
     setLoadedPackageContent('');
     clearChat();
 
+    const inferredGrade = nextMode === 'curriculum-pack'
+      ? inferSimpleGradeConfig(cleanBrief)
+      : { level: 'High' as const, grades: 'College intro', readingLevel: 12 };
     const config: ClassroomConfig = {
       ...baseConfig,
-      subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : 'AI Literacy',
-      grades: nextMode === 'curriculum-pack' ? '10' : 'College intro',
-      standards: nextMode === 'curriculum-pack' ? { type: 'ISTE' } : { type: 'Custom', customText: 'Institutional outcomes' },
+      ...inferredGrade,
+      subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : inferSimpleSubject(cleanBrief),
+      standards: nextMode === 'curriculum-pack' ? { type: 'Custom', customText: 'Inferred age-appropriate classroom outcomes' } : { type: 'Custom', customText: 'Institutional outcomes' },
       outputDepth: 'Quick',
     };
 
@@ -1512,7 +1549,7 @@ function App() {
       'Include only the materials needed for the request. Keep AI-use guardrails, privacy, accessibility, assessment evidence, and implementation notes practical and concise.',
     ].join('\n');
 
-    void sendMessage([prompt, buildSimpleOutputPrompt()].join('\n\n'), 'teacher', config);
+    void sendMessage([prompt, buildSimpleOutputPrompt(cleanBrief)].join('\n\n'), 'teacher', config);
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');

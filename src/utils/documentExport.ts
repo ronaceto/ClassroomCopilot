@@ -158,9 +158,10 @@ export const exportToPptx = async (content: string, filename: string, template: 
   };
 
   const sections = splitIntoSections(content);
-  addTitleSlide(pptx, filename, sections[0]?.title ?? 'Generated Package', template);
+  const contentSections = sections.filter((section) => section.lines.length > 0);
+  addTitleSlide(pptx, filename, contentSections[0]?.title ?? sections[0]?.title ?? 'Generated Package', template);
 
-  sections.slice(0, 14).forEach((section) => {
+  contentSections.slice(0, 14).forEach((section) => {
     addContentSlide(pptx, section.title, section.lines, template);
   });
   addFacilitationSlide(pptx, template);
@@ -510,10 +511,7 @@ const addContentSlide = (
   slide.addText(templateLabels[template], { x: 9.8, y: 6.95, w: 2.8, h: 0.25, fontSize: 9, color: '64748B', align: 'right', margin: 0 });
   slide.addShape(pptx.ShapeType.line, { x: 0.6, y: 1.15, w: 12.1, h: 0, line: { color: 'BFDBFE', width: 1.5 } });
 
-  if (bullets.length === 0) {
-    slide.addText('Add speaker notes or activities here.', { x: 0.8, y: 1.65, w: 11.6, h: 0.4, fontSize: 18, color: '475569', margin: 0 });
-    return;
-  }
+  if (bullets.length === 0) return;
 
   slide.addText(
     bullets.map((line) => ({ text: line, options: { bullet: { type: 'ul' } } })),

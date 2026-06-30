@@ -1,8 +1,8 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 const OPENAI_MAX_TOKENS = Number.parseInt(process.env.OPENAI_MAX_TOKENS || '2200', 10);
-const OPENAI_TIMEOUT_MS = Number.parseInt(process.env.OPENAI_TIMEOUT_MS || '24000', 10);
-const FUNCTION_VERSION = 'curriculum-builder-2026-06-30-simple-quick';
+const OPENAI_TIMEOUT_MS = Number.parseInt(process.env.OPENAI_TIMEOUT_MS || '30000', 10);
+const FUNCTION_VERSION = 'curriculum-builder-2026-06-30-substantive-simple';
 
 // System prompts
 const TEACHER_SYSTEM_PROMPT = `You are "Classroom Copilot — Teacher Mode," a friendly, seasoned instructional designer. Produce ready-to-use classroom materials that are accurate, age-appropriate, and aligned with the configuration provided. Use clear sections and checklists. Prefer concrete examples over abstractions. If a standard set is selected, list exact codes when supplied; if inferring, state "inferred" and be conservative. Include differentiation as toggled (ELL, IEP/504, extension). Never fabricate citations or sources. Keep tone conversational and practical for a busy teacher. When asked for assessments, generate varied item types and include answer keys. If the user shares proprietary content, keep it in-session only.`;
@@ -138,7 +138,7 @@ exports.handler = async (event, context) => {
       ...messages.filter(m => m.role !== 'system')
     ];
     const requestedMaxTokens = config.outputDepth === 'Quick'
-      ? 900
+      ? 1500
       : config.outputDepth === 'Standard'
         ? 1500
         : (Number.isFinite(OPENAI_MAX_TOKENS) ? OPENAI_MAX_TOKENS : 2200);
