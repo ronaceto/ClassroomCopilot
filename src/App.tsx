@@ -1416,10 +1416,11 @@ const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
 const buildSimpleOutputPrompt = (): string =>
   [
     'Simple Mode output requirements:',
-    'Prioritize a polished, share-ready package over exhaustive feature coverage.',
-    'Use a title block, a short package summary, clear section headings, concise bullets, and compact tables where useful.',
-    'Avoid long generic explanations. Include only the sections needed for the selected package to be useful immediately.',
-    'Keep privacy, AI-use guardrails, accessibility, and educator review language, but do not add unrelated CQI, LMS, community, analytics, or accreditation sections unless the selected output specifically asks for them.',
+    'Create a focused first draft, not an exhaustive master package.',
+    'Target 500-750 words.',
+    'Use only these headings: ## Snapshot, ## Ready-to-Use Plan, ## Student Materials, ## Assessment, ## AI Guardrails, ## Export Notes.',
+    'Use concise bullets and one compact table only if it helps.',
+    'Do not include unrelated CQI, LMS, community, analytics, accreditation, or advisory sections unless the user explicitly asks for them.',
   ].join('\n');
 
 function App() {
@@ -1495,19 +1496,19 @@ function App() {
       ...baseConfig,
       subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : 'AI Literacy',
       grades: nextMode === 'curriculum-pack' ? '10' : 'College intro',
-      standards: { type: nextMode === 'curriculum-pack' ? 'ISTE' : 'Institutional outcomes' },
-      outputDepth: 'Detailed',
+      standards: nextMode === 'curriculum-pack' ? { type: 'ISTE' } : { type: 'Custom', customText: 'Institutional outcomes' },
+      outputDepth: 'Quick',
     };
 
     const prompt = [
-      'Build the best Classroom Copilot package for this educator request.',
+      'Build a focused first-draft Classroom Copilot package for this educator request.',
       '',
       `Educator request: ${cleanBrief}`,
       '',
       'Infer whether this should be a K-12 lesson pack, college course packet, or college program proposal. Do not ask follow-up questions.',
       'Use sensible defaults and clearly state any assumptions in a short Assumptions line.',
       'The output must feel polished and useful, not like a menu of possible features.',
-      'Return one complete share-ready draft with a title block, concise summary, clean headings, compact tables where helpful, and export-ready language.',
+      'Keep the draft compact enough to generate quickly. The user can refine or expand after the first successful draft.',
       'Include only the materials needed for the request. Keep AI-use guardrails, privacy, accessibility, assessment evidence, and implementation notes practical and concise.',
     ].join('\n');
 

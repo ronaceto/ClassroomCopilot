@@ -189,13 +189,6 @@ export const useChat = () => {
       });
       console.error('Chat error:', err);
 
-      // Add error message to chat
-      const errorChatMessage: ChatMessage = {
-        role: 'assistant',
-        content: `I apologize, but I encountered an error: ${errorMessage}. Please try again or simplify your request.`,
-        timestamp: Date.now()
-      };
-      setMessages(prev => [...prev, errorChatMessage]);
       return false;
     } finally {
       setIsLoading(false);
