@@ -1753,7 +1753,7 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        {selectedRole && selectedGoal && (
+        {selectedRole && selectedGoal && experienceMode === 'expert' && (
         <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase text-blue-800">Workspace mode</p>
@@ -1816,11 +1816,11 @@ function App() {
         )}
 
         {activeMode === 'curriculum-pack' ? (
-          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} loadedSample={loadedSample} experienceMode={experienceMode} />
+          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} loadedSample={loadedSample} experienceMode={experienceMode} onUseExpert={() => setExperienceMode('expert')} onChangePackage={resetOnboarding} />
         ) : activeMode === 'college-course' ? (
-          <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} />
+          <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} onUseExpert={() => setExperienceMode('expert')} onChangePackage={resetOnboarding} />
         ) : (
-          <CollegeProgramBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} />
+          <CollegeProgramBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} onUseExpert={() => setExperienceMode('expert')} onChangePackage={resetOnboarding} />
         )}
 
         {(generatedContent || isLoading || experienceMode === 'expert') && (
@@ -1898,11 +1898,15 @@ function CurriculumPackBuilder({
   onBuild,
   loadedSample,
   experienceMode,
+  onUseExpert,
+  onChangePackage,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
   loadedSample: SamplePackage | null;
   experienceMode: ExperienceMode;
+  onUseExpert: () => void;
+  onChangePackage: () => void;
 }) {
   const draft = useMemo(() => loadCurriculumDraft(), []);
   const [activeStep, setActiveStep] = useState(0);
@@ -2339,13 +2343,13 @@ function CurriculumPackBuilder({
           ['AI access', selectedAccess?.label ?? labelFromValue(settings.studentAiAccessLevel)],
           ['Output', selectedPack.label],
         ]}
+        onUseExpert={onUseExpert}
+        onChangePackage={onChangePackage}
         customizeHint="Switch to Expert Mode for standards, prompt library, rubric focus, source uploads, and policy details."
       >
         <FieldGrid>
           <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} />
           <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Art / Media', 'CTE', 'Computer Science', 'Career Readiness'])} />
-          <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} />
-          <SelectField label="AI access" value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
           <SelectField label="Output" value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} />
         </FieldGrid>
       </QuickBuildFrame>
@@ -2383,10 +2387,14 @@ function CollegeCourseBuilder({
   isLoading,
   onBuild,
   experienceMode,
+  onUseExpert,
+  onChangePackage,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
   experienceMode: ExperienceMode;
+  onUseExpert: () => void;
+  onChangePackage: () => void;
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
@@ -2561,6 +2569,8 @@ function CollegeCourseBuilder({
           ['Delivery', settings.deliveryFormat],
           ['Output', selectedOutput.label],
         ]}
+        onUseExpert={onUseExpert}
+        onChangePackage={onChangePackage}
         customizeHint="Switch to Expert Mode for prerequisites, lab cadence, final project, source notes, CQI, and advisory-board details."
       >
         <div className="grid gap-4">
@@ -2574,8 +2584,6 @@ function CollegeCourseBuilder({
           </label>
           <FieldGrid>
             <SelectField label="Delivery" value={settings.deliveryFormat} onChange={(value) => updateSetting('deliveryFormat', value)} options={toSelectOptions(['Face-to-face', 'Online', 'Hybrid', 'HyFlex'])} />
-            <SelectField label="Term" value={settings.termLength} onChange={(value) => updateSetting('termLength', value)} options={toSelectOptions(['8 weeks', '10 weeks', '12 weeks', '15 weeks', '16 weeks'])} />
-            <SelectField label="Coding" value={settings.codingIntensity} onChange={(value) => updateSetting('codingIntensity', value)} options={toSelectOptions(['No-code orientation', 'Beginner Python', 'Intermediate Python', 'Python + notebooks'])} />
             <SelectField label="Output" value={settings.outputPreset} onChange={(value) => updateSetting('outputPreset', value)} options={outputOptions} />
           </FieldGrid>
         </div>
@@ -2618,10 +2626,14 @@ function CollegeProgramBuilder({
   isLoading,
   onBuild,
   experienceMode,
+  onUseExpert,
+  onChangePackage,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
   experienceMode: ExperienceMode;
+  onUseExpert: () => void;
+  onChangePackage: () => void;
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
@@ -2856,6 +2868,8 @@ function CollegeProgramBuilder({
           ['Pathway', settings.pathwayModel],
           ['Output', selectedProgramOutput.label],
         ]}
+        onUseExpert={onUseExpert}
+        onChangePackage={onChangePackage}
         customizeHint="Switch to Expert Mode for visual pathway editing, course sequence rows, outcome matrix, CQI center, advisory-board details, and recruitment assets."
       >
         <div className="grid gap-4">
@@ -2869,8 +2883,6 @@ function CollegeProgramBuilder({
           </label>
           <FieldGrid>
             <SelectField label="Credential" value={settings.credentialType} onChange={(value) => updateSetting('credentialType', value)} options={toSelectOptions(['Technical certificate', 'AAS degree', 'Technical certificate + AAS pathway', 'Noncredit workforce certificate', 'Dual enrollment pathway'])} />
-            <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} />
-            <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(Object.keys(programPathwayTemplates))} />
             <SelectField label="Output" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={programPlatformOutputOptions} />
           </FieldGrid>
         </div>
@@ -4377,6 +4389,8 @@ function QuickBuildFrame({
   onBuild,
   summary,
   customizeHint,
+  onUseExpert,
+  onChangePackage,
   children,
 }: {
   eyebrow: string;
@@ -4387,6 +4401,8 @@ function QuickBuildFrame({
   onBuild: () => void;
   summary: Array<[string, string]>;
   customizeHint: string;
+  onUseExpert: () => void;
+  onChangePackage: () => void;
   children: React.ReactNode;
 }) {
   return (
@@ -4408,21 +4424,25 @@ function QuickBuildFrame({
         </button>
       </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-4">
-        {summary.map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <span className="block text-xs font-bold uppercase text-slate-500">{label}</span>
-            <strong className="mt-1 block text-sm leading-5 text-slate-950">{value}</strong>
-          </div>
-        ))}
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
+        <span className="font-bold text-slate-950">Using defaults:</span>{' '}
+        {summary.map(([label, value]) => `${label}: ${value}`).join(' / ')}
       </div>
 
       <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
         {children}
       </div>
 
-      <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
-        <strong>Want the full control panel?</strong> {customizeHint}
+      <div className="mt-4 flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+        <span className="leading-6 text-slate-500">{customizeHint}</span>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={onChangePackage} className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700">
+            Change package
+          </button>
+          <button type="button" onClick={onUseExpert} className="inline-flex min-h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700">
+            Advanced setup
+          </button>
+        </div>
       </div>
     </section>
   );
