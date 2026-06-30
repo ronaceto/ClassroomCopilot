@@ -1679,18 +1679,20 @@ function App() {
             >
               Help
             </button>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen((current) => !current)}
-              className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
-              aria-expanded={mobileMenuOpen}
-              aria-label="Open builder menu"
-            >
-              <Menu className="h-4 w-4" />
-            </button>
+            {selectedRole && selectedGoal && experienceMode === 'expert' && (
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((current) => !current)}
+                className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+                aria-expanded={mobileMenuOpen}
+                aria-label="Open builder menu"
+              >
+                <Menu className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
-          {selectedRole && selectedGoal && (
+          {selectedRole && selectedGoal && experienceMode === 'expert' && (
           <nav className="hidden grid-cols-3 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1 lg:grid" aria-label="Builder modes">
             {modes.map((mode) => {
               const Icon = mode.icon;
@@ -1720,12 +1722,12 @@ function App() {
           <button
             type="button"
             onClick={() => setTrustOpen(true)}
-            className="hidden min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 lg:inline-flex"
+            className={`min-h-10 items-center justify-center rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 ${experienceMode === 'expert' ? 'hidden lg:inline-flex' : 'hidden'}`}
           >
             Trust
           </button>
         </div>
-        {mobileMenuOpen && (
+        {mobileMenuOpen && experienceMode === 'expert' && (
           <nav className="mx-auto mt-3 grid max-w-7xl gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 lg:hidden" aria-label="Mobile builder modes">
             {modes.map((mode) => {
               const Icon = mode.icon;
@@ -1789,53 +1791,57 @@ function App() {
           />
         ) : (
           <>
-        <WorkspaceLaunchBar
-          activeMode={activeMode}
-          experienceMode={experienceMode}
-          events={betaEvents}
-          feedback={betaFeedback}
-          fontScale={fontScale}
-          onFontScaleChange={setFontScale}
-          highContrast={highContrast}
-          onHighContrastChange={setHighContrast}
-          finishLineSettings={finishLineSettings}
-          onFinishLineChange={updateFinishLineSetting}
-          onLoadSample={loadSample}
-          onOpenFeedback={() => {
-            trackBetaEvent('feedback_drawer_opened', activeMode, 'workspace launch bar');
-            setFeedbackOpen(true);
-          }}
-          onOpenHelp={() => openHelpCenter('workspace launch bar')}
-          onOpenTour={() => setTourOpen(true)}
-          selectedRole={selectedRole}
-          selectedGoal={selectedGoal}
-        />
-
-        {activeMode === 'curriculum-pack' ? (
-          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} loadedSample={loadedSample} />
-        ) : activeMode === 'college-course' ? (
-          <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} />
-        ) : (
-          <CollegeProgramBuilder isLoading={isLoading} onBuild={handleBuild} />
+        {experienceMode === 'expert' && (
+          <WorkspaceLaunchBar
+            activeMode={activeMode}
+            experienceMode={experienceMode}
+            events={betaEvents}
+            feedback={betaFeedback}
+            fontScale={fontScale}
+            onFontScaleChange={setFontScale}
+            highContrast={highContrast}
+            onHighContrastChange={setHighContrast}
+            finishLineSettings={finishLineSettings}
+            onFinishLineChange={updateFinishLineSetting}
+            onLoadSample={loadSample}
+            onOpenFeedback={() => {
+              trackBetaEvent('feedback_drawer_opened', activeMode, 'workspace launch bar');
+              setFeedbackOpen(true);
+            }}
+            onOpenHelp={() => openHelpCenter('workspace launch bar')}
+            onOpenTour={() => setTourOpen(true)}
+            selectedRole={selectedRole}
+            selectedGoal={selectedGoal}
+          />
         )}
 
-        <GeneratedOutput
-          isLoading={isLoading}
-          content={generatedContent}
-          activeMode={activeMode}
-          emptyTitle={activeMode === 'curriculum-pack' ? 'Your curriculum pack will appear here' : activeMode === 'college-course' ? 'Your course package will appear here' : 'Your program package will appear here'}
-          onImprove={handleImprove}
-          onSave={saveCurrentPackage}
-          savedPackages={savedPackages}
-          onLoadPackage={loadPackage}
-          onDeletePackage={deletePackage}
-          onUpdatePackage={updatePackage}
-          onDuplicatePackage={duplicatePackage}
-          onTrack={trackBetaEvent}
-          open={reviewOpen}
-          onOpenChange={setReviewOpen}
-          experienceMode={experienceMode}
-        />
+        {activeMode === 'curriculum-pack' ? (
+          <CurriculumPackBuilder isLoading={isLoading} onBuild={handleBuild} loadedSample={loadedSample} experienceMode={experienceMode} />
+        ) : activeMode === 'college-course' ? (
+          <CollegeCourseBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} />
+        ) : (
+          <CollegeProgramBuilder isLoading={isLoading} onBuild={handleBuild} experienceMode={experienceMode} />
+        )}
+
+        {(generatedContent || isLoading || experienceMode === 'expert') && (
+          <GeneratedOutput
+            isLoading={isLoading}
+            content={generatedContent}
+            activeMode={activeMode}
+            emptyTitle={activeMode === 'curriculum-pack' ? 'Your curriculum pack will appear here' : activeMode === 'college-course' ? 'Your course package will appear here' : 'Your program package will appear here'}
+            onImprove={handleImprove}
+            onSave={saveCurrentPackage}
+            savedPackages={savedPackages}
+            onLoadPackage={loadPackage}
+            onDeletePackage={deletePackage}
+            onUpdatePackage={updatePackage}
+            onDuplicatePackage={duplicatePackage}
+            onTrack={trackBetaEvent}
+            open={reviewOpen}
+            onOpenChange={setReviewOpen}
+            experienceMode={experienceMode}
+          />
+        )}
           </>
         )}
       </main>
@@ -1891,10 +1897,12 @@ function CurriculumPackBuilder({
   isLoading,
   onBuild,
   loadedSample,
+  experienceMode,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
   loadedSample: SamplePackage | null;
+  experienceMode: ExperienceMode;
 }) {
   const draft = useMemo(() => loadCurriculumDraft(), []);
   const [activeStep, setActiveStep] = useState(0);
@@ -2316,6 +2324,34 @@ function CurriculumPackBuilder({
     ['AI literacy', aiLiteracyComponents.join(', ')],
   ];
 
+  if (experienceMode === 'simple') {
+    return (
+      <QuickBuildFrame
+        eyebrow="Curriculum Pack"
+        title="Build a polished AI lesson pack"
+        subtitle="Confirm the essentials, then generate a teacher-ready package."
+        buttonLabel="Build Lesson Pack"
+        isLoading={isLoading}
+        onBuild={buildPrompt}
+        summary={[
+          ['Source', `${selectedModule.chapter}. ${selectedModule.title}`],
+          ['Classroom', `Grade ${settings.gradeLevel} / ${settings.timeAvailable}`],
+          ['AI access', selectedAccess?.label ?? labelFromValue(settings.studentAiAccessLevel)],
+          ['Output', selectedPack.label],
+        ]}
+        customizeHint="Switch to Expert Mode for standards, prompt library, rubric focus, source uploads, and policy details."
+      >
+        <FieldGrid>
+          <SelectField label="Grade" value={settings.gradeLevel} onChange={(value) => updateSetting('gradeLevel', value)} options={toSelectOptions(['6', '7', '8', '9', '10', '11', '12', 'College intro'])} />
+          <SelectField label="Subject" value={settings.subjectContext} onChange={(value) => updateSetting('subjectContext', value)} options={toSelectOptions(['AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Art / Media', 'CTE', 'Computer Science', 'Career Readiness'])} />
+          <SelectField label="Time" value={settings.timeAvailable} onChange={(value) => updateSetting('timeAvailable', value)} options={toSelectOptions(['30 min', '45 min', '60 min', '90 min', '3-day mini-unit', '5-day unit'])} />
+          <SelectField label="AI access" value={settings.studentAiAccessLevel} onChange={(value) => updateSetting('studentAiAccessLevel', value)} options={studentAccessOptions} />
+          <SelectField label="Output" value={settings.packPreset} onChange={(value) => updateSetting('packPreset', value)} options={packOptions} />
+        </FieldGrid>
+      </QuickBuildFrame>
+    );
+  }
+
   return (
     <BuilderFrame
       eyebrow="Curriculum Pack"
@@ -2346,9 +2382,11 @@ function CurriculumPackBuilder({
 function CollegeCourseBuilder({
   isLoading,
   onBuild,
+  experienceMode,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
+  experienceMode: ExperienceMode;
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
@@ -2508,6 +2546,43 @@ function CollegeCourseBuilder({
     },
   ];
 
+  if (experienceMode === 'simple') {
+    return (
+      <QuickBuildFrame
+        eyebrow="College Course"
+        title="Build a polished college AI course"
+        subtitle="Start with a syllabus-ready package. Use Expert Mode only when you need detailed curriculum controls."
+        buttonLabel="Build Course"
+        isLoading={isLoading}
+        onBuild={buildPrompt}
+        summary={[
+          ['Course', settings.courseTitle],
+          ['Format', `${settings.creditHours} credits / ${settings.termLength}`],
+          ['Delivery', settings.deliveryFormat],
+          ['Output', selectedOutput.label],
+        ]}
+        customizeHint="Switch to Expert Mode for prerequisites, lab cadence, final project, source notes, CQI, and advisory-board details."
+      >
+        <div className="grid gap-4">
+          <label className="block">
+            <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Course title</span>
+            <input
+              value={settings.courseTitle}
+              onChange={(event) => updateSetting('courseTitle', event.target.value)}
+              className="h-11 w-full rounded-md border border-slate-300 px-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+          <FieldGrid>
+            <SelectField label="Delivery" value={settings.deliveryFormat} onChange={(value) => updateSetting('deliveryFormat', value)} options={toSelectOptions(['Face-to-face', 'Online', 'Hybrid', 'HyFlex'])} />
+            <SelectField label="Term" value={settings.termLength} onChange={(value) => updateSetting('termLength', value)} options={toSelectOptions(['8 weeks', '10 weeks', '12 weeks', '15 weeks', '16 weeks'])} />
+            <SelectField label="Coding" value={settings.codingIntensity} onChange={(value) => updateSetting('codingIntensity', value)} options={toSelectOptions(['No-code orientation', 'Beginner Python', 'Intermediate Python', 'Python + notebooks'])} />
+            <SelectField label="Output" value={settings.outputPreset} onChange={(value) => updateSetting('outputPreset', value)} options={outputOptions} />
+          </FieldGrid>
+        </div>
+      </QuickBuildFrame>
+    );
+  }
+
   return (
     <BuilderFrame
       eyebrow="College Course"
@@ -2542,9 +2617,11 @@ function CollegeCourseBuilder({
 function CollegeProgramBuilder({
   isLoading,
   onBuild,
+  experienceMode,
 }: {
   isLoading: boolean;
   onBuild: (prompt: string, config: ClassroomConfig) => void;
+  experienceMode: ExperienceMode;
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [settings, setSettings] = useState({
@@ -2763,6 +2840,43 @@ function CollegeProgramBuilder({
       ),
     },
   ];
+
+  if (experienceMode === 'simple') {
+    return (
+      <QuickBuildFrame
+        eyebrow="College Program"
+        title="Build a polished AI program proposal"
+        subtitle="Generate the proposal packet first. Use Expert Mode when you need to edit the full pathway, matrix, CQI, or advisory workspace."
+        buttonLabel="Build Program Proposal"
+        isLoading={isLoading}
+        onBuild={buildPrompt}
+        summary={[
+          ['Program', settings.programName],
+          ['Credential', settings.credentialType],
+          ['Pathway', settings.pathwayModel],
+          ['Output', selectedProgramOutput.label],
+        ]}
+        customizeHint="Switch to Expert Mode for visual pathway editing, course sequence rows, outcome matrix, CQI center, advisory-board details, and recruitment assets."
+      >
+        <div className="grid gap-4">
+          <label className="block">
+            <span className="mb-2 block text-xs font-bold uppercase text-slate-600">Program name</span>
+            <input
+              value={settings.programName}
+              onChange={(event) => updateSetting('programName', event.target.value)}
+              className="h-11 w-full rounded-md border border-slate-300 px-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+          <FieldGrid>
+            <SelectField label="Credential" value={settings.credentialType} onChange={(value) => updateSetting('credentialType', value)} options={toSelectOptions(['Technical certificate', 'AAS degree', 'Technical certificate + AAS pathway', 'Noncredit workforce certificate', 'Dual enrollment pathway'])} />
+            <SelectField label="Length" value={settings.programLength} onChange={(value) => updateSetting('programLength', value)} options={toSelectOptions(['1 semester certificate', '2 semesters certificate / 4 semesters AAS', '3-semester accelerated', '4 semesters AAS', 'Custom'])} />
+            <SelectField label="Pathway" value={settings.pathwayModel} onChange={(value) => updateSetting('pathwayModel', value)} options={toSelectOptions(Object.keys(programPathwayTemplates))} />
+            <SelectField label="Output" value={settings.packagePreset} onChange={(value) => updateSetting('packagePreset', value)} options={programPlatformOutputOptions} />
+          </FieldGrid>
+        </div>
+      </QuickBuildFrame>
+    );
+  }
 
   return (
     <BuilderFrame
@@ -4249,6 +4363,66 @@ function BuilderFrame({
             children
           )}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function QuickBuildFrame({
+  eyebrow,
+  title,
+  subtitle,
+  buttonLabel,
+  isLoading,
+  onBuild,
+  summary,
+  customizeHint,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  buttonLabel: string;
+  isLoading: boolean;
+  onBuild: () => void;
+  summary: Array<[string, string]>;
+  customizeHint: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mb-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-3xl">
+          <p className="text-xs font-bold uppercase text-blue-800">{eyebrow}</p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">{title}</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{subtitle}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onBuild}
+          disabled={isLoading}
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <Sparkles className="h-4 w-4" />
+          {isLoading ? 'Building...' : buttonLabel}
+        </button>
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-4">
+        {summary.map(([label, value]) => (
+          <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <span className="block text-xs font-bold uppercase text-slate-500">{label}</span>
+            <strong className="mt-1 block text-sm leading-5 text-slate-950">{value}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        {children}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
+        <strong>Want the full control panel?</strong> {customizeHint}
       </div>
     </section>
   );
