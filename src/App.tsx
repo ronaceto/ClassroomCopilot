@@ -1413,6 +1413,15 @@ const buildFinishLinePrompt = (settings: FinishLineSettings): string =>
     'Keep all student data privacy language de-identified. Do not ask educators to upload protected student details. Use practical teacher-ready language instead of technical integration promises.',
   ].join('\n');
 
+const buildSimpleOutputPrompt = (): string =>
+  [
+    'Simple Mode output requirements:',
+    'Prioritize a polished, share-ready package over exhaustive feature coverage.',
+    'Use a title block, a short package summary, clear section headings, concise bullets, and compact tables where useful.',
+    'Avoid long generic explanations. Include only the sections needed for the selected package to be useful immediately.',
+    'Keep privacy, AI-use guardrails, accessibility, and educator review language, but do not add unrelated CQI, LMS, community, analytics, or accreditation sections unless the selected output specifically asks for them.',
+  ].join('\n');
+
 function App() {
   const [activeMode, setActiveMode] = useState<BuilderMode>('curriculum-pack');
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(() => (localStorage.getItem('classroomCopilot.role.v1') as UserRole | null) || null);
@@ -1422,7 +1431,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpCenterOpen, setHelpCenterOpen] = useState(false);
   const [trustOpen, setTrustOpen] = useState(false);
-  const [tourOpen, setTourOpen] = useState(() => localStorage.getItem('classroomCopilot.tourCompleted.v1') !== 'true');
+  const [tourOpen, setTourOpen] = useState(false);
   const [fontScale, setFontScale] = useState<FontScale>('standard');
   const [highContrast, setHighContrast] = useState(false);
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
@@ -1444,7 +1453,8 @@ function App() {
     setReviewOpen(true);
     setLoadedPackageContent('');
     clearChat();
-    void sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', config);
+    const outputPrompt = experienceMode === 'expert' ? buildFinishLinePrompt(finishLineSettings) : buildSimpleOutputPrompt();
+    void sendMessage([prompt, outputPrompt].join('\n\n'), 'teacher', config);
   };
 
   const handleImprove = async (prompt: string) => {
@@ -1680,6 +1690,7 @@ function App() {
             </button>
           </div>
 
+          {selectedRole && selectedGoal && (
           <nav className="hidden grid-cols-3 gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1 lg:grid" aria-label="Builder modes">
             {modes.map((mode) => {
               const Icon = mode.icon;
@@ -1698,6 +1709,7 @@ function App() {
               );
             })}
           </nav>
+          )}
           <button
             type="button"
             onClick={() => openHelpCenter('desktop_header')}
@@ -1739,6 +1751,7 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        {selectedRole && selectedGoal && (
         <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase text-blue-800">Workspace mode</p>
@@ -1765,6 +1778,7 @@ function App() {
             </button>
           </div>
         </div>
+        )}
 
         {!selectedRole || !selectedGoal ? (
           <RoleGoalLanding
@@ -1772,7 +1786,6 @@ function App() {
             onChooseGoal={chooseGoal}
             selectedGoal={selectedGoal}
             onTakeTour={() => setTourOpen(true)}
-            onSkipTour={finishTour}
           />
         ) : (
           <>
@@ -2026,6 +2039,7 @@ function CurriculumPackBuilder({
       'For the slide deck outline, include 6-10 slide titles with speaker notes and student interaction moments.',
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Include a no-AI or teacher-demo alternative when appropriate, student-facing directions, differentiation, and responsible AI guardrails.',
+      'Format the final package like a polished teacher handout: concise title block, short summary, clean headings, compact tables, and copy-ready classroom language.',
       'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after teacher review.',
     ].join('\n');
 
@@ -2391,6 +2405,7 @@ function CollegeCourseBuilder({
       'For the CQI evidence plan, include assessment artifacts, review cadence, improvement triggers, and documentation notes.',
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
       'Include FERPA/privacy cautions, delivery-format notes, beginner supports, applied labs, measurable outcomes, assessment evidence, and workforce relevance. Do not claim official approval or accreditation compliance.',
+      'Format the final package like a polished faculty packet: concise title block, short summary, clean headings, compact tables, and copy-ready syllabus or LMS language.',
       'Keep the package practical enough to export directly into HTML, PDF, Markdown, or PPT after faculty review.',
     ].join('\n');
 
@@ -2611,6 +2626,7 @@ function CollegeProgramBuilder({
       'For recruitment copy, include short website copy, flyer copy, and talking points for information sessions.',
       `Prioritize the selected output type: ${selectedProgramOutput.label}.`,
       `Include the requested policy artifact as a clearly labeled subsection: ${settings.policyOutput}.`,
+      'Format the final package like a polished institutional packet: concise title block, short executive summary, clean headings, compact tables, and administrator-ready language.',
       'Do not claim official approval, accreditation compliance, or labor-market guarantees.',
     ].join('\n');
 
@@ -2817,20 +2833,15 @@ function WorkspaceLaunchBar({
   onOpenTour: () => void;
 }) {
   const [openPanel, setOpenPanel] = useState<'samples' | 'demo' | 'advanced' | 'display' | 'beta' | 'positioning' | null>(null);
-  const [showStartTip, setShowStartTip] = useState(() => localStorage.getItem('classroomCopilot.workspaceTip.dismissed.v1') !== 'true');
   const togglePanel = (panel: NonNullable<typeof openPanel>) => setOpenPanel((current) => (current === panel ? null : panel));
-  const dismissStartTip = () => {
-    setShowStartTip(false);
-    localStorage.setItem('classroomCopilot.workspaceTip.dismissed.v1', 'true');
-  };
 
   return (
     <section className="mb-5 rounded-lg border border-slate-200 bg-white p-3 shadow-sm" aria-label="Workspace tools">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase text-blue-800">Build workspace</p>
-          <h2 className="truncate text-lg font-bold text-slate-950">Start building, open support only when needed</h2>
-          <p className="text-xs leading-5 text-slate-600">Samples, accessibility, advanced options, beta feedback, and positioning are available without pushing the builder down the page.</p>
+          <h2 className="truncate text-lg font-bold text-slate-950">Build the package, then polish the output</h2>
+          <p className="text-xs leading-5 text-slate-600">Simple Mode keeps the workflow focused. Open samples or help only when you need them.</p>
         </div>
         <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-end">
           {(experienceMode === 'expert' ? [
@@ -2842,7 +2853,6 @@ function WorkspaceLaunchBar({
             ['positioning', 'Positioning', 'Open product positioning and proof points.'],
           ] : [
             ['samples', 'Samples', 'Open sample packages and templates.'],
-            ['demo', 'Demo', 'Open complete demo scenarios for reviewers.'],
             ['display', 'Display', 'Adjust text size and contrast.'],
           ] as Array<[NonNullable<typeof openPanel>, string, string]>).map(([panel, label, help]) => (
             <button
@@ -2871,7 +2881,7 @@ function WorkspaceLaunchBar({
             type="button"
             onClick={onOpenTour}
             title="Open the 90-second guided tour."
-            className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800"
+            className={`min-h-10 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-800 ${experienceMode === 'expert' ? 'inline-flex' : 'hidden'}`}
           >
             Tour
           </button>
@@ -2879,21 +2889,12 @@ function WorkspaceLaunchBar({
             type="button"
             onClick={onOpenFeedback}
             title="Send beta feedback, report a bug, or request a template."
-            className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800"
+            className={`min-h-10 items-center justify-center rounded-md bg-blue-700 px-3 text-sm font-bold text-white transition hover:bg-blue-800 ${experienceMode === 'expert' ? 'inline-flex' : 'hidden'}`}
           >
             Feedback
           </button>
         </div>
       </div>
-
-      {showStartTip && (
-        <div className="mt-3 flex flex-col gap-2 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs leading-5 text-blue-950 sm:flex-row sm:items-center sm:justify-between">
-          <span><strong>Start here:</strong> use Samples for examples, Advanced for optional supports, and Help for short tutorials. The builder stays below this bar.</span>
-          <button type="button" onClick={dismissStartTip} className="inline-flex min-h-8 items-center justify-center rounded-md border border-blue-200 bg-white px-3 font-bold text-blue-800">
-            Got it
-          </button>
-        </div>
-      )}
 
       <SmartRecommendations selectedRole={selectedRole} selectedGoal={selectedGoal} activeMode={activeMode} experienceMode={experienceMode} />
 
@@ -2944,46 +2945,59 @@ function RoleGoalLanding({
   onChooseGoal,
   selectedGoal,
   onTakeTour,
-  onSkipTour,
 }: {
   onChooseRole: (role: UserRole) => void;
   onChooseGoal: (goal: BuildGoal) => void;
   selectedGoal: BuildGoal | null;
   onTakeTour: () => void;
-  onSkipTour: () => void;
 }) {
+  const primaryStarts = [
+    {
+      role: 'k12_teacher' as UserRole,
+      title: 'Build a K-12 AI Lesson Pack',
+      detail: 'Lessons, activities, guardrails, rubric, slides, and teacher notes.',
+      action: 'Start lesson pack',
+    },
+    {
+      role: 'college_faculty' as UserRole,
+      title: 'Build a College AI Course',
+      detail: 'Syllabus, weekly modules, labs, assessments, ethics policy, and LMS-ready blocks.',
+      action: 'Start course',
+    },
+    {
+      role: 'program_coordinator' as UserRole,
+      title: 'Build an AI Program Proposal',
+      detail: 'Pathway, outcomes, advisory board plan, CQI, recruitment, and approval materials.',
+      action: 'Start program',
+    },
+  ];
+
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-6 max-w-3xl">
-        <p className="text-xs font-bold uppercase text-blue-800">Start with intent</p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">Who are you building for?</h2>
+        <p className="text-xs font-bold uppercase text-blue-800">Start here</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">What polished package do you need?</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Classroom Copilot routes you to the right workflow first, then reveals advanced program, CQI, advisory, and accreditation tools only when they match your goal.
+          Choose one path. Classroom Copilot will keep the setup short and focus the experience on a strong, export-ready package.
         </p>
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <button type="button" onClick={onTakeTour} className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white">
-            Take 90-second tour
-          </button>
-          <button type="button" onClick={onSkipTour} className="inline-flex min-h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700">
-            Skip tour
-          </button>
-        </div>
       </div>
-      <div className="grid gap-3 lg:grid-cols-5">
-        {roleOptions.map((role) => (
+      <div className="grid gap-4 lg:grid-cols-3">
+        {primaryStarts.map((start) => (
           <button
-            key={role.id}
+            key={start.role}
             type="button"
-            onClick={() => onChooseRole(role.id)}
-            className="min-h-36 rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50"
+            onClick={() => onChooseRole(start.role)}
+            className="min-h-48 rounded-xl border border-slate-200 bg-slate-50 p-5 text-left transition hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm"
           >
-            <strong className="block text-base text-slate-950">{role.label}</strong>
-            <span className="mt-2 block text-sm leading-5 text-slate-600">{role.detail}</span>
+            <strong className="block text-xl text-slate-950">{start.title}</strong>
+            <span className="mt-3 block text-sm leading-6 text-slate-600">{start.detail}</span>
+            <span className="mt-5 inline-flex min-h-10 items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white">{start.action}</span>
           </button>
         ))}
       </div>
-      <div className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
-        <h3 className="text-lg font-bold text-slate-950">What are you trying to create today?</h3>
+      <details className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+        <summary className="cursor-pointer text-sm font-bold text-slate-700">Advanced institutional packages</summary>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Use these when you specifically need dean approval, advisory board, accreditation/CQI, or recruitment materials.</p>
         <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
           {goalOptions.map((goal) => (
             <button
@@ -2997,7 +3011,10 @@ function RoleGoalLanding({
             </button>
           ))}
         </div>
-      </div>
+      </details>
+      <button type="button" onClick={onTakeTour} className="mt-4 text-sm font-bold text-blue-800 hover:text-blue-950">
+        Need orientation? Take the 90-second tour
+      </button>
     </section>
   );
 }
@@ -3023,8 +3040,8 @@ function SmartRecommendations({
     <div className="mt-3 rounded-lg border border-green-100 bg-green-50 p-3">
       <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase text-green-800">Recommended for {role.label}</p>
-          <p className="text-sm leading-6 text-slate-700">{goal.label}: start with these outputs, then switch to Expert Mode to override.</p>
+          <p className="text-xs font-bold uppercase text-green-800">Recommended package</p>
+          <p className="text-sm leading-6 text-slate-700">{goal.label} for {role.label}. The builder will prioritize the core package first.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {recommendations.map((item) => (
@@ -5396,9 +5413,9 @@ function GeneratedOutput({
         aria-expanded={open}
       >
         <span>
-          <span className="block text-lg font-bold text-slate-950">Review / Export Workspace</span>
+          <span className="block text-lg font-bold text-slate-950">{experienceMode === 'simple' ? 'Final Package / Exports' : 'Review / Export Workspace'}</span>
           <span className="mt-1 block text-sm leading-6 text-slate-600">
-            {isLoading ? 'Package is building. This workspace opens automatically when output is ready.' : hasContent ? 'Output is ready for readiness checks, refinement, export, and save history.' : `${emptyTitle}. Open this only when you need saved history or export controls.`}
+            {isLoading ? 'Package is building. This workspace opens automatically when output is ready.' : hasContent ? (experienceMode === 'simple' ? 'Preview the polished package, then export HTML, PDF/print, PowerPoint, or copy-ready text.' : 'Output is ready for readiness checks, refinement, export, and save history.') : `${emptyTitle}. Open this only when you need saved history or export controls.`}
           </span>
         </span>
         <span className="flex flex-shrink-0 items-center gap-2">
@@ -5547,12 +5564,14 @@ function GeneratedOutput({
               onClick={exportFacultyPortfolio}
             />
           )}
-          <ExportButton
-            icon={RefreshCw}
-            label="Rewrite Selection"
-            disabled={!hasContent || isLoading}
-            onClick={captureSelection}
-          />
+          {experienceMode === 'expert' && (
+            <ExportButton
+              icon={RefreshCw}
+              label="Rewrite Selection"
+              disabled={!hasContent || isLoading}
+              onClick={captureSelection}
+            />
+          )}
         </div>
       </div>
       {hasContent && experienceMode === 'expert' && (
@@ -5586,17 +5605,21 @@ function GeneratedOutput({
       {isLoading ? (
         <div className="rounded-lg border border-blue-100 bg-blue-50 p-5 text-sm text-blue-900">Building your package...</div>
       ) : hasContent ? (
-        <ReviewCanvas
-          content={editableContent}
-          checks={checks}
-          sections={outputSections}
-          activeMode={activeMode}
-          openDrawer={openDrawer}
-          onOpenDrawer={setOpenDrawer}
-          onSectionAction={applySectionAction}
-          onFocusSection={setFocusSection}
-          onContentChange={setEditableContent}
-        />
+        experienceMode === 'simple' ? (
+          <PolishedOutputPreview content={editableContent} checks={checks} sections={outputSections} />
+        ) : (
+          <ReviewCanvas
+            content={editableContent}
+            checks={checks}
+            sections={outputSections}
+            activeMode={activeMode}
+            openDrawer={openDrawer}
+            onOpenDrawer={setOpenDrawer}
+            onSectionAction={applySectionAction}
+            onFocusSection={setFocusSection}
+            onContentChange={setEditableContent}
+          />
+        )
       ) : (
         <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">{emptyTitle}</div>
       )}
@@ -5632,6 +5655,85 @@ function GeneratedOutput({
       )}
     </section>
   );
+}
+
+function PolishedOutputPreview({
+  content,
+  checks,
+  sections,
+}: {
+  content: string;
+  checks: ReadinessResult[];
+  sections: OutputSectionItem[];
+}) {
+  const score = Math.round((checks.filter((check) => check.met).length / Math.max(checks.length, 1)) * 100);
+  const visibleSections = sections.length > 0 ? sections : [{ id: 'package', title: 'Generated Package', summary: 'Ready for educator review.', body: content }];
+  const title = inferPackageTitle(content, 'curriculum-pack');
+  const topChecks = checks.slice(0, 5);
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="border-b border-slate-200 pb-5">
+          <p className="text-xs font-bold uppercase text-blue-800">Classroom Copilot Final Package</p>
+          <h3 className="mt-2 text-2xl font-bold leading-tight text-slate-950">{title}</h3>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <CanvasMetric label="Package health" value={score >= 80 ? 'Strong' : 'Draft'} detail={`${score}% readiness`} />
+            <CanvasMetric label="Export format" value="Ready" detail="HTML, PDF/print, PPT, copy" />
+            <CanvasMetric label="Review status" value="Teacher review" detail="Editable before sharing" />
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-2 md:grid-cols-2">
+          {topChecks.map((check) => (
+            <div key={check.label} className={`rounded-lg border px-3 py-2 text-sm ${check.met ? 'border-green-100 bg-green-50 text-green-900' : 'border-amber-100 bg-amber-50 text-amber-900'}`}>
+              <strong>{check.met ? 'Ready: ' : 'Review: '}</strong>{check.label}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 grid gap-4">
+          {visibleSections.slice(0, 14).map((section) => (
+            <article key={section.id} className="rounded-xl border border-slate-200 bg-white p-5">
+              <h4 className="text-lg font-bold text-slate-950">{section.title}</h4>
+              {section.summary && <p className="mt-1 text-sm leading-6 text-slate-500">{section.summary}</p>}
+              <div className="mt-4 space-y-2 text-sm leading-6 text-slate-700">
+                {renderPreviewBody(section.body)}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <details className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <summary className="cursor-pointer text-sm font-bold text-slate-700">Show editable source text</summary>
+          <pre className="mt-3 max-h-[420px] overflow-auto whitespace-pre-wrap rounded-lg bg-white p-4 text-xs leading-5 text-slate-700">{content}</pre>
+        </details>
+      </div>
+    </div>
+  );
+}
+
+function renderPreviewBody(body: string) {
+  const lines = body.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (lines.length === 0) return <p>This section is ready for review.</p>;
+
+  return lines.slice(0, 28).map((line, index) => {
+    const cleaned = line.replace(/^#{1,4}\s+/, '').replace(/\*\*/g, '');
+    const bullet = cleaned.match(/^[-*]\s+(.*)$/);
+    const numbered = cleaned.match(/^\d+[.)]\s+(.*)$/);
+    if (bullet || numbered) {
+      return (
+        <div key={`${cleaned}-${index}`} className="flex gap-2">
+          <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-700" />
+          <span>{bullet?.[1] ?? numbered?.[1]}</span>
+        </div>
+      );
+    }
+    if (cleaned.includes('|')) {
+      return <p key={`${cleaned}-${index}`} className="rounded-md bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600">{cleaned}</p>;
+    }
+    return <p key={`${cleaned}-${index}`}>{cleaned}</p>;
+  });
 }
 
 function ReviewCanvas({

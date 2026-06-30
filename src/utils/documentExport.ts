@@ -204,52 +204,104 @@ const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated
     }
     body {
       margin: 0;
-      background: #f8fafc;
+      background: #eef2f7;
     }
     main {
-      max-width: 880px;
-      margin: 0 auto;
+      max-width: 920px;
+      margin: 28px auto;
       background: white;
-      min-height: 100vh;
-      padding: 48px;
+      min-height: calc(100vh - 56px);
+      padding: 0 52px 52px;
+      border: 1px solid #dbe3ef;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .12);
     }
     .brand {
-      border-bottom: 3px solid #1d4ed8;
-      margin-bottom: 32px;
-      padding-bottom: 18px;
+      margin: 0 -52px 34px;
+      padding: 42px 52px 34px;
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+      color: white;
     }
     .eyebrow {
-      color: #1d4ed8;
+      color: #bfdbfe;
       font-size: 12px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
+    }
+    .meta {
+      display: inline-flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .pill {
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: #eff6ff;
+      font-size: 12px;
+      font-weight: 700;
     }
     h1, h2, h3 {
       line-height: 1.15;
       margin: 1.5em 0 .5em;
     }
     h1 {
-      font-size: 34px;
+      color: white;
+      font-size: 36px;
       margin-top: 8px;
+      max-width: 720px;
     }
     h2 {
-      border-top: 1px solid #e2e8f0;
-      color: #1e3a8a;
-      font-size: 24px;
-      padding-top: 22px;
+      border-top: 1px solid #dbe3ef;
+      color: #0f172a;
+      font-size: 23px;
+      margin-top: 30px;
+      padding-top: 24px;
     }
     h3 {
+      color: #1e3a8a;
       font-size: 18px;
     }
     p, li {
       font-size: 15px;
     }
+    p {
+      margin: 0 0 12px;
+    }
     ul, ol {
       padding-left: 24px;
     }
+    li {
+      margin-bottom: 6px;
+    }
     strong {
       color: #020617;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 22px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #dbe3ef;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .review-note {
+      margin: 28px 0;
+      border-left: 4px solid #1d4ed8;
+      background: #eff6ff;
+      padding: 14px 16px;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 700;
     }
     @media print {
       body {
@@ -258,7 +310,14 @@ const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated
       main {
         max-width: none;
         min-height: 0;
-        padding: 0;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        padding: 0 28px 28px;
+      }
+      .brand {
+        margin: 0 -28px 28px;
+        padding: 28px;
       }
       h2 {
         break-after: avoid;
@@ -271,8 +330,13 @@ const buildHtmlDocument = (content: string, title = 'Classroom Copilot Generated
     <section class="brand">
       <div class="eyebrow">Classroom Copilot</div>
       <h1>${escapeHtml(title)}</h1>
-      <p><strong>${escapeHtml(templateLabels[template])}</strong></p>
+      <div class="meta">
+        <span class="pill">${escapeHtml(templateLabels[template])}</span>
+        <span class="pill">Draft for educator review</span>
+        <span class="pill">${new Date().toLocaleDateString()}</span>
+      </div>
     </section>
+    <p class="review-note">Generated as a working draft. Review local policy, standards alignment, accessibility needs, and student data privacy before sharing.</p>
     ${markdownToHtml(content)}
   </main>
 </body>
@@ -282,6 +346,7 @@ const markdownToHtml = (content: string): string => {
   const lines = content.split(/\r?\n/);
   const html: string[] = [];
   let listType: 'ul' | 'ol' | null = null;
+  let tableRows: string[][] = [];
 
   const closeList = () => {
     if (listType) {
@@ -290,13 +355,43 @@ const markdownToHtml = (content: string): string => {
     }
   };
 
+  const closeTable = () => {
+    if (tableRows.length === 0) return;
+    const [header, ...rows] = tableRows;
+    html.push('<table>');
+    html.push(`<thead><tr>${header.map((cell) => `<th>${formatInline(cell)}</th>`).join('')}</tr></thead>`);
+    html.push('<tbody>');
+    rows.forEach((row) => {
+      html.push(`<tr>${row.map((cell) => `<td>${formatInline(cell)}</td>`).join('')}</tr>`);
+    });
+    html.push('</tbody></table>');
+    tableRows = [];
+  };
+
   lines.forEach((line) => {
     const trimmed = line.trim();
 
     if (!trimmed) {
       closeList();
+      closeTable();
       return;
     }
+
+    if (/^\|?.+\|.+\|?$/.test(trimmed)) {
+      const cells = trimmed
+        .replace(/^\|/, '')
+        .replace(/\|$/, '')
+        .split('|')
+        .map((cell) => cell.trim());
+      const separatorRow = cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+      if (!separatorRow && cells.length > 1) {
+        closeList();
+        tableRows.push(cells);
+        return;
+      }
+    }
+
+    closeTable();
 
     const heading = trimmed.match(/^(#{1,3})\s+(.*)$/);
     if (heading) {
@@ -333,6 +428,7 @@ const markdownToHtml = (content: string): string => {
   });
 
   closeList();
+  closeTable();
   return html.join('\n');
 };
 
