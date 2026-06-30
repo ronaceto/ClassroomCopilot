@@ -163,6 +163,13 @@ interface FinishLineSettings {
   communityWorkflow: string;
 }
 
+interface SimpleBuilderOptions {
+  grade: string;
+  subject: string;
+  time: string;
+  outputs: string[];
+}
+
 interface PathwayNode {
   id: string;
   label: string;
@@ -1447,6 +1454,16 @@ const inferSimpleGradeConfig = (request: string): Pick<ClassroomConfig, 'level' 
   return { level: 'High', grades: '10', readingLevel: 10 };
 };
 
+const gradeConfigFromSimpleValue = (grade: string, request: string): Pick<ClassroomConfig, 'level' | 'grades' | 'readingLevel'> => {
+  if (grade === 'Auto') return inferSimpleGradeConfig(request);
+  if (grade === 'Kindergarten') return { level: 'Elementary', grades: 'Kindergarten', readingLevel: 1 };
+  if (grade === 'College') return { level: 'High', grades: 'College intro', readingLevel: 12 };
+  const numericGrade = Number.parseInt(grade, 10);
+  if (numericGrade <= 5) return { level: 'Elementary', grades: grade, readingLevel: Math.max(1, numericGrade) };
+  if (numericGrade <= 8) return { level: 'Middle', grades: grade, readingLevel: numericGrade };
+  return { level: 'High', grades: grade, readingLevel: numericGrade || 10 };
+};
+
 const inferSimpleSubject = (request: string): string => {
   const lower = request.toLowerCase();
   if (/\b(george washington|president|american history|history|civil war|revolution|government|civics)\b/.test(lower)) return 'Social Studies';
@@ -1455,6 +1472,13 @@ const inferSimpleSubject = (request: string): string => {
   if (/\b(science|animals?|plants?|weather|space|forces?|matter|ecosystem)\b/.test(lower)) return 'Science';
   if (/\b(computer science|coding|python|programming)\b/.test(lower)) return 'Computer Science';
   return 'AI Literacy';
+};
+
+const simpleBuilderDefaults: SimpleBuilderOptions = {
+  grade: 'Auto',
+  subject: 'Auto',
+  time: '60 minutes',
+  outputs: ['Slide deck', 'Teacher script', 'Activity', 'Assessment'],
 };
 
 function App() {
@@ -1472,6 +1496,7 @@ function App() {
   const [finishLineSettings, setFinishLineSettings] = useState<FinishLineSettings>(finishLineDefaults);
   const [loadedPackageContent, setLoadedPackageContent] = useState('');
   const [simpleBrief, setSimpleBrief] = useState('');
+  const [simpleOptions, setSimpleOptions] = useState<SimpleBuilderOptions>(simpleBuilderDefaults);
   const [savedPackages, setSavedPackages] = useState<SavedPackage[]>(() => loadSavedPackages());
   const [betaEvents, setBetaEvents] = useState<BetaEvent[]>(() => loadBetaEvents());
   const [betaFeedback, setBetaFeedback] = useState<BetaFeedback[]>(() => loadBetaFeedback());
@@ -1500,7 +1525,7 @@ function App() {
     return sendMessage([prompt, buildFinishLinePrompt(finishLineSettings)].join('\n\n'), 'teacher', { ...baseConfig, outputDepth: 'Detailed' });
   };
 
-  const handleSimpleBriefBuild = (brief: string) => {
+  const handleSimpleBriefBuild = (brief: string, options: SimpleBuilderOptions) => {
     if (isLoading) return;
     const cleanBrief = brief.trim();
     if (!cleanBrief) return;
@@ -1527,12 +1552,13 @@ function App() {
     clearChat();
 
     const inferredGrade = nextMode === 'curriculum-pack'
-      ? inferSimpleGradeConfig(cleanBrief)
+      ? gradeConfigFromSimpleValue(options.grade, cleanBrief)
       : { level: 'High' as const, grades: 'College intro', readingLevel: 12 };
+    const inferredSubject = options.subject === 'Auto' ? inferSimpleSubject(cleanBrief) : options.subject;
     const config: ClassroomConfig = {
       ...baseConfig,
       ...inferredGrade,
-      subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : inferSimpleSubject(cleanBrief),
+      subjects: nextMode === 'college-program' ? 'Artificial Intelligence Technology Program' : nextMode === 'college-course' ? 'Artificial Intelligence Technology' : inferredSubject,
       standards: nextMode === 'curriculum-pack' ? { type: 'Custom', customText: 'Inferred age-appropriate classroom outcomes' } : { type: 'Custom', customText: 'Institutional outcomes' },
       outputDepth: 'Quick',
     };
@@ -1541,15 +1567,20 @@ function App() {
       'Build a focused first-draft Classroom Copilot package for this educator request.',
       '',
       `Educator request: ${cleanBrief}`,
+      `Selected grade: ${options.grade === 'Auto' ? inferredGrade.grades : options.grade}`,
+      `Selected subject: ${inferredSubject}`,
+      `Selected time: ${options.time}`,
+      `Required deliverables: ${options.outputs.join(', ') || 'Teacher-ready package'}`,
       '',
       'Infer whether this should be a K-12 lesson pack, college course packet, or college program proposal. Do not ask follow-up questions.',
       'Use sensible defaults and clearly state any assumptions in a short Assumptions line.',
       'The output must feel polished and useful, not like a menu of possible features.',
       'Keep the draft compact enough to generate quickly. The user can refine or expand after the first successful draft.',
+      'Create every required deliverable selected above. If Slide deck is selected, include the slide-by-slide deck. If Quiz, Worksheet, Project, Rubric, Assessment, Activity, Family note, or Teacher script are selected, include each as its own useful section.',
       'Include only the materials needed for the request. Keep AI-use guardrails, privacy, accessibility, assessment evidence, and implementation notes practical and concise.',
     ].join('\n');
 
-    void sendMessage([prompt, buildSimpleOutputPrompt(cleanBrief)].join('\n\n'), 'teacher', config);
+    void sendMessage([prompt, buildSimpleOutputPrompt(`${cleanBrief}\n${options.outputs.join(' ')}`)].join('\n\n'), 'teacher', config);
   };
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant');
@@ -1846,6 +1877,8 @@ function App() {
             <SimpleBriefBuilder
               brief={simpleBrief}
               onBriefChange={setSimpleBrief}
+              options={simpleOptions}
+              onOptionsChange={setSimpleOptions}
               isLoading={isLoading}
               onBuild={handleSimpleBriefBuild}
               onUseExpert={() => setExperienceMode('expert')}
@@ -3190,14 +3223,18 @@ function WorkspaceLaunchBar({
 function SimpleBriefBuilder({
   brief,
   onBriefChange,
+  options,
+  onOptionsChange,
   isLoading,
   onBuild,
   onUseExpert,
 }: {
   brief: string;
   onBriefChange: (value: string) => void;
+  options: SimpleBuilderOptions;
+  onOptionsChange: (value: SimpleBuilderOptions) => void;
   isLoading: boolean;
-  onBuild: (brief: string) => void;
+  onBuild: (brief: string, options: SimpleBuilderOptions) => void;
   onUseExpert: () => void;
 }) {
   const examples = [
@@ -3205,6 +3242,16 @@ function SimpleBriefBuilder({
     'Build an Introduction to AI college course with labs, syllabus, assignments, and ethics policy.',
     'Create an AI Technology certificate program proposal with pathway, outcomes, advisory board plan, CQI, and recruitment copy.',
   ];
+  const outputOptions = ['Slide deck', 'Teacher script', 'Activity', 'Worksheet', 'Quiz', 'Assessment', 'Project', 'Rubric', 'Family note'];
+  const updateOption = <K extends keyof SimpleBuilderOptions>(key: K, value: SimpleBuilderOptions[K]) => {
+    onOptionsChange({ ...options, [key]: value });
+  };
+  const toggleOutput = (output: string) => {
+    const nextOutputs = options.outputs.includes(output)
+      ? options.outputs.filter((item) => item !== output)
+      : [...options.outputs, output];
+    updateOption('outputs', nextOutputs);
+  };
 
   return (
     <section className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -3227,10 +3274,33 @@ function SimpleBriefBuilder({
         />
       </label>
 
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <SelectField label="Grade" value={options.grade} onChange={(value) => updateOption('grade', value)} options={toSelectOptions(['Auto', 'Kindergarten', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'College'])} />
+        <SelectField label="Subject" value={options.subject} onChange={(value) => updateOption('subject', value)} options={toSelectOptions(['Auto', 'AI Literacy', 'ELA', 'Math', 'Science', 'Social Studies', 'Computer Science', 'Career Readiness', 'Art / Media', 'CTE'])} />
+        <SelectField label="Time" value={options.time} onChange={(value) => updateOption('time', value)} options={toSelectOptions(['Auto', '30 minutes', '45 minutes', '60 minutes', '90 minutes', '3 days', '5 days', 'Full course', 'Program package'])} />
+      </div>
+
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <p className="text-xs font-bold uppercase text-slate-500">What should it generate?</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {outputOptions.map((output) => (
+            <label key={output} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-900">
+              <input
+                type="checkbox"
+                checked={options.outputs.includes(output)}
+                onChange={() => toggleOutput(output)}
+                className="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-500"
+              />
+              {output}
+            </label>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
-          onClick={() => onBuild(brief)}
+          onClick={() => onBuild(brief, options)}
           disabled={isLoading || !brief.trim()}
           className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
