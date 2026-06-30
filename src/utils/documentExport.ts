@@ -159,11 +159,18 @@ export const exportToPptx = async (content: string, filename: string, template: 
 
   const sections = splitIntoSections(content);
   const contentSections = sections.filter((section) => section.lines.length > 0);
+  const presentationSections = contentSections.filter((section) => /^slide\s+\d+/i.test(section.title));
   addTitleSlide(pptx, filename, contentSections[0]?.title ?? sections[0]?.title ?? 'Generated Package', template);
 
-  contentSections.slice(0, 14).forEach((section) => {
-    addContentSlide(pptx, section.title, section.lines, template);
-  });
+  if (presentationSections.length > 0) {
+    presentationSections.slice(0, 18).forEach((section, index) => {
+      addPresentationSlide(pptx, section, index + 1, template);
+    });
+  } else {
+    contentSections.slice(0, 14).forEach((section) => {
+      addContentSlide(pptx, section.title, section.lines, template);
+    });
+  }
   addFacilitationSlide(pptx, template);
 
   try {
@@ -495,6 +502,77 @@ const addTitleSlide = (
   slide.addText(filename, { x: 0.65, y: 1.45, w: 11.5, h: 1.2, fontFace: 'Aptos Display', fontSize: 34, bold: true, color: '0F172A', fit: 'shrink', margin: 0 });
   slide.addText(subtitle, { x: 0.67, y: 2.85, w: 10.5, h: 0.75, fontFace: 'Aptos', fontSize: 18, color: '475569', fit: 'shrink', margin: 0 });
   slide.addShape(pptx.ShapeType.line, { x: 0.65, y: 6.55, w: 12, h: 0, line: { color: '1D4ED8', width: 2 } });
+};
+
+interface ParsedPresentationSlide {
+  title: string;
+  studentText: string;
+  teacherTalk: string;
+  visual: string;
+  interaction: string;
+}
+
+const addPresentationSlide = (
+  pptx: import('pptxgenjs').default,
+  section: SlideSection,
+  slideNumber: number,
+  template: CopyTemplate,
+): void => {
+  const slide = pptx.addSlide();
+  const parsed = parsePresentationSlide(section);
+
+  slide.background = { color: 'F8FAFC' };
+  slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.333, h: 0.72, fill: { color: '1D4ED8' }, line: { color: '1D4ED8' } });
+  slide.addText(`Slide ${slideNumber}`, { x: 0.58, y: 0.22, w: 1.25, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: 'DBEAFE', margin: 0 });
+  slide.addText(templateLabels[template], { x: 9.6, y: 0.22, w: 3.1, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: 'DBEAFE', align: 'right', margin: 0 });
+  slide.addText(parsed.title, { x: 0.62, y: 0.98, w: 12.1, h: 0.55, fontFace: 'Aptos Display', fontSize: 28, bold: true, color: '0F172A', fit: 'shrink', margin: 0 });
+
+  slide.addShape(pptx.ShapeType.roundRect, { x: 0.68, y: 1.82, w: 7.15, h: 2.35, rectRadius: 0.08, fill: { color: 'FFFFFF' }, line: { color: 'BFDBFE', width: 1.5 } });
+  slide.addText('Student View', { x: 0.95, y: 2.05, w: 1.6, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: '1D4ED8', margin: 0 });
+  slide.addText(parsed.studentText || parsed.title, { x: 0.95, y: 2.4, w: 6.55, h: 1.25, fontFace: 'Aptos Display', fontSize: 26, bold: true, color: '0F172A', fit: 'shrink', valign: 'mid', margin: 0.02 });
+
+  slide.addShape(pptx.ShapeType.roundRect, { x: 8.15, y: 1.82, w: 4.5, h: 2.35, rectRadius: 0.08, fill: { color: 'EEF2FF' }, line: { color: 'C7D2FE', width: 1.2 } });
+  slide.addText('Teacher Talk Track', { x: 8.45, y: 2.05, w: 2.3, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: '3730A3', margin: 0 });
+  slide.addText(parsed.teacherTalk || 'Use this slide to introduce the idea in simple, student-friendly language.', { x: 8.45, y: 2.38, w: 3.9, h: 1.38, fontFace: 'Aptos', fontSize: 14, color: '111827', fit: 'shrink', breakLine: false, margin: 0.02 });
+
+  slide.addShape(pptx.ShapeType.roundRect, { x: 0.68, y: 4.48, w: 5.95, h: 1.42, rectRadius: 0.08, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1.2 } });
+  slide.addText('Visual', { x: 0.95, y: 4.72, w: 1.0, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: '047857', margin: 0 });
+  slide.addText(parsed.visual || 'Use a clear picture, icon, map, or object students can describe.', { x: 0.95, y: 5.06, w: 5.35, h: 0.52, fontFace: 'Aptos', fontSize: 13, color: '064E3B', fit: 'shrink', margin: 0.02 });
+
+  slide.addShape(pptx.ShapeType.roundRect, { x: 6.9, y: 4.48, w: 5.75, h: 1.42, rectRadius: 0.08, fill: { color: 'FFF7ED' }, line: { color: 'FED7AA', width: 1.2 } });
+  slide.addText('Interaction / Check', { x: 7.18, y: 4.72, w: 2.2, h: 0.22, fontFace: 'Aptos', fontSize: 10, bold: true, color: 'C2410C', margin: 0 });
+  slide.addText(parsed.interaction || 'Ask one quick question, invite a turn-and-talk, or have students point/draw/respond.', { x: 7.18, y: 5.06, w: 5.15, h: 0.52, fontFace: 'Aptos', fontSize: 13, color: '7C2D12', fit: 'shrink', margin: 0.02 });
+
+  slide.addText('Draft for educator review', { x: 0.72, y: 6.86, w: 2.5, h: 0.2, fontFace: 'Aptos', fontSize: 8, color: '64748B', margin: 0 });
+};
+
+const parsePresentationSlide = (section: SlideSection): ParsedPresentationSlide => {
+  const title = section.title.replace(/^slide\s+\d+\s*:?\s*/i, '').trim() || section.title;
+  const result: ParsedPresentationSlide = {
+    title,
+    studentText: '',
+    teacherTalk: '',
+    visual: '',
+    interaction: '',
+  };
+
+  section.lines.forEach((line) => {
+    const normalized = cleanMarkdown(line).replace(/^[-*]\s+/, '').trim();
+    const match = normalized.match(/^(Text|Student[- ]?Facing Text|Teacher Talk Track|Teacher Talk|Visual Suggestion|Visual|Interaction|Quick Interaction|Check for Understanding|Interaction \/ Check):\s*(.*)$/i);
+    if (!match) {
+      if (!result.studentText) result.studentText = normalized;
+      return;
+    }
+
+    const label = match[1].toLowerCase();
+    const value = match[2].trim();
+    if (label.includes('teacher')) result.teacherTalk = value;
+    else if (label.includes('visual')) result.visual = value;
+    else if (label.includes('interaction') || label.includes('check')) result.interaction = value;
+    else result.studentText = value;
+  });
+
+  return result;
 };
 
 const addContentSlide = (
